@@ -20,6 +20,8 @@ public class StaffHeadColor : MonoBehaviour {
 
     [SerializeField]
     private SpriteRenderer StaffHead;
+    [SerializeField]
+    private Animator StaffHeadAnimator;
 
     public void Start()
     {
@@ -32,6 +34,8 @@ public class StaffHeadColor : MonoBehaviour {
 
         currentColor = ++currentColor% StaffColors.Length;
         StaffHead.color = StaffColors[currentColor];
+
+        StaffHeadAnimator.SetInteger("ColorNumber", currentColor);
 
         AC.GlobalVariables.SetIntegerValue(GlobalVarID, currentColor);
     }
