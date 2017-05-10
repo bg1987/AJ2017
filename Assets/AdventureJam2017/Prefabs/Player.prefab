@@ -566,9 +566,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10ff15d21604684458d20bbe6e593311, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveTime: 1
-  endZ: -2
-  glowLight: {fileID: 108975710881933388}
+  pingAnimator: {fileID: 95271376136658706}
   hotspotDetector: {fileID: 114493159106414284}
 --- !u!114 &114463929241038906
 MonoBehaviour:
@@ -588,6 +586,7 @@ MonoBehaviour:
   - {r: 0.9686275, g: 0.96470594, b: 0.058823533, a: 1}
   StaffHead: {fileID: 212075726977691942}
   StaffHeadAnimator: {fileID: 95004402390270710}
+  OffDelay: 2
 --- !u!114 &114493159106414284
 MonoBehaviour:
   m_ObjectHideFlags: 1

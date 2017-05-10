@@ -22,7 +22,10 @@ public class StaffHeadColor : MonoBehaviour {
     private SpriteRenderer StaffHead;
     [SerializeField]
     private Animator StaffHeadAnimator;
+    [SerializeField]
+    private float OffDelay = 1f;
 
+    private bool canClick = true;
     public void Start()
     {
         me = this;
@@ -30,14 +33,33 @@ public class StaffHeadColor : MonoBehaviour {
 
     public void Switch()
     {
+        if (!canClick)
+            return;
+
         currentColor = AC.GlobalVariables.GetIntegerValue(GlobalVarID);
 
         currentColor = ++currentColor% StaffColors.Length;
-        StaffHead.color = StaffColors[currentColor];
+
+
+        
 
         StaffHeadAnimator.SetInteger("ColorNumber", currentColor);
 
         AC.GlobalVariables.SetIntegerValue(GlobalVarID, currentColor);
+        
+        if(currentColor == 0)
+        {
+            canClick = false;
+            LeanTween.delayedCall(OffDelay, () => 
+            {
+                canClick = true;
+                StaffHead.color = StaffColors[currentColor];
+            });
+        }
+        else
+        {
+            StaffHead.color = StaffColors[currentColor];
+        }
     }
 
     
