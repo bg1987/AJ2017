@@ -58,8 +58,8 @@ MonoBehaviour:
   autosaveAfter: 0
   actionListType: 0
   conversation: {fileID: 0}
-  assetFile: {fileID: 0}
-  source: 0
+  assetFile: {fileID: 11400000, guid: a80bef44ca798194a9fe807799d45fa4, type: 2}
+  source: 1
   unfreezePauseMenus: 1
   useParameters: 0
   parameters: []

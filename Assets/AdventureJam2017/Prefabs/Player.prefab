@@ -115,6 +115,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &1621679197203592
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4113987740902808}
+  - component: {fileID: 114398107324889968}
+  m_Layer: 0
+  m_Name: StaffColorSwitch
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1661487606109312
 GameObject:
   m_ObjectHideFlags: 0
@@ -150,6 +166,19 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!4 &4113987740902808
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1621679197203592}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4581640655087766}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4182141615030914
 Transform:
   m_ObjectHideFlags: 1
@@ -192,6 +221,7 @@ Transform:
   - {fileID: 4503528859853092}
   - {fileID: 4754470926075766}
   - {fileID: 4992779016801282}
+  - {fileID: 4113987740902808}
   m_Father: {fileID: 4182141615030914}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -568,6 +598,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pingAnimator: {fileID: 95271376136658706}
   hotspotDetector: {fileID: 114493159106414284}
+--- !u!114 &114398107324889968
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1621679197203592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a1e6413216104fd580c7ce85907039c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  actions: []
+  isSkippable: 1
+  triggerTime: 0
+  autosaveAfter: 0
+  actionListType: 0
+  conversation: {fileID: 0}
+  assetFile: {fileID: 11400000, guid: a80bef44ca798194a9fe807799d45fa4, type: 2}
+  source: 1
+  unfreezePauseMenus: 1
+  useParameters: 0
+  parameters: []
+  tagID: 0
+  syncParamValues: 1
 --- !u!114 &114463929241038906
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -634,7 +688,7 @@ MonoBehaviour:
     isBlocking: 0
     parameterID: -1
   useButtons:
-  - interaction: {fileID: 0}
+  - interaction: {fileID: 114398107324889968}
     assetFile: {fileID: 0}
     customScriptObject: {fileID: 0}
     customScriptFunction: 
@@ -817,7 +871,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 2.0648148, y: 3.2129629}
+  m_Size: {x: 4.44, y: 8.14}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
 --- !u!212 &212609406772835956
