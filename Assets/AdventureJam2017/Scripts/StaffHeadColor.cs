@@ -23,7 +23,7 @@ public class StaffHeadColor : MonoBehaviour {
     [SerializeField]
     private Animator StaffHeadAnimator;
     [SerializeField]
-    private float OffDelay = 1f;
+    private float OffDelay = 0.5f;
 
     private bool canClick = true;
     public void Start()
