@@ -694,7 +694,7 @@ MonoBehaviour:
     customScriptFunction: 
     isDisabled: 0
     invID: 0
-    iconID: 0
+    iconID: 2
     selectItemMode: 0
     playerAction: 0
     setProximity: 0
