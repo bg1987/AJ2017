@@ -7,13 +7,17 @@ public class StaffHeadColor : MonoBehaviour {
     /////// Static Methods
     const int GlobalVarID = 0;
 
+    public static event System.Action OnColorChanged;
     static StaffHeadColor me;
     public static Color CurrentColor
     {
         get { return me.StaffColors[me.currentColor]; }
     }
 
-
+    public static int CurrentColorIndex
+    {
+        get { return me.currentColor; }
+    }
     /////// Public Methods
     public Color[] StaffColors;
     private int currentColor;
@@ -54,11 +58,15 @@ public class StaffHeadColor : MonoBehaviour {
             {
                 canClick = true;
                 StaffHead.color = StaffColors[currentColor];
+                if (OnColorChanged != null)
+                    OnColorChanged();
             });
         }
         else
         {
             StaffHead.color = StaffColors[currentColor];
+            if (OnColorChanged != null)
+                OnColorChanged();
         }
     }
 
