@@ -108,7 +108,7 @@ NavMeshSettings:
     tileSize: 256
     accuratePlacement: 0
   m_NavMeshData: {fileID: 0}
---- !u!114 &3414360
+--- !u!114 &5185215
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -116,16 +116,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1532532f8c184eb78970e085394e564, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
   id: 0
-  category: 14
-  title: Change setting
-  description: 'Changes any of the following scene parameters: NavMesh, Default PlayerStart,
-    Sorting Map, Tint Map, Cutscene On Load, and Cutscene On Start. When the NavMesh
-    is a Polygon Collider, this Action can also be used to add or remove holes from
-    it.'
+  category: 11
+  title: Fade sprite
+  description: Fades a sprite in or out.
   isDisplayed: 1
   showComment: 0
   comment: 
@@ -142,7 +139,7 @@ MonoBehaviour:
     linkedAsset: {fileID: 0}
   endAction: 1
   skipAction: 1
-  skipActionActual: {fileID: 3414360}
+  skipActionActual: {fileID: 5185215}
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -151,25 +148,16 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 5
-    y: 242
+    x: 14
+    y: 578
     width: 300
-    height: 122
+    height: 140
   nodeHeight: 0
   constantID: 0
   parameterID: -1
-  replaceConstantID: 0
-  replaceParameterID: -1
-  newNavMesh: {fileID: 1344530137}
-  sortingMap: {fileID: 0}
-  playerStart: {fileID: 0}
-  cutscene: {fileID: 0}
-  tintMap: {fileID: 0}
-  sceneSetting: 0
-  changeNavMeshMethod: 0
-  holeAction: 0
-  hole: {fileID: 0}
-  replaceHole: {fileID: 0}
+  spriteFader: {fileID: 1355630285}
+  fadeType: 0
+  fadeSpeed: 0.5
 --- !u!1 &6296716
 GameObject:
   m_ObjectHideFlags: 0
@@ -240,7 +228,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
---- !u!114 &30663086
+--- !u!114 &29988291
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -248,13 +236,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_Script: {fileID: 11500000, guid: 9289eb0ca58ef471f9062a5f77161403, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
   id: 0
-  category: 11
-  title: Fade sprite
-  description: Fades a sprite in or out.
+  category: 5
+  title: Wait
+  description: Waits a set time before continuing.
   isDisplayed: 1
   showComment: 0
   comment: 
@@ -265,13 +253,13 @@ MonoBehaviour:
   isRunning: 0
   lastResult:
     resultAction: 0
-    skipAction: -1
+    skipAction: -10
     skipActionActual: {fileID: 0}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
-  endAction: 0
-  skipAction: -1
-  skipActionActual: {fileID: 0}
+  endAction: 2
+  skipAction: 1
+  skipActionActual: {fileID: 1782877015}
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -280,16 +268,13 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 21
-    y: 583
+    x: 14
+    y: 14
     width: 300
-    height: 140
+    height: 104
   nodeHeight: 0
-  constantID: 0
   parameterID: -1
-  spriteFader: {fileID: 1355630285}
-  fadeType: 0
-  fadeSpeed: 0
+  timeToPause: 0
 --- !u!4 &39007614
 Transform:
   m_ObjectHideFlags: 0
@@ -365,7 +350,7 @@ MonoBehaviour:
   holeAction: 0
   hole: {fileID: 0}
   replaceHole: {fileID: 0}
---- !u!114 &52281720
+--- !u!114 &60249965
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -374,7 +359,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
   id: 0
   category: 11
@@ -394,9 +379,9 @@ MonoBehaviour:
     skipActionActual: {fileID: 0}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
-  endAction: 1
-  skipAction: 1
-  skipActionActual: {fileID: 52281720}
+  endAction: 2
+  skipAction: 3
+  skipActionActual: {fileID: 1823020422}
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -406,14 +391,14 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 578
+    y: 202
     width: 300
-    height: 140
+    height: 158
   nodeHeight: 0
   constantID: 0
   parameterID: -1
-  spriteFader: {fileID: 145746382}
-  fadeType: 0
+  spriteFader: {fileID: 1528990716}
+  fadeType: 1
   fadeSpeed: 0.5
 --- !u!4 &62647960
 Transform:
@@ -456,6 +441,7 @@ Transform:
   - {fileID: 488751322}
   - {fileID: 1273267350}
   - {fileID: 1226985086}
+  - {fileID: 1162237370}
   m_Father: {fileID: 823769460}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -472,6 +458,68 @@ Transform:
   m_Father: {fileID: 1918299801}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &76486466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1532532f8c184eb78970e085394e564, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 14
+  title: Change setting
+  description: 'Changes any of the following scene parameters: NavMesh, Default PlayerStart,
+    Sorting Map, Tint Map, Cutscene On Load, and Cutscene On Start. When the NavMesh
+    is a Polygon Collider, this Action can also be used to add or remove holes from
+    it.'
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: 2
+  skipActionActual: {fileID: 76486466}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 32
+    y: 414
+    width: 300
+    height: 122
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  replaceConstantID: 0
+  replaceParameterID: -1
+  newNavMesh: {fileID: 594763979}
+  sortingMap: {fileID: 0}
+  playerStart: {fileID: 0}
+  cutscene: {fileID: 0}
+  tintMap: {fileID: 0}
+  sceneSetting: 0
+  changeNavMeshMethod: 0
+  holeAction: 0
+  hole: {fileID: 0}
+  replaceHole: {fileID: 0}
 --- !u!1 &85187989
 GameObject:
   m_ObjectHideFlags: 0
@@ -731,10 +779,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actions:
-  - {fileID: 439305796}
-  - {fileID: 1617002731}
-  - {fileID: 219846193}
-  - {fileID: 1376190975}
+  - {fileID: 750872061}
+  - {fileID: 668426470}
+  - {fileID: 60249965}
+  - {fileID: 1547859937}
   isSkippable: 1
   triggerTime: 0
   autosaveAfter: 0
@@ -1017,66 +1065,6 @@ MonoBehaviour:
   spriteFader: {fileID: 145746382}
   fadeType: 1
   fadeSpeed: 0.5
---- !u!114 &139453776
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0d4ab0f7ce3d4193a55deb9d20a7d66, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 11
-  title: Teleport
-  description: Moves a GameObject to a Marker instantly. Can also copy the Marker's
-    rotation. The final position can optionally be made relative to the active camera,
-    or the player. For example, if the Marker's position is (0, 0, 1) and Positon
-    relative to is set to Relative To Active Camera, then the object will be teleported
-    in front of the camera.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 2
-  skipAction: 2
-  skipActionActual: {fileID: 182711867}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 1
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 41
-    y: 186
-    width: 300
-    height: 194
-  nodeHeight: 0
-  obToMoveParameterID: -1
-  obToMoveID: 0
-  markerParameterID: -1
-  markerID: 0
-  positionRelativeTo: 0
-  recalculateActivePathFind: 0
-  isPlayer: 1
-  snapCamera: 0
-  obToMove: {fileID: 0}
-  teleporter: {fileID: 1655677137}
-  copyRotation: 0
 --- !u!1 &145746379
 GameObject:
   m_ObjectHideFlags: 0
@@ -1162,56 +1150,6 @@ MonoBehaviour:
   fadeStartTime: 0.02
   fadeTime: 0
   fadeType: 1
---- !u!114 &151567407
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 11
-  title: Fade sprite
-  description: Fades a sprite in or out.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 2
-    skipAction: 1
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 2
-  skipAction: 1
-  skipActionActual: {fileID: 551854010}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 14
-    width: 300
-    height: 158
-  nodeHeight: 0
-  constantID: 0
-  parameterID: -1
-  spriteFader: {fileID: 1528990716}
-  fadeType: 1
-  fadeSpeed: 0
 --- !u!114 &162077098
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1262,56 +1200,6 @@ MonoBehaviour:
   spriteFader: {fileID: 1867330809}
   fadeType: 0
   fadeSpeed: 0.5
---- !u!114 &165818229
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 11
-  title: Fade sprite
-  description: Fades a sprite in or out.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 2
-  skipAction: 1
-  skipActionActual: {fileID: 692015942}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 390
-    width: 300
-    height: 158
-  nodeHeight: 0
-  constantID: 0
-  parameterID: -1
-  spriteFader: {fileID: 1867330809}
-  fadeType: 1
-  fadeSpeed: 0.5
 --- !u!4 &166186300
 Transform:
   m_ObjectHideFlags: 0
@@ -1359,66 +1247,6 @@ Transform:
   m_Father: {fileID: 1845841085}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &171513244
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0d4ab0f7ce3d4193a55deb9d20a7d66, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 11
-  title: Teleport
-  description: Moves a GameObject to a Marker instantly. Can also copy the Marker's
-    rotation. The final position can optionally be made relative to the active camera,
-    or the player. For example, if the Marker's position is (0, 0, 1) and Positon
-    relative to is set to Relative To Active Camera, then the object will be teleported
-    in front of the camera.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 2
-  skipAction: 2
-  skipActionActual: {fileID: 1063563078}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 1
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 35
-    y: 146
-    width: 300
-    height: 194
-  nodeHeight: 0
-  obToMoveParameterID: -1
-  obToMoveID: 0
-  markerParameterID: -1
-  markerID: 0
-  positionRelativeTo: 0
-  recalculateActivePathFind: 0
-  isPlayer: 1
-  snapCamera: 0
-  obToMove: {fileID: 0}
-  teleporter: {fileID: 1749491902}
-  copyRotation: 0
 --- !u!1 &173141625
 GameObject:
   m_ObjectHideFlags: 0
@@ -1515,6 +1343,68 @@ PolygonCollider2D:
       - {x: -1.9023323, y: -0.22369766}
       - {x: -0.44509363, y: -0.28581548}
       - {x: 1.3981566, y: -0.24272275}
+--- !u!114 &174981400
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1532532f8c184eb78970e085394e564, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 14
+  title: Change setting
+  description: 'Changes any of the following scene parameters: NavMesh, Default PlayerStart,
+    Sorting Map, Tint Map, Cutscene On Load, and Cutscene On Start. When the NavMesh
+    is a Polygon Collider, this Action can also be used to add or remove holes from
+    it.'
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: 2
+  skipActionActual: {fileID: 174981400}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 36
+    y: 411
+    width: 300
+    height: 122
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  replaceConstantID: 0
+  replaceParameterID: -1
+  newNavMesh: {fileID: 173141628}
+  sortingMap: {fileID: 0}
+  playerStart: {fileID: 0}
+  cutscene: {fileID: 0}
+  tintMap: {fileID: 0}
+  sceneSetting: 0
+  changeNavMeshMethod: 0
+  holeAction: 0
+  hole: {fileID: 0}
+  replaceHole: {fileID: 0}
 --- !u!1 &179100397
 GameObject:
   m_ObjectHideFlags: 0
@@ -1810,68 +1700,6 @@ Transform:
   m_Father: {fileID: 792088154}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &193150133
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1532532f8c184eb78970e085394e564, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 14
-  title: Change setting
-  description: 'Changes any of the following scene parameters: NavMesh, Default PlayerStart,
-    Sorting Map, Tint Map, Cutscene On Load, and Cutscene On Start. When the NavMesh
-    is a Polygon Collider, this Action can also be used to add or remove holes from
-    it.'
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 1
-  skipAction: 2
-  skipActionActual: {fileID: 193150133}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 1
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 26
-    y: 374
-    width: 300
-    height: 122
-  nodeHeight: 0
-  constantID: 0
-  parameterID: -1
-  replaceConstantID: 0
-  replaceParameterID: -1
-  newNavMesh: {fileID: 1531158923}
-  sortingMap: {fileID: 0}
-  playerStart: {fileID: 0}
-  cutscene: {fileID: 0}
-  tintMap: {fileID: 0}
-  sceneSetting: 0
-  changeNavMeshMethod: 0
-  holeAction: 0
-  hole: {fileID: 0}
-  replaceHole: {fileID: 0}
 --- !u!114 &195969922
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2050,56 +1878,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &216212020
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 11
-  title: Fade sprite
-  description: Fades a sprite in or out.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 2
-  skipAction: 1
-  skipActionActual: {fileID: 756523344}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 390
-    width: 300
-    height: 158
-  nodeHeight: 0
-  constantID: 0
-  parameterID: -1
-  spriteFader: {fileID: 145746382}
-  fadeType: 1
-  fadeSpeed: 0.5
 --- !u!4 &219240865
 Transform:
   m_ObjectHideFlags: 0
@@ -2113,56 +1891,6 @@ Transform:
   m_Father: {fileID: 488751322}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &219846193
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 11
-  title: Fade sprite
-  description: Fades a sprite in or out.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 2
-  skipAction: 3
-  skipActionActual: {fileID: 1823020422}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 202
-    width: 300
-    height: 158
-  nodeHeight: 0
-  constantID: 0
-  parameterID: -1
-  spriteFader: {fileID: 1528990716}
-  fadeType: 1
-  fadeSpeed: 0.5
 --- !u!1 &228580525
 GameObject:
   m_ObjectHideFlags: 0
@@ -2285,7 +2013,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 2.027783}
   m_EdgeRadius: 0
---- !u!114 &246834513
+--- !u!114 &232960147
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -2293,17 +2021,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0d4ab0f7ce3d4193a55deb9d20a7d66, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
   id: 0
   category: 11
-  title: Teleport
-  description: Moves a GameObject to a Marker instantly. Can also copy the Marker's
-    rotation. The final position can optionally be made relative to the active camera,
-    or the player. For example, if the Marker's position is (0, 0, 1) and Positon
-    relative to is set to Relative To Active Camera, then the object will be teleported
-    in front of the camera.
+  title: Fade sprite
+  description: Fades a sprite in or out.
   isDisplayed: 1
   showComment: 0
   comment: 
@@ -2320,7 +2044,7 @@ MonoBehaviour:
     linkedAsset: {fileID: 0}
   endAction: 2
   skipAction: 2
-  skipActionActual: {fileID: 43298485}
+  skipActionActual: {fileID: 1821577180}
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -2329,22 +2053,125 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 37
-    y: 163
+    x: 14
+    y: 14
     width: 300
-    height: 194
+    height: 158
   nodeHeight: 0
-  obToMoveParameterID: -1
-  obToMoveID: 0
-  markerParameterID: -1
-  markerID: 0
-  positionRelativeTo: 0
-  recalculateActivePathFind: 0
-  isPlayer: 1
-  snapCamera: 0
-  obToMove: {fileID: 0}
-  teleporter: {fileID: 1876850019}
-  copyRotation: 0
+  constantID: 0
+  parameterID: -1
+  spriteFader: {fileID: 1867330809}
+  fadeType: 1
+  fadeSpeed: 0.5
+--- !u!114 &235260129
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1532532f8c184eb78970e085394e564, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 14
+  title: Change setting
+  description: 'Changes any of the following scene parameters: NavMesh, Default PlayerStart,
+    Sorting Map, Tint Map, Cutscene On Load, and Cutscene On Start. When the NavMesh
+    is a Polygon Collider, this Action can also be used to add or remove holes from
+    it.'
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: 1
+  skipActionActual: {fileID: 235260129}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 5
+    y: 242
+    width: 300
+    height: 122
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  replaceConstantID: 0
+  replaceParameterID: -1
+  newNavMesh: {fileID: 1344530137}
+  sortingMap: {fileID: 0}
+  playerStart: {fileID: 0}
+  cutscene: {fileID: 0}
+  tintMap: {fileID: 0}
+  sceneSetting: 0
+  changeNavMeshMethod: 0
+  holeAction: 0
+  hole: {fileID: 0}
+  replaceHole: {fileID: 0}
+--- !u!114 &249676427
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9289eb0ca58ef471f9062a5f77161403, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 5
+  title: Wait
+  description: Waits a set time before continuing.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 2
+  skipAction: 1
+  skipActionActual: {fileID: 944280355}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 14
+    width: 300
+    height: 104
+  nodeHeight: 0
+  parameterID: -1
+  timeToPause: 0
 --- !u!4 &253937511
 Transform:
   m_ObjectHideFlags: 0
@@ -2418,68 +2245,6 @@ Transform:
   m_Father: {fileID: 488751322}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &278971758
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1532532f8c184eb78970e085394e564, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 14
-  title: Change setting
-  description: 'Changes any of the following scene parameters: NavMesh, Default PlayerStart,
-    Sorting Map, Tint Map, Cutscene On Load, and Cutscene On Start. When the NavMesh
-    is a Polygon Collider, this Action can also be used to add or remove holes from
-    it.'
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 1
-  skipAction: 2
-  skipActionActual: {fileID: 278971758}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 1
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 17
-    y: 385
-    width: 300
-    height: 122
-  nodeHeight: 0
-  constantID: 0
-  parameterID: -1
-  replaceConstantID: 0
-  replaceParameterID: -1
-  newNavMesh: {fileID: 594763979}
-  sortingMap: {fileID: 0}
-  playerStart: {fileID: 0}
-  cutscene: {fileID: 0}
-  tintMap: {fileID: 0}
-  sceneSetting: 0
-  changeNavMeshMethod: 0
-  holeAction: 0
-  hole: {fileID: 0}
-  replaceHole: {fileID: 0}
 --- !u!1 &286183793
 GameObject:
   m_ObjectHideFlags: 0
@@ -2509,68 +2274,6 @@ Transform:
   m_Father: {fileID: 1845841085}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &298506807
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1532532f8c184eb78970e085394e564, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 14
-  title: Change setting
-  description: 'Changes any of the following scene parameters: NavMesh, Default PlayerStart,
-    Sorting Map, Tint Map, Cutscene On Load, and Cutscene On Start. When the NavMesh
-    is a Polygon Collider, this Action can also be used to add or remove holes from
-    it.'
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 1
-  skipAction: 2
-  skipActionActual: {fileID: 298506807}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 28
-    y: 391
-    width: 300
-    height: 122
-  nodeHeight: 0
-  constantID: 0
-  parameterID: -1
-  replaceConstantID: 0
-  replaceParameterID: -1
-  newNavMesh: {fileID: 1344530137}
-  sortingMap: {fileID: 0}
-  playerStart: {fileID: 0}
-  cutscene: {fileID: 0}
-  tintMap: {fileID: 0}
-  sceneSetting: 0
-  changeNavMeshMethod: 0
-  holeAction: 0
-  hole: {fileID: 0}
-  replaceHole: {fileID: 0}
 --- !u!4 &358975266
 Transform:
   m_ObjectHideFlags: 0
@@ -2829,66 +2532,6 @@ MonoBehaviour:
   holeAction: 0
   hole: {fileID: 0}
   replaceHole: {fileID: 0}
---- !u!114 &418484207
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0d4ab0f7ce3d4193a55deb9d20a7d66, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 11
-  title: Teleport
-  description: Moves a GameObject to a Marker instantly. Can also copy the Marker's
-    rotation. The final position can optionally be made relative to the active camera,
-    or the player. For example, if the Marker's position is (0, 0, 1) and Positon
-    relative to is set to Relative To Active Camera, then the object will be teleported
-    in front of the camera.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 0
-  skipAction: 1
-  skipActionActual: {fileID: 1376776291}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 14
-    width: 300
-    height: 176
-  nodeHeight: 0
-  obToMoveParameterID: -1
-  obToMoveID: 0
-  markerParameterID: -1
-  markerID: 0
-  positionRelativeTo: 0
-  recalculateActivePathFind: 0
-  isPlayer: 1
-  snapCamera: 0
-  obToMove: {fileID: 0}
-  teleporter: {fileID: 1876850019}
-  copyRotation: 0
 --- !u!1 &423339383
 GameObject:
   m_ObjectHideFlags: 0
@@ -2931,9 +2574,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actions:
-  - {fileID: 1152539264}
-  - {fileID: 983277617}
-  - {fileID: 738626410}
+  - {fileID: 1803096493}
+  - {fileID: 1847472281}
+  - {fileID: 1955028209}
   isSkippable: 1
   triggerTime: 0
   autosaveAfter: 0
@@ -2974,56 +2617,6 @@ Transform:
   m_Father: {fileID: 1731884299}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &439305796
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 11
-  title: Fade sprite
-  description: Fades a sprite in or out.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 2
-  skipAction: 2
-  skipActionActual: {fileID: 904503785}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 14
-    width: 300
-    height: 158
-  nodeHeight: 0
-  constantID: 0
-  parameterID: -1
-  spriteFader: {fileID: 1355630285}
-  fadeType: 1
-  fadeSpeed: 0.5
 --- !u!1 &453984060
 GameObject:
   m_ObjectHideFlags: 0
@@ -3163,6 +2756,56 @@ SpriteRenderer:
   m_Size: {x: 0.04, y: 0.04}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+--- !u!114 &476464271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 11
+  title: Fade sprite
+  description: Fades a sprite in or out.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -1
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 0
+  skipAction: 2
+  skipActionActual: {fileID: 476464271}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 13
+    y: 408
+    width: 300
+    height: 140
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  spriteFader: {fileID: 145746382}
+  fadeType: 1
+  fadeSpeed: 0
 --- !u!1 &488751321
 GameObject:
   m_ObjectHideFlags: 0
@@ -3196,7 +2839,7 @@ Transform:
   m_Father: {fileID: 74313964}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &502814545
+--- !u!114 &494657397
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -3204,13 +2847,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_Script: {fileID: 11500000, guid: f3e7520fdcc044e6c96008328a357eb7, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
   id: 0
   category: 11
-  title: Fade sprite
-  description: Fades a sprite in or out.
+  title: Send message
+  description: Sends a given message to a GameObject. Can be either a message commonly-used
+    by Adventure Creator (Interact, TurnOn, etc) or a custom one, with an integer
+    argument.
   isDisplayed: 1
   showComment: 0
   comment: 
@@ -3220,14 +2865,14 @@ MonoBehaviour:
   defaultPauseTime: 0.1
   isRunning: 0
   lastResult:
-    resultAction: 0
-    skipAction: -10
+    resultAction: 1
+    skipAction: -1
     skipActionActual: {fileID: 0}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
-  endAction: 2
-  skipAction: 3
-  skipActionActual: {fileID: 1303077783}
+  endAction: 1
+  skipAction: 0
+  skipActionActual: {fileID: 494657397}
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -3237,15 +2882,22 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 202
+    y: 14
     width: 300
-    height: 158
+    height: 219
   nodeHeight: 0
-  constantID: 0
+  constantID: 1664754
   parameterID: -1
-  spriteFader: {fileID: 1528990716}
-  fadeType: 1
-  fadeSpeed: 0.5
+  isPlayer: 0
+  linkedObject: {fileID: 0}
+  affectChildren: 0
+  messageToSend: 4
+  customMessageParameterID: -1
+  customMessage: Switch
+  sendValue: 0
+  customValueParameterID: -1
+  customValue: 0
+  ignoreWhenSkipping: 0
 --- !u!1001 &509353907
 Prefab:
   m_ObjectHideFlags: 0
@@ -3288,153 +2940,6 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b97ffd8bf426ae1439adc59588901871, type: 2}
   m_IsPrefabParent: 0
---- !u!114 &516357885
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 11
-  title: Fade sprite
-  description: Fades a sprite in or out.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 2
-  skipAction: 3
-  skipActionActual: {fileID: 856997012}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 202
-    width: 300
-    height: 158
-  nodeHeight: 0
-  constantID: 0
-  parameterID: -1
-  spriteFader: {fileID: 1528990716}
-  fadeType: 1
-  fadeSpeed: 0.5
---- !u!114 &521453979
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 11
-  title: Fade sprite
-  description: Fades a sprite in or out.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 2
-    skipAction: 2
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 2
-  skipAction: 2
-  skipActionActual: {fileID: 745045925}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 13
-    y: 215
-    width: 300
-    height: 158
-  nodeHeight: 0
-  constantID: 0
-  parameterID: -1
-  spriteFader: {fileID: 1867330809}
-  fadeType: 1
-  fadeSpeed: 0
---- !u!114 &542004151
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9289eb0ca58ef471f9062a5f77161403, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 5
-  title: Wait
-  description: Waits a set time before continuing.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 2
-  skipAction: 1
-  skipActionActual: {fileID: 198245677}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 14
-    width: 300
-    height: 104
-  nodeHeight: 0
-  parameterID: -1
-  timeToPause: 0
 --- !u!114 &551854010
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3498,6 +3003,66 @@ Transform:
   m_Father: {fileID: 792088154}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &562924729
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0d4ab0f7ce3d4193a55deb9d20a7d66, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 11
+  title: Teleport
+  description: Moves a GameObject to a Marker instantly. Can also copy the Marker's
+    rotation. The final position can optionally be made relative to the active camera,
+    or the player. For example, if the Marker's position is (0, 0, 1) and Positon
+    relative to is set to Relative To Active Camera, then the object will be teleported
+    in front of the camera.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 2
+  skipAction: 2
+  skipActionActual: {fileID: 409930414}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 45
+    y: 183
+    width: 300
+    height: 194
+  nodeHeight: 0
+  obToMoveParameterID: -1
+  obToMoveID: 0
+  markerParameterID: -1
+  markerID: 0
+  positionRelativeTo: 0
+  recalculateActivePathFind: 0
+  isPlayer: 1
+  snapCamera: 0
+  obToMove: {fileID: 0}
+  teleporter: {fileID: 6296717}
+  copyRotation: 0
 --- !u!1 &565671472
 GameObject:
   m_ObjectHideFlags: 0
@@ -3526,68 +3091,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &567793281
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1532532f8c184eb78970e085394e564, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 14
-  title: Change setting
-  description: 'Changes any of the following scene parameters: NavMesh, Default PlayerStart,
-    Sorting Map, Tint Map, Cutscene On Load, and Cutscene On Start. When the NavMesh
-    is a Polygon Collider, this Action can also be used to add or remove holes from
-    it.'
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 1
-  skipAction: 2
-  skipActionActual: {fileID: 567793281}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 1
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 32
-    y: 414
-    width: 300
-    height: 122
-  nodeHeight: 0
-  constantID: 0
-  parameterID: -1
-  replaceConstantID: 0
-  replaceParameterID: -1
-  newNavMesh: {fileID: 594763979}
-  sortingMap: {fileID: 0}
-  playerStart: {fileID: 0}
-  cutscene: {fileID: 0}
-  tintMap: {fileID: 0}
-  sceneSetting: 0
-  changeNavMeshMethod: 0
-  holeAction: 0
-  hole: {fileID: 0}
-  replaceHole: {fileID: 0}
 --- !u!1 &577302400
 GameObject:
   m_ObjectHideFlags: 0
@@ -3973,6 +3476,56 @@ MonoBehaviour:
   characterEvasionYScale: 1
   accuracy: 1
   gizmoColour: {r: 1, g: 1, b: 1, a: 1}
+--- !u!114 &616057555
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 11
+  title: Fade sprite
+  description: Fades a sprite in or out.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 2
+  skipAction: 1
+  skipActionActual: {fileID: 756523344}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 390
+    width: 300
+    height: 158
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  spriteFader: {fileID: 145746382}
+  fadeType: 1
+  fadeSpeed: 0.5
 --- !u!1 &617041741
 GameObject:
   m_ObjectHideFlags: 0
@@ -4095,103 +3648,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 2.027783}
   m_EdgeRadius: 0
---- !u!114 &625526705
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 11
-  title: Fade sprite
-  description: Fades a sprite in or out.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 2
-  skipAction: 2
-  skipActionActual: {fileID: 580870346}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 14
-    width: 300
-    height: 158
-  nodeHeight: 0
-  constantID: 0
-  parameterID: -1
-  spriteFader: {fileID: 1355630285}
-  fadeType: 1
-  fadeSpeed: 0.5
---- !u!114 &634134999
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9289eb0ca58ef471f9062a5f77161403, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 5
-  title: Wait
-  description: Waits a set time before continuing.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 2
-  skipAction: 1
-  skipActionActual: {fileID: 1375196391}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 14
-    width: 300
-    height: 104
-  nodeHeight: 0
-  parameterID: -1
-  timeToPause: 0
 --- !u!114 &657666812
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4264,6 +3720,66 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   is2D: 1
+--- !u!114 &658952665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0d4ab0f7ce3d4193a55deb9d20a7d66, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 11
+  title: Teleport
+  description: Moves a GameObject to a Marker instantly. Can also copy the Marker's
+    rotation. The final position can optionally be made relative to the active camera,
+    or the player. For example, if the Marker's position is (0, 0, 1) and Positon
+    relative to is set to Relative To Active Camera, then the object will be teleported
+    in front of the camera.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 2
+  skipAction: 2
+  skipActionActual: {fileID: 43298485}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 37
+    y: 163
+    width: 300
+    height: 194
+  nodeHeight: 0
+  obToMoveParameterID: -1
+  obToMoveID: 0
+  markerParameterID: -1
+  markerID: 0
+  positionRelativeTo: 0
+  recalculateActivePathFind: 0
+  isPlayer: 1
+  snapCamera: 0
+  obToMove: {fileID: 0}
+  teleporter: {fileID: 1876850019}
+  copyRotation: 0
 --- !u!1 &660282537
 GameObject:
   m_ObjectHideFlags: 0
@@ -4292,82 +3808,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &685703784
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 400000, guid: 2454e47dbf358484bb5cfba10d699562, type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 6296716}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -7.06, y: 2.34, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 792088154}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &691801555
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1532532f8c184eb78970e085394e564, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 14
-  title: Change setting
-  description: 'Changes any of the following scene parameters: NavMesh, Default PlayerStart,
-    Sorting Map, Tint Map, Cutscene On Load, and Cutscene On Start. When the NavMesh
-    is a Polygon Collider, this Action can also be used to add or remove holes from
-    it.'
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 0
-  skipAction: -1
-  skipActionActual: {fileID: 0}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 14
-    width: 300
-    height: 122
-  nodeHeight: 0
-  constantID: 0
-  parameterID: -1
-  replaceConstantID: 0
-  replaceParameterID: -1
-  newNavMesh: {fileID: 173141628}
-  sortingMap: {fileID: 0}
-  playerStart: {fileID: 0}
-  cutscene: {fileID: 0}
-  tintMap: {fileID: 0}
-  sceneSetting: 0
-  changeNavMeshMethod: 0
-  holeAction: 0
-  hole: {fileID: 0}
-  replaceHole: {fileID: 0}
---- !u!114 &691998497
+--- !u!114 &668426470
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -4376,7 +3817,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
   id: 0
   category: 11
@@ -4396,9 +3837,9 @@ MonoBehaviour:
     skipActionActual: {fileID: 0}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
-  endAction: 2
-  skipAction: 3
-  skipActionActual: {fileID: 138928947}
+  endAction: 1
+  skipAction: 1
+  skipActionActual: {fileID: 668426470}
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -4408,15 +3849,28 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 202
+    y: 578
     width: 300
-    height: 158
+    height: 140
   nodeHeight: 0
   constantID: 0
   parameterID: -1
   spriteFader: {fileID: 1867330809}
-  fadeType: 1
+  fadeType: 0
   fadeSpeed: 0.5
+--- !u!4 &685703784
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 400000, guid: 2454e47dbf358484bb5cfba10d699562, type: 2}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 6296716}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -7.06, y: 2.34, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 792088154}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &692015942
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4467,7 +3921,7 @@ MonoBehaviour:
   spriteFader: {fileID: 145746382}
   fadeType: 0
   fadeSpeed: 0.5
---- !u!114 &723866586
+--- !u!114 &710972542
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -4475,21 +3929,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1532532f8c184eb78970e085394e564, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_Script: {fileID: 11500000, guid: c47ef24c0855d41f4a4073c476ef37a2, type: 3}
+  m_Name: 
   m_EditorClassIdentifier: 
   id: 0
-  category: 14
-  title: Change setting
-  description: 'Changes any of the following scene parameters: NavMesh, Default PlayerStart,
-    Sorting Map, Tint Map, Cutscene On Load, and Cutscene On Start. When the NavMesh
-    is a Polygon Collider, this Action can also be used to add or remove holes from
-    it.'
+  category: 5
+  title: End game
+  description: Ends the current game, either by loading an autosave, restarting or
+    quitting the game executable.
   isDisplayed: 1
   showComment: 0
   comment: 
   showOutputSockets: 1
-  numSockets: 1
+  numSockets: 0
   willWait: 0
   defaultPauseTime: 0.1
   isRunning: 0
@@ -4500,35 +3952,26 @@ MonoBehaviour:
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
   endAction: 1
-  skipAction: 2
-  skipActionActual: {fileID: 723866586}
+  skipAction: -1
+  skipActionActual: {fileID: 0}
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
   isAssetFile: 0
-  isMarked: 1
+  isMarked: 0
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 28
-    y: 415
+    x: 14
+    y: 14
     width: 300
-    height: 122
+    height: 60
   nodeHeight: 0
-  constantID: 0
-  parameterID: -1
-  replaceConstantID: 0
-  replaceParameterID: -1
-  newNavMesh: {fileID: 179100400}
-  sortingMap: {fileID: 0}
-  playerStart: {fileID: 0}
-  cutscene: {fileID: 0}
-  tintMap: {fileID: 0}
-  sceneSetting: 0
-  changeNavMeshMethod: 0
-  holeAction: 0
-  hole: {fileID: 0}
-  replaceHole: {fileID: 0}
+  endGameType: 0
+  chooseSceneBy: 0
+  sceneNumber: 0
+  sceneName: 
+  resetMenus: 0
 --- !u!1 &730156229
 GameObject:
   m_ObjectHideFlags: 0
@@ -4739,68 +4182,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 2.027783}
   m_EdgeRadius: 0
---- !u!114 &738626410
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1532532f8c184eb78970e085394e564, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 14
-  title: Change setting
-  description: 'Changes any of the following scene parameters: NavMesh, Default PlayerStart,
-    Sorting Map, Tint Map, Cutscene On Load, and Cutscene On Start. When the NavMesh
-    is a Polygon Collider, this Action can also be used to add or remove holes from
-    it.'
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 1
-  skipAction: 2
-  skipActionActual: {fileID: 738626410}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 1
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 26
-    y: 364
-    width: 300
-    height: 122
-  nodeHeight: 0
-  constantID: 0
-  parameterID: -1
-  replaceConstantID: 0
-  replaceParameterID: -1
-  newNavMesh: {fileID: 1319272775}
-  sortingMap: {fileID: 0}
-  playerStart: {fileID: 0}
-  cutscene: {fileID: 0}
-  tintMap: {fileID: 0}
-  sceneSetting: 0
-  changeNavMeshMethod: 0
-  holeAction: 0
-  hole: {fileID: 0}
-  replaceHole: {fileID: 0}
 --- !u!114 &745045925
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4851,6 +4232,56 @@ MonoBehaviour:
   spriteFader: {fileID: 145746382}
   fadeType: 1
   fadeSpeed: 0
+--- !u!114 &750872061
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 11
+  title: Fade sprite
+  description: Fades a sprite in or out.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 2
+  skipAction: 2
+  skipActionActual: {fileID: 904503785}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 14
+    width: 300
+    height: 158
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  spriteFader: {fileID: 1355630285}
+  fadeType: 1
+  fadeSpeed: 0.5
 --- !u!114 &756523344
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4929,66 +4360,6 @@ Transform:
   m_Father: {fileID: 1845841085}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &784060503
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0d4ab0f7ce3d4193a55deb9d20a7d66, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 11
-  title: Teleport
-  description: Moves a GameObject to a Marker instantly. Can also copy the Marker's
-    rotation. The final position can optionally be made relative to the active camera,
-    or the player. For example, if the Marker's position is (0, 0, 1) and Positon
-    relative to is set to Relative To Active Camera, then the object will be teleported
-    in front of the camera.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 2
-  skipAction: 2
-  skipActionActual: {fileID: 409930414}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 1
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 45
-    y: 183
-    width: 300
-    height: 194
-  nodeHeight: 0
-  obToMoveParameterID: -1
-  obToMoveID: 0
-  markerParameterID: -1
-  markerID: 0
-  positionRelativeTo: 0
-  recalculateActivePathFind: 0
-  isPlayer: 1
-  snapCamera: 0
-  obToMove: {fileID: 0}
-  teleporter: {fileID: 6296717}
-  copyRotation: 0
 --- !u!1 &792088153
 GameObject:
   m_ObjectHideFlags: 0
@@ -5030,53 +4401,6 @@ Transform:
   m_Father: {fileID: 1845841085}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &798651719
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9289eb0ca58ef471f9062a5f77161403, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 5
-  title: Wait
-  description: Waits a set time before continuing.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 2
-  skipAction: 1
-  skipActionActual: {fileID: 1782877015}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 14
-    width: 300
-    height: 104
-  nodeHeight: 0
-  parameterID: -1
-  timeToPause: 0
 --- !u!1 &808312663
 GameObject:
   m_ObjectHideFlags: 0
@@ -5180,6 +4504,53 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &826400688
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9289eb0ca58ef471f9062a5f77161403, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 5
+  title: Wait
+  description: Waits a set time before continuing.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 2
+  skipAction: 1
+  skipActionActual: {fileID: 732434159}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 14
+    width: 300
+    height: 104
+  nodeHeight: 0
+  parameterID: -1
+  timeToPause: 0
 --- !u!114 &834269307 stripped
 MonoBehaviour:
   m_PrefabParentObject: {fileID: 114689577478754370, guid: b97ffd8bf426ae1439adc59588901871,
@@ -5233,9 +4604,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actions:
-  - {fileID: 798651719}
-  - {fileID: 171513244}
-  - {fileID: 193150133}
+  - {fileID: 29988291}
+  - {fileID: 1435453850}
+  - {fileID: 1198363832}
   isSkippable: 1
   triggerTime: 0
   autosaveAfter: 0
@@ -5546,56 +4917,6 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
---- !u!114 &875606193
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 11
-  title: Fade sprite
-  description: Fades a sprite in or out.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 2
-  skipAction: 2
-  skipActionActual: {fileID: 1821577180}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 14
-    width: 300
-    height: 158
-  nodeHeight: 0
-  constantID: 0
-  parameterID: -1
-  spriteFader: {fileID: 1867330809}
-  fadeType: 1
-  fadeSpeed: 0.5
 --- !u!114 &904503785
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5925,65 +5246,60 @@ MonoBehaviour:
   obToMove: {fileID: 0}
   teleporter: {fileID: 6296717}
   copyRotation: 0
---- !u!114 &951628435
-MonoBehaviour:
+--- !u!1001 &948627583
+Prefab:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f3e7520fdcc044e6c96008328a357eb7, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 11
-  title: Send message
-  description: Sends a given message to a GameObject. Can be either a message commonly-used
-    by Adventure Creator (Interact, TurnOn, etc) or a custom one, with an integer
-    argument.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 1
-    skipAction: -1
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 1
-  skipAction: 0
-  skipActionActual: {fileID: 951628435}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 14
-    width: 300
-    height: 219
-  nodeHeight: 0
-  constantID: 1664754
-  parameterID: -1
-  isPlayer: 0
-  linkedObject: {fileID: 0}
-  affectChildren: 0
-  messageToSend: 4
-  customMessageParameterID: -1
-  customMessage: Switch
-  sendValue: 0
-  customValueParameterID: -1
-  customValue: 0
-  ignoreWhenSkipping: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1918299801}
+    m_Modifications:
+    - target: {fileID: 11400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: actions.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: m_RootOrder
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: m_Name
+      value: 'EndGame: Use'
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: actions.Array.data[0]
+      value: 
+      objectReference: {fileID: 710972542}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+  m_IsPrefabParent: 0
 --- !u!114 &959604753
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6034,6 +5350,66 @@ MonoBehaviour:
   spriteFader: {fileID: 1528990716}
   fadeType: 1
   fadeSpeed: 0.5
+--- !u!114 &962037433
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0d4ab0f7ce3d4193a55deb9d20a7d66, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 11
+  title: Teleport
+  description: Moves a GameObject to a Marker instantly. Can also copy the Marker's
+    rotation. The final position can optionally be made relative to the active camera,
+    or the player. For example, if the Marker's position is (0, 0, 1) and Positon
+    relative to is set to Relative To Active Camera, then the object will be teleported
+    in front of the camera.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 2
+  skipAction: 2
+  skipActionActual: {fileID: 195969922}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 26
+    y: 157
+    width: 300
+    height: 194
+  nodeHeight: 0
+  obToMoveParameterID: -1
+  obToMoveID: 0
+  markerParameterID: -1
+  markerID: 0
+  positionRelativeTo: 0
+  recalculateActivePathFind: 0
+  isPlayer: 1
+  snapCamera: 0
+  obToMove: {fileID: 0}
+  teleporter: {fileID: 871525161}
+  copyRotation: 0
 --- !u!1 &970226772
 GameObject:
   m_ObjectHideFlags: 0
@@ -6063,128 +5439,6 @@ Transform:
   m_Father: {fileID: 1273267350}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &983277617
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0d4ab0f7ce3d4193a55deb9d20a7d66, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 11
-  title: Teleport
-  description: Moves a GameObject to a Marker instantly. Can also copy the Marker's
-    rotation. The final position can optionally be made relative to the active camera,
-    or the player. For example, if the Marker's position is (0, 0, 1) and Positon
-    relative to is set to Relative To Active Camera, then the object will be teleported
-    in front of the camera.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 2
-  skipAction: 2
-  skipActionActual: {fileID: 1518841071}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 1
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 35
-    y: 136
-    width: 300
-    height: 194
-  nodeHeight: 0
-  obToMoveParameterID: -1
-  obToMoveID: 0
-  markerParameterID: -1
-  markerID: 0
-  positionRelativeTo: 0
-  recalculateActivePathFind: 0
-  isPlayer: 1
-  snapCamera: 0
-  obToMove: {fileID: 0}
-  teleporter: {fileID: 132526024}
-  copyRotation: 0
---- !u!114 &1011820031
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1532532f8c184eb78970e085394e564, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 14
-  title: Change setting
-  description: 'Changes any of the following scene parameters: NavMesh, Default PlayerStart,
-    Sorting Map, Tint Map, Cutscene On Load, and Cutscene On Start. When the NavMesh
-    is a Polygon Collider, this Action can also be used to add or remove holes from
-    it.'
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 1
-  skipAction: 2
-  skipActionActual: {fileID: 1011820031}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 1
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 36
-    y: 411
-    width: 300
-    height: 122
-  nodeHeight: 0
-  constantID: 0
-  parameterID: -1
-  replaceConstantID: 0
-  replaceParameterID: -1
-  newNavMesh: {fileID: 173141628}
-  sortingMap: {fileID: 0}
-  playerStart: {fileID: 0}
-  cutscene: {fileID: 0}
-  tintMap: {fileID: 0}
-  sceneSetting: 0
-  changeNavMeshMethod: 0
-  holeAction: 0
-  hole: {fileID: 0}
-  replaceHole: {fileID: 0}
 --- !u!1 &1017929938
 GameObject:
   m_ObjectHideFlags: 0
@@ -6227,9 +5481,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actions:
-  - {fileID: 1819059689}
-  - {fileID: 784060503}
-  - {fileID: 1011820031}
+  - {fileID: 249676427}
+  - {fileID: 562924729}
+  - {fileID: 174981400}
   isSkippable: 1
   triggerTime: 0
   autosaveAfter: 0
@@ -6332,6 +5586,66 @@ MonoBehaviour:
   holeAction: 0
   hole: {fileID: 0}
   replaceHole: {fileID: 0}
+--- !u!114 &1076587780
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0d4ab0f7ce3d4193a55deb9d20a7d66, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 11
+  title: Teleport
+  description: Moves a GameObject to a Marker instantly. Can also copy the Marker's
+    rotation. The final position can optionally be made relative to the active camera,
+    or the player. For example, if the Marker's position is (0, 0, 1) and Positon
+    relative to is set to Relative To Active Camera, then the object will be teleported
+    in front of the camera.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 0
+  skipAction: 1
+  skipActionActual: {fileID: 1376776291}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 14
+    width: 300
+    height: 176
+  nodeHeight: 0
+  obToMoveParameterID: -1
+  obToMoveID: 0
+  markerParameterID: -1
+  markerID: 0
+  positionRelativeTo: 0
+  recalculateActivePathFind: 0
+  isPlayer: 1
+  snapCamera: 0
+  obToMove: {fileID: 0}
+  teleporter: {fileID: 1876850019}
+  copyRotation: 0
 --- !u!1 &1086235214
 GameObject:
   m_ObjectHideFlags: 0
@@ -6490,7 +5804,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1086235214}
   m_LocalRotation: {x: 0, y: -0.7137743, z: 0, w: 0.7003758}
-  m_LocalPosition: {x: 7.07, y: -4.32, z: 0.07}
+  m_LocalPosition: {x: 4.2, y: -0.3, z: 0.02}
   m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_Children:
   - {fileID: 1767180860}
@@ -6922,9 +6236,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actions:
-  - {fileID: 542004151}
-  - {fileID: 139453776}
-  - {fileID: 567793281}
+  - {fileID: 1689459368}
+  - {fileID: 2093833098}
+  - {fileID: 76486466}
   isSkippable: 1
   triggerTime: 0
   autosaveAfter: 0
@@ -7073,7 +6387,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.51389146}
+  m_Offset: {x: 0, y: 0.6218741}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -7084,9 +6398,9 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 2.027783}
+  m_Size: {x: 1, y: 1.8118176}
   m_EdgeRadius: 0
---- !u!114 &1152539264
+--- !u!114 &1137387801
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -7094,13 +6408,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9289eb0ca58ef471f9062a5f77161403, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_Script: {fileID: 11500000, guid: c1532532f8c184eb78970e085394e564, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
   id: 0
-  category: 5
-  title: Wait
-  description: Waits a set time before continuing.
+  category: 14
+  title: Change setting
+  description: 'Changes any of the following scene parameters: NavMesh, Default PlayerStart,
+    Sorting Map, Tint Map, Cutscene On Load, and Cutscene On Start. When the NavMesh
+    is a Polygon Collider, this Action can also be used to add or remove holes from
+    it.'
   isDisplayed: 1
   showComment: 0
   comment: 
@@ -7115,25 +6432,41 @@ MonoBehaviour:
     skipActionActual: {fileID: 0}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
-  endAction: 2
-  skipAction: 1
-  skipActionActual: {fileID: 1104132984}
+  endAction: 1
+  skipAction: 2
+  skipActionActual: {fileID: 1137387801}
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
   isAssetFile: 0
-  isMarked: 0
+  isMarked: 1
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 14
-    y: 14
+    x: 17
+    y: 385
     width: 300
-    height: 104
+    height: 122
   nodeHeight: 0
+  constantID: 0
   parameterID: -1
-  timeToPause: 0
---- !u!114 &1161143349
+  replaceConstantID: 0
+  replaceParameterID: -1
+  newNavMesh: {fileID: 594763979}
+  sortingMap: {fileID: 0}
+  playerStart: {fileID: 0}
+  cutscene: {fileID: 0}
+  tintMap: {fileID: 0}
+  sceneSetting: 0
+  changeNavMeshMethod: 0
+  holeAction: 0
+  hole: {fileID: 0}
+  replaceHole: {fileID: 0}
+--- !u!4 &1162237370 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 400000, guid: 91d6ab39027244ea689b8f0ec9b5b548, type: 2}
+  m_PrefabInternal: {fileID: 1750118294}
+--- !u!114 &1185572413
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -7142,7 +6475,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
   id: 0
   category: 11
@@ -7164,7 +6497,7 @@ MonoBehaviour:
     linkedAsset: {fileID: 0}
   endAction: 1
   skipAction: 1
-  skipActionActual: {fileID: 1161143349}
+  skipActionActual: {fileID: 1185572413}
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -7183,6 +6516,118 @@ MonoBehaviour:
   spriteFader: {fileID: 1528990716}
   fadeType: 0
   fadeSpeed: 0.5
+--- !u!114 &1195575589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 11
+  title: Fade sprite
+  description: Fades a sprite in or out.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 2
+  skipAction: 3
+  skipActionActual: {fileID: 1303077783}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 202
+    width: 300
+    height: 158
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  spriteFader: {fileID: 1528990716}
+  fadeType: 1
+  fadeSpeed: 0.5
+--- !u!114 &1198363832
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1532532f8c184eb78970e085394e564, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 14
+  title: Change setting
+  description: 'Changes any of the following scene parameters: NavMesh, Default PlayerStart,
+    Sorting Map, Tint Map, Cutscene On Load, and Cutscene On Start. When the NavMesh
+    is a Polygon Collider, this Action can also be used to add or remove holes from
+    it.'
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: 2
+  skipActionActual: {fileID: 1198363832}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 26
+    y: 374
+    width: 300
+    height: 122
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  replaceConstantID: 0
+  replaceParameterID: -1
+  newNavMesh: {fileID: 1531158923}
+  sortingMap: {fileID: 0}
+  playerStart: {fileID: 0}
+  cutscene: {fileID: 0}
+  tintMap: {fileID: 0}
+  sceneSetting: 0
+  changeNavMeshMethod: 0
+  holeAction: 0
+  hole: {fileID: 0}
+  replaceHole: {fileID: 0}
 --- !u!1 &1206545458
 GameObject:
   m_ObjectHideFlags: 0
@@ -7253,6 +6698,16 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+--- !u!4 &1226387725 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+  m_PrefabInternal: {fileID: 948627583}
+--- !u!114 &1226387726 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 11400000, guid: a9d4e17cb5a8745ccad47e11f075de33,
+    type: 2}
+  m_PrefabInternal: {fileID: 948627583}
+  m_Script: {fileID: 11500000, guid: 6a1e6413216104fd580c7ce85907039c, type: 3}
 --- !u!1 &1226985085
 GameObject:
   m_ObjectHideFlags: 0
@@ -7322,56 +6777,6 @@ Transform:
   m_Father: {fileID: 286183794}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1250301533
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 11
-  title: Fade sprite
-  description: Fades a sprite in or out.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 2
-  skipAction: 2
-  skipActionActual: {fileID: 959604753}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 14
-    width: 300
-    height: 158
-  nodeHeight: 0
-  constantID: 0
-  parameterID: -1
-  spriteFader: {fileID: 1355630285}
-  fadeType: 1
-  fadeSpeed: 0.5
 --- !u!1 &1273267349
 GameObject:
   m_ObjectHideFlags: 0
@@ -7536,6 +6941,68 @@ MonoBehaviour:
   spriteFader: {fileID: 1867330809}
   fadeType: 1
   fadeSpeed: 0.5
+--- !u!114 &1306260842
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1532532f8c184eb78970e085394e564, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 14
+  title: Change setting
+  description: 'Changes any of the following scene parameters: NavMesh, Default PlayerStart,
+    Sorting Map, Tint Map, Cutscene On Load, and Cutscene On Start. When the NavMesh
+    is a Polygon Collider, this Action can also be used to add or remove holes from
+    it.'
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: 2
+  skipActionActual: {fileID: 1306260842}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 28
+    y: 415
+    width: 300
+    height: 122
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  replaceConstantID: 0
+  replaceParameterID: -1
+  newNavMesh: {fileID: 179100400}
+  sortingMap: {fileID: 0}
+  playerStart: {fileID: 0}
+  cutscene: {fileID: 0}
+  tintMap: {fileID: 0}
+  sceneSetting: 0
+  changeNavMeshMethod: 0
+  holeAction: 0
+  hole: {fileID: 0}
+  replaceHole: {fileID: 0}
 --- !u!1 &1319272772
 GameObject:
   m_ObjectHideFlags: 0
@@ -8047,53 +7514,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 2.027783}
   m_EdgeRadius: 0
---- !u!114 &1364743128
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9289eb0ca58ef471f9062a5f77161403, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 5
-  title: Wait
-  description: Waits a set time before continuing.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 2
-  skipAction: 1
-  skipActionActual: {fileID: 657666812}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 14
-    width: 300
-    height: 104
-  nodeHeight: 0
-  parameterID: -1
-  timeToPause: 0
 --- !u!114 &1375196391
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8154,56 +7574,6 @@ MonoBehaviour:
   obToMove: {fileID: 0}
   teleporter: {fileID: 871525161}
   copyRotation: 0
---- !u!114 &1376190975
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 11
-  title: Fade sprite
-  description: Fades a sprite in or out.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 2
-  skipAction: 1
-  skipActionActual: {fileID: 162077098}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 390
-    width: 300
-    height: 158
-  nodeHeight: 0
-  constantID: 0
-  parameterID: -1
-  spriteFader: {fileID: 145746382}
-  fadeType: 1
-  fadeSpeed: 0.5
 --- !u!114 &1376776291
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8308,8 +7678,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actions:
-  - {fileID: 418484207}
-  - {fileID: 3414360}
+  - {fileID: 1076587780}
+  - {fileID: 235260129}
   isSkippable: 1
   triggerTime: 0
   autosaveAfter: 0
@@ -8434,7 +7804,7 @@ Transform:
   m_Father: {fileID: 1845841085}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1434810968
+--- !u!114 &1435453850
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -8443,7 +7813,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b0d4ab0f7ce3d4193a55deb9d20a7d66, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
   id: 0
   category: 11
@@ -8469,7 +7839,7 @@ MonoBehaviour:
     linkedAsset: {fileID: 0}
   endAction: 2
   skipAction: 2
-  skipActionActual: {fileID: 195969922}
+  skipActionActual: {fileID: 1063563078}
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -8478,8 +7848,8 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 26
-    y: 157
+    x: 35
+    y: 146
     width: 300
     height: 194
   nodeHeight: 0
@@ -8492,7 +7862,7 @@ MonoBehaviour:
   isPlayer: 1
   snapCamera: 0
   obToMove: {fileID: 0}
-  teleporter: {fileID: 871525161}
+  teleporter: {fileID: 1749491902}
   copyRotation: 0
 --- !u!1 &1439465607
 GameObject:
@@ -8607,7 +7977,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actions:
-  - {fileID: 951628435}
+  - {fileID: 494657397}
   isSkippable: 1
   triggerTime: 0
   autosaveAfter: 0
@@ -8662,11 +8032,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actions:
-  - {fileID: 151567407}
-  - {fileID: 521453979}
-  - {fileID: 1648741226}
-  - {fileID: 30663086}
-  - {fileID: 1773135010}
+  - {fileID: 1538353772}
+  - {fileID: 1596305409}
+  - {fileID: 476464271}
+  - {fileID: 1695586920}
+  - {fileID: 1881051608}
   isSkippable: 1
   triggerTime: 0
   autosaveAfter: 0
@@ -8692,6 +8062,56 @@ Transform:
   m_Father: {fileID: 585626307}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1480221933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 11
+  title: Fade sprite
+  description: Fades a sprite in or out.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 2
+  skipAction: 2
+  skipActionActual: {fileID: 959604753}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 14
+    width: 300
+    height: 158
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  spriteFader: {fileID: 1355630285}
+  fadeType: 1
+  fadeSpeed: 0.5
 --- !u!4 &1496353019
 Transform:
   m_ObjectHideFlags: 0
@@ -8723,6 +8143,56 @@ MonoBehaviour:
   fadeInOnStart: 0
   fadeSpeed: 0.5
   cameraOnStart: {fileID: 834269307}
+--- !u!114 &1516699079
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 11
+  title: Fade sprite
+  description: Fades a sprite in or out.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 2
+  skipAction: 3
+  skipActionActual: {fileID: 138928947}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 202
+    width: 300
+    height: 158
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  spriteFader: {fileID: 1867330809}
+  fadeType: 1
+  fadeSpeed: 0.5
 --- !u!114 &1518841071
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8996,10 +8466,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actions:
-  - {fileID: 875606193}
-  - {fileID: 2027560560}
-  - {fileID: 516357885}
-  - {fileID: 216212020}
+  - {fileID: 232960147}
+  - {fileID: 5185215}
+  - {fileID: 1558609308}
+  - {fileID: 616057555}
   isSkippable: 1
   triggerTime: 0
   autosaveAfter: 0
@@ -9103,6 +8573,268 @@ SpriteRenderer:
   m_Size: {x: 1.7314814, y: 1.6851852}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+--- !u!114 &1536157933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1532532f8c184eb78970e085394e564, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 14
+  title: Change setting
+  description: 'Changes any of the following scene parameters: NavMesh, Default PlayerStart,
+    Sorting Map, Tint Map, Cutscene On Load, and Cutscene On Start. When the NavMesh
+    is a Polygon Collider, this Action can also be used to add or remove holes from
+    it.'
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: 2
+  skipActionActual: {fileID: 1536157933}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 28
+    y: 391
+    width: 300
+    height: 122
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  replaceConstantID: 0
+  replaceParameterID: -1
+  newNavMesh: {fileID: 1344530137}
+  sortingMap: {fileID: 0}
+  playerStart: {fileID: 0}
+  cutscene: {fileID: 0}
+  tintMap: {fileID: 0}
+  sceneSetting: 0
+  changeNavMeshMethod: 0
+  holeAction: 0
+  hole: {fileID: 0}
+  replaceHole: {fileID: 0}
+--- !u!114 &1538353772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 11
+  title: Fade sprite
+  description: Fades a sprite in or out.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 2
+    skipAction: 1
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 2
+  skipAction: 1
+  skipActionActual: {fileID: 551854010}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 14
+    width: 300
+    height: 158
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  spriteFader: {fileID: 1528990716}
+  fadeType: 1
+  fadeSpeed: 0
+--- !u!114 &1547859937
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 11
+  title: Fade sprite
+  description: Fades a sprite in or out.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 2
+  skipAction: 1
+  skipActionActual: {fileID: 162077098}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 390
+    width: 300
+    height: 158
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  spriteFader: {fileID: 145746382}
+  fadeType: 1
+  fadeSpeed: 0.5
+--- !u!114 &1553665279
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 11
+  title: Fade sprite
+  description: Fades a sprite in or out.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 2
+  skipAction: 1
+  skipActionActual: {fileID: 692015942}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 390
+    width: 300
+    height: 158
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  spriteFader: {fileID: 1867330809}
+  fadeType: 1
+  fadeSpeed: 0.5
+--- !u!114 &1558609308
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 11
+  title: Fade sprite
+  description: Fades a sprite in or out.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 2
+  skipAction: 3
+  skipActionActual: {fileID: 856997012}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 202
+    width: 300
+    height: 158
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  spriteFader: {fileID: 1528990716}
+  fadeType: 1
+  fadeSpeed: 0.5
 --- !u!1 &1583268195
 GameObject:
   m_ObjectHideFlags: 0
@@ -9184,6 +8916,115 @@ Transform:
   m_Father: {fileID: 792088154}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1596305409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 11
+  title: Fade sprite
+  description: Fades a sprite in or out.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 2
+    skipAction: 2
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 2
+  skipAction: 2
+  skipActionActual: {fileID: 745045925}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 13
+    y: 215
+    width: 300
+    height: 158
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  spriteFader: {fileID: 1867330809}
+  fadeType: 1
+  fadeSpeed: 0
+--- !u!114 &1596856160
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3e7520fdcc044e6c96008328a357eb7, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 11
+  title: Send message
+  description: Sends a given message to a GameObject. Can be either a message commonly-used
+    by Adventure Creator (Interact, TurnOn, etc) or a custom one, with an integer
+    argument.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 18
+    y: 172
+    width: 300
+    height: 158
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  isPlayer: 0
+  linkedObject: {fileID: 488751321}
+  affectChildren: 0
+  messageToSend: 1
+  customMessageParameterID: -1
+  customMessage: 
+  sendValue: 0
+  customValueParameterID: -1
+  customValue: 0
+  ignoreWhenSkipping: 0
 --- !u!1 &1609833050
 GameObject:
   m_ObjectHideFlags: 0
@@ -9389,7 +9230,20 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 2.027783}
   m_EdgeRadius: 0
---- !u!114 &1617002731
+--- !u!4 &1635918456
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1531916432}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1918299801}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1642274200
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -9398,7 +9252,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
   id: 0
   category: 11
@@ -9418,9 +9272,9 @@ MonoBehaviour:
     skipActionActual: {fileID: 0}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
-  endAction: 1
-  skipAction: 1
-  skipActionActual: {fileID: 1617002731}
+  endAction: 2
+  skipAction: 2
+  skipActionActual: {fileID: 580870346}
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -9430,78 +9284,15 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 578
+    y: 14
     width: 300
-    height: 140
+    height: 158
   nodeHeight: 0
   constantID: 0
   parameterID: -1
-  spriteFader: {fileID: 1867330809}
-  fadeType: 0
-  fadeSpeed: 0.5
---- !u!4 &1635918456
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1531916432}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1918299801}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1648741226
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 11
-  title: Fade sprite
-  description: Fades a sprite in or out.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -1
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 0
-  skipAction: 2
-  skipActionActual: {fileID: 1648741226}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 13
-    y: 408
-    width: 300
-    height: 140
-  nodeHeight: 0
-  constantID: 0
-  parameterID: -1
-  spriteFader: {fileID: 145746382}
+  spriteFader: {fileID: 1355630285}
   fadeType: 1
-  fadeSpeed: 0
+  fadeSpeed: 0.5
 --- !u!1 &1651785059
 GameObject:
   m_ObjectHideFlags: 0
@@ -9708,6 +9499,56 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+--- !u!114 &1668543227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 11
+  title: Fade sprite
+  description: Fades a sprite in or out.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 2
+  skipAction: 1
+  skipActionActual: {fileID: 1911136956}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 390
+    width: 300
+    height: 158
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  spriteFader: {fileID: 145746382}
+  fadeType: 1
+  fadeSpeed: 0.5
 --- !u!4 &1688701464
 Transform:
   m_ObjectHideFlags: 0
@@ -9721,6 +9562,103 @@ Transform:
   m_Father: {fileID: 792088154}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1689459368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9289eb0ca58ef471f9062a5f77161403, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 5
+  title: Wait
+  description: Waits a set time before continuing.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 2
+  skipAction: 1
+  skipActionActual: {fileID: 198245677}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 14
+    width: 300
+    height: 104
+  nodeHeight: 0
+  parameterID: -1
+  timeToPause: 0
+--- !u!114 &1695586920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 11
+  title: Fade sprite
+  description: Fades a sprite in or out.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -1
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 21
+    y: 583
+    width: 300
+    height: 140
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  spriteFader: {fileID: 1355630285}
+  fadeType: 0
+  fadeSpeed: 0
 --- !u!1 &1714842132
 GameObject:
   m_ObjectHideFlags: 0
@@ -9983,10 +9921,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actions:
-  - {fileID: 625526705}
-  - {fileID: 1161143349}
-  - {fileID: 691998497}
-  - {fileID: 1884140551}
+  - {fileID: 1642274200}
+  - {fileID: 1185572413}
+  - {fileID: 1516699079}
+  - {fileID: 1668543227}
   isSkippable: 1
   triggerTime: 0
   autosaveAfter: 0
@@ -10069,6 +10007,182 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+--- !u!1001 &1750118294
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 74313964}
+    m_Modifications:
+    - target: {fileID: 11400000, guid: 91d6ab39027244ea689b8f0ec9b5b548, type: 2}
+      propertyPath: useButtons.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 91d6ab39027244ea689b8f0ec9b5b548, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: -1.96
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 91d6ab39027244ea689b8f0ec9b5b548, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 2.67
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 91d6ab39027244ea689b8f0ec9b5b548, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 91d6ab39027244ea689b8f0ec9b5b548, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 91d6ab39027244ea689b8f0ec9b5b548, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 91d6ab39027244ea689b8f0ec9b5b548, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 91d6ab39027244ea689b8f0ec9b5b548, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 91d6ab39027244ea689b8f0ec9b5b548, type: 2}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: 91d6ab39027244ea689b8f0ec9b5b548, type: 2}
+      propertyPath: provideUseInteraction
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: 91d6ab39027244ea689b8f0ec9b5b548, type: 2}
+      propertyPath: useButtons.Array.data[0].proximity
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: 91d6ab39027244ea689b8f0ec9b5b548, type: 2}
+      propertyPath: useButtons.Array.data[0].parameterID
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 91d6ab39027244ea689b8f0ec9b5b548, type: 2}
+      propertyPath: m_Name
+      value: EndGame
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: 91d6ab39027244ea689b8f0ec9b5b548, type: 2}
+      propertyPath: useButtons.Array.data[0].interaction
+      value: 
+      objectReference: {fileID: 1226387726}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 91d6ab39027244ea689b8f0ec9b5b548, type: 2}
+  m_IsPrefabParent: 0
+--- !u!114 &1761186746
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 11
+  title: Fade sprite
+  description: Fades a sprite in or out.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: 1
+  skipActionActual: {fileID: 1761186746}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 578
+    width: 300
+    height: 140
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  spriteFader: {fileID: 145746382}
+  fadeType: 0
+  fadeSpeed: 0.5
+--- !u!114 &1765258428
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0d4ab0f7ce3d4193a55deb9d20a7d66, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 11
+  title: Teleport
+  description: Moves a GameObject to a Marker instantly. Can also copy the Marker's
+    rotation. The final position can optionally be made relative to the active camera,
+    or the player. For example, if the Marker's position is (0, 0, 1) and Positon
+    relative to is set to Relative To Active Camera, then the object will be teleported
+    in front of the camera.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 2
+  skipAction: 2
+  skipActionActual: {fileID: 1731164849}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 37
+    y: 187
+    width: 300
+    height: 194
+  nodeHeight: 0
+  obToMoveParameterID: -1
+  obToMoveID: 0
+  markerParameterID: -1
+  markerID: 0
+  positionRelativeTo: 0
+  recalculateActivePathFind: 0
+  isPlayer: 1
+  snapCamera: 0
+  obToMove: {fileID: 0}
+  teleporter: {fileID: 453984061}
+  copyRotation: 0
 --- !u!1 &1767180859
 GameObject:
   m_ObjectHideFlags: 0
@@ -10182,62 +10296,6 @@ SpriteRenderer:
   m_Size: {x: 4.44, y: 8.14}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
---- !u!114 &1773135010
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74813bf97090c47b39d9f3d0ec84a80b, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 9
-  title: Change state
-  description: Provides various options to show and hide both menus and menu elements.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 1
-    skipAction: -1
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 1
-  skipAction: -1
-  skipActionActual: {fileID: 0}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 30
-    y: 773
-    width: 300
-    height: 140
-  nodeHeight: 0
-  changeType: 4
-  menuToChange: Inventory
-  menuToChangeParameterID: -1
-  elementToChange: 
-  elementToChangeParameterID: -1
-  journalText: 
-  onlyAddNewJournal: 0
-  doFade: 0
-  lineID: -1
-  journalPageIndex: -1
-  journalPageIndexParameterID: -1
 --- !u!114 &1782877015
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10311,7 +10369,58 @@ Transform:
   m_Father: {fileID: 1226985086}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1819059689
+--- !u!114 &1802145070
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c47ef24c0855d41f4a4073c476ef37a2, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 5
+  title: End game
+  description: Ends the current game, either by loading an autosave, restarting or
+    quitting the game executable.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 0
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 14
+    width: 300
+    height: 60
+  nodeHeight: 0
+  endGameType: 0
+  chooseSceneBy: 0
+  sceneNumber: 0
+  sceneName: 
+  resetMenus: 0
+--- !u!114 &1803096493
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -10320,7 +10429,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9289eb0ca58ef471f9062a5f77161403, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
   id: 0
   category: 5
@@ -10342,7 +10451,7 @@ MonoBehaviour:
     linkedAsset: {fileID: 0}
   endAction: 2
   skipAction: 1
-  skipActionActual: {fileID: 944280355}
+  skipActionActual: {fileID: 1104132984}
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -10358,66 +10467,6 @@ MonoBehaviour:
   nodeHeight: 0
   parameterID: -1
   timeToPause: 0
---- !u!114 &1819881451
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0d4ab0f7ce3d4193a55deb9d20a7d66, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 11
-  title: Teleport
-  description: Moves a GameObject to a Marker instantly. Can also copy the Marker's
-    rotation. The final position can optionally be made relative to the active camera,
-    or the player. For example, if the Marker's position is (0, 0, 1) and Positon
-    relative to is set to Relative To Active Camera, then the object will be teleported
-    in front of the camera.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 2
-  skipAction: 2
-  skipActionActual: {fileID: 1731164849}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 1
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 37
-    y: 187
-    width: 300
-    height: 194
-  nodeHeight: 0
-  obToMoveParameterID: -1
-  obToMoveID: 0
-  markerParameterID: -1
-  markerID: 0
-  positionRelativeTo: 0
-  recalculateActivePathFind: 0
-  isPlayer: 1
-  snapCamera: 0
-  obToMove: {fileID: 0}
-  teleporter: {fileID: 453984061}
-  copyRotation: 0
 --- !u!114 &1821577180
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10547,10 +10596,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actions:
-  - {fileID: 1250301533}
-  - {fileID: 52281720}
-  - {fileID: 502814545}
-  - {fileID: 165818229}
+  - {fileID: 1480221933}
+  - {fileID: 1761186746}
+  - {fileID: 1195575589}
+  - {fileID: 1553665279}
   isSkippable: 1
   triggerTime: 0
   autosaveAfter: 0
@@ -10612,6 +10661,66 @@ Transform:
   m_Father: {fileID: 792088154}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1847472281
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0d4ab0f7ce3d4193a55deb9d20a7d66, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 11
+  title: Teleport
+  description: Moves a GameObject to a Marker instantly. Can also copy the Marker's
+    rotation. The final position can optionally be made relative to the active camera,
+    or the player. For example, if the Marker's position is (0, 0, 1) and Positon
+    relative to is set to Relative To Active Camera, then the object will be teleported
+    in front of the camera.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 2
+  skipAction: 2
+  skipActionActual: {fileID: 1518841071}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 35
+    y: 136
+    width: 300
+    height: 194
+  nodeHeight: 0
+  obToMoveParameterID: -1
+  obToMoveID: 0
+  markerParameterID: -1
+  markerID: 0
+  positionRelativeTo: 0
+  recalculateActivePathFind: 0
+  isPlayer: 1
+  snapCamera: 0
+  obToMove: {fileID: 0}
+  teleporter: {fileID: 132526024}
+  copyRotation: 0
 --- !u!1 &1849703515
 GameObject:
   m_ObjectHideFlags: 0
@@ -10918,7 +11027,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
---- !u!114 &1884140551
+--- !u!114 &1881051608
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -10926,13 +11035,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_Script: {fileID: 11500000, guid: 74813bf97090c47b39d9f3d0ec84a80b, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
   id: 0
-  category: 11
-  title: Fade sprite
-  description: Fades a sprite in or out.
+  category: 9
+  title: Change state
+  description: Provides various options to show and hide both menus and menu elements.
   isDisplayed: 1
   showComment: 0
   comment: 
@@ -10942,14 +11051,14 @@ MonoBehaviour:
   defaultPauseTime: 0.1
   isRunning: 0
   lastResult:
-    resultAction: 0
-    skipAction: -10
+    resultAction: 1
+    skipAction: -1
     skipActionActual: {fileID: 0}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
-  endAction: 2
-  skipAction: 1
-  skipActionActual: {fileID: 1911136956}
+  endAction: 1
+  skipAction: -1
+  skipActionActual: {fileID: 0}
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -10958,16 +11067,22 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 14
-    y: 390
+    x: 30
+    y: 773
     width: 300
-    height: 158
+    height: 140
   nodeHeight: 0
-  constantID: 0
-  parameterID: -1
-  spriteFader: {fileID: 145746382}
-  fadeType: 1
-  fadeSpeed: 0.5
+  changeType: 4
+  menuToChange: Inventory
+  menuToChangeParameterID: -1
+  elementToChange: 
+  elementToChangeParameterID: -1
+  journalText: 
+  onlyAddNewJournal: 0
+  doFade: 0
+  lineID: -1
+  journalPageIndex: -1
+  journalPageIndexParameterID: -1
 --- !u!1 &1885926047
 GameObject:
   m_ObjectHideFlags: 0
@@ -11067,9 +11182,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actions:
-  - {fileID: 1364743128}
-  - {fileID: 1819881451}
-  - {fileID: 723866586}
+  - {fileID: 2020501594}
+  - {fileID: 1765258428}
+  - {fileID: 1306260842}
   isSkippable: 1
   triggerTime: 0
   autosaveAfter: 0
@@ -11137,9 +11252,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actions:
-  - {fileID: 2040816818}
-  - {fileID: 246834513}
-  - {fileID: 298506807}
+  - {fileID: 826400688}
+  - {fileID: 658952665}
+  - {fileID: 1536157933}
   isSkippable: 1
   triggerTime: 0
   autosaveAfter: 0
@@ -11240,6 +11355,7 @@ Transform:
   - {fileID: 1896294918}
   - {fileID: 1908638941}
   - {fileID: 1115543282}
+  - {fileID: 1226387725}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -11285,9 +11401,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actions:
-  - {fileID: 634134999}
-  - {fileID: 1434810968}
-  - {fileID: 278971758}
+  - {fileID: 1953643886}
+  - {fileID: 962037433}
+  - {fileID: 1137387801}
   isSkippable: 1
   triggerTime: 0
   autosaveAfter: 0
@@ -11300,6 +11416,115 @@ MonoBehaviour:
   parameters: []
   tagID: 0
   syncParamValues: 1
+--- !u!114 &1953643886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9289eb0ca58ef471f9062a5f77161403, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 5
+  title: Wait
+  description: Waits a set time before continuing.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 2
+  skipAction: 1
+  skipActionActual: {fileID: 1375196391}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 14
+    width: 300
+    height: 104
+  nodeHeight: 0
+  parameterID: -1
+  timeToPause: 0
+--- !u!114 &1955028209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1532532f8c184eb78970e085394e564, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 14
+  title: Change setting
+  description: 'Changes any of the following scene parameters: NavMesh, Default PlayerStart,
+    Sorting Map, Tint Map, Cutscene On Load, and Cutscene On Start. When the NavMesh
+    is a Polygon Collider, this Action can also be used to add or remove holes from
+    it.'
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: 2
+  skipActionActual: {fileID: 1955028209}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 26
+    y: 364
+    width: 300
+    height: 122
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  replaceConstantID: 0
+  replaceParameterID: -1
+  newNavMesh: {fileID: 1319272775}
+  sortingMap: {fileID: 0}
+  playerStart: {fileID: 0}
+  cutscene: {fileID: 0}
+  tintMap: {fileID: 0}
+  sceneSetting: 0
+  changeNavMeshMethod: 0
+  holeAction: 0
+  hole: {fileID: 0}
+  replaceHole: {fileID: 0}
 --- !u!1 &1975345984
 GameObject:
   m_ObjectHideFlags: 0
@@ -11328,7 +11553,7 @@ Transform:
   m_Father: {fileID: 823769460}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2027560560
+--- !u!114 &2020501594
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -11336,13 +11561,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_Script: {fileID: 11500000, guid: 9289eb0ca58ef471f9062a5f77161403, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
   id: 0
-  category: 11
-  title: Fade sprite
-  description: Fades a sprite in or out.
+  category: 5
+  title: Wait
+  description: Waits a set time before continuing.
   isDisplayed: 1
   showComment: 0
   comment: 
@@ -11357,9 +11582,9 @@ MonoBehaviour:
     skipActionActual: {fileID: 0}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
-  endAction: 1
+  endAction: 2
   skipAction: 1
-  skipActionActual: {fileID: 2027560560}
+  skipActionActual: {fileID: 657666812}
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -11369,15 +11594,12 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 578
+    y: 14
     width: 300
-    height: 140
+    height: 104
   nodeHeight: 0
-  constantID: 0
   parameterID: -1
-  spriteFader: {fileID: 1355630285}
-  fadeType: 0
-  fadeSpeed: 0.5
+  timeToPause: 0
 --- !u!1 &2032239652
 GameObject:
   m_ObjectHideFlags: 0
@@ -11542,53 +11764,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 2.027783}
   m_EdgeRadius: 0
---- !u!114 &2040816818
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9289eb0ca58ef471f9062a5f77161403, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 5
-  title: Wait
-  description: Waits a set time before continuing.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 2
-  skipAction: 1
-  skipActionActual: {fileID: 732434159}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 14
-    width: 300
-    height: 104
-  nodeHeight: 0
-  parameterID: -1
-  timeToPause: 0
 --- !u!4 &2041380246
 Transform:
   m_ObjectHideFlags: 0
@@ -11644,8 +11819,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actions:
-  - {fileID: 691801555}
-  - {fileID: 2131508968}
+  - {fileID: 2088341841}
+  - {fileID: 1596856160}
   isSkippable: 1
   triggerTime: 0
   autosaveAfter: 0
@@ -11728,6 +11903,68 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+--- !u!114 &2088341841
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1532532f8c184eb78970e085394e564, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 14
+  title: Change setting
+  description: 'Changes any of the following scene parameters: NavMesh, Default PlayerStart,
+    Sorting Map, Tint Map, Cutscene On Load, and Cutscene On Start. When the NavMesh
+    is a Polygon Collider, this Action can also be used to add or remove holes from
+    it.'
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 14
+    width: 300
+    height: 122
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  replaceConstantID: 0
+  replaceParameterID: -1
+  newNavMesh: {fileID: 173141628}
+  sortingMap: {fileID: 0}
+  playerStart: {fileID: 0}
+  cutscene: {fileID: 0}
+  tintMap: {fileID: 0}
+  sceneSetting: 0
+  changeNavMeshMethod: 0
+  holeAction: 0
+  hole: {fileID: 0}
+  replaceHole: {fileID: 0}
 --- !u!4 &2090745486
 Transform:
   m_ObjectHideFlags: 0
@@ -11741,6 +11978,66 @@ Transform:
   m_Father: {fileID: 792088154}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2093833098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0d4ab0f7ce3d4193a55deb9d20a7d66, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 11
+  title: Teleport
+  description: Moves a GameObject to a Marker instantly. Can also copy the Marker's
+    rotation. The final position can optionally be made relative to the active camera,
+    or the player. For example, if the Marker's position is (0, 0, 1) and Positon
+    relative to is set to Relative To Active Camera, then the object will be teleported
+    in front of the camera.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 2
+  skipAction: 2
+  skipActionActual: {fileID: 182711867}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 41
+    y: 186
+    width: 300
+    height: 194
+  nodeHeight: 0
+  obToMoveParameterID: -1
+  obToMoveID: 0
+  markerParameterID: -1
+  markerID: 0
+  positionRelativeTo: 0
+  recalculateActivePathFind: 0
+  isPlayer: 1
+  snapCamera: 0
+  obToMove: {fileID: 0}
+  teleporter: {fileID: 1655677137}
+  copyRotation: 0
 --- !u!1 &2112546269
 GameObject:
   m_ObjectHideFlags: 0
@@ -11799,62 +12096,3 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
---- !u!114 &2131508968
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f3e7520fdcc044e6c96008328a357eb7, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 11
-  title: Send message
-  description: Sends a given message to a GameObject. Can be either a message commonly-used
-    by Adventure Creator (Interact, TurnOn, etc) or a custom one, with an integer
-    argument.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 1
-  skipAction: -1
-  skipActionActual: {fileID: 0}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 18
-    y: 172
-    width: 300
-    height: 158
-  nodeHeight: 0
-  constantID: 0
-  parameterID: -1
-  isPlayer: 0
-  linkedObject: {fileID: 488751321}
-  affectChildren: 0
-  messageToSend: 1
-  customMessageParameterID: -1
-  customMessage: 
-  sendValue: 0
-  customValueParameterID: -1
-  customValue: 0
-  ignoreWhenSkipping: 0
