@@ -91,6 +91,8 @@ GameObject:
   - component: {fileID: 4747614677552002}
   - component: {fileID: 114883466388941960}
   - component: {fileID: 114027176508567914}
+  - component: {fileID: 114412979821232762}
+  - component: {fileID: 114098549681380886}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -650,6 +652,20 @@ MonoBehaviour:
   jumpParameter: Jump
   ID: 0
   hotspotDetector: {fileID: 114493159106414284}
+--- !u!114 &114098549681380886
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1446441781077794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f72e60470f1fa4fd1825cd67ce482cf6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  constantID: 289338
+  retainInPrefab: 1
+  autoManual: 0
 --- !u!114 &114337161040348852
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -701,6 +717,17 @@ MonoBehaviour:
   parameters: []
   tagID: 0
   syncParamValues: 1
+--- !u!114 &114412979821232762
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1446441781077794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07d8687c090c6484a8a99833bad30740, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114463929241038906
 MonoBehaviour:
   m_ObjectHideFlags: 1
