@@ -27,7 +27,7 @@ namespace AC
     public class CheckLastPanelInput : ActionCheck
     {
         public string input = "";
-        public string solution = "1123354521";
+        public string solution = "11233545";
 
         public int constantID;
         public int parameterID;
@@ -49,19 +49,14 @@ namespace AC
 		 */
         public override bool CheckCondition()
         {
-            var refr = AdvGame.GetReferences();
-            var manager = refr.variablesManager;
-            var varbl = manager.GetVariable(1);
-            string input = varbl.GetValue();
-
             input = AC.LocalVariables.GetStringValue(1);
 
             totalinput += input;
 
-            if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(solution))
+            if (string.IsNullOrEmpty(input))
                 return false;
 
-            if (solution.ToString().StartsWith(totalinput))
+            if (solution.StartsWith(totalinput))
                 return true;
 
             totalinput = "";
