@@ -13,12 +13,63 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   actions:
   - {fileID: 114908388449688286}
+  - {fileID: 114081951248192156}
   isSkippable: 1
   actionListType: 0
   unfreezePauseMenus: 1
   useParameters: 0
   parameters: []
   tagID: 0
+--- !u!114 &114081951248192156
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98cbf837c7ba24dda959b0c08f753c33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 15
+  title: Play one-shot
+  description: Plays an AudioClip once without the need for a Sound object.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 1
+    skipAction: -1
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 21
+    y: 309
+    width: 300
+    height: 122
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  origin: {fileID: 0}
+  audioClip: {fileID: 8300000, guid: b82b34b619a371a4e96d26ad1373745d, type: 3}
+  audioClipParameterID: -1
 --- !u!114 &114908388449688286
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -46,17 +97,17 @@ MonoBehaviour:
   isRunning: 0
   lastResult:
     resultAction: 0
-    skipAction: -10
+    skipAction: -1
     skipActionActual: {fileID: 0}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
-  endAction: 1
+  endAction: 0
   skipAction: 0
   skipActionActual: {fileID: 114908388449688286}
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
-  isAssetFile: 1
+  isAssetFile: 0
   isMarked: 0
   isBreakPoint: 0
   nodeRect:
