@@ -22,26 +22,58 @@ MonoBehaviour:
   defaultClass: -1
   defaultClassName: ActionPause
   AllActions:
-  - fileName: ActionAnim
-    category: 11
-    title: Animate
-    description: Causes a GameObject to play or stop an animation, or modify a Blend
-      Shape. The available options will differ depending on the chosen animation engine.
+  - fileName: ActionParamCheck
+    category: 0
+    title: Check parameter
+    description: Queries the value of parameters defined in the parent ActionList.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionBlendShape
-    category: 11
-    title: Blend shape
-    description: Animates a Skinned Mesh Renderer's blend shape by a chosen amount.
-      If the Shapeable script attached to the renderer has grouped multiple shapes
-      into a group, all other shapes in that group will be deactivated.
+  - fileName: ActionCheckActionList
+    category: 0
+    title: Check running
+    description: "Queries whether or not a supplied ActionList is currently running.
+      By looping the If condition is not met field back onto itself, this will effectively
+      \u201Cwait\u201D until the supplied ActionList has completed before continuing."
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionCamera
-    category: 1
-    title: Switch
-    description: Moves the MainCamera to the position, rotation and field of view
-      of a specified GameCamera. Can be instantaneous or transition over time.
+  - fileName: ActionComment
+    category: 0
+    title: Comment
+    description: Prints a comment for debug purposes.
+    isEnabled: 1
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - fileName: ActionStopActionList
+    category: 0
+    title: Kill
+    description: Instantly stops a scene or asset-based ActionList from running.
+    isEnabled: 1
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - fileName: ActionPauseActionList
+    category: 0
+    title: Pause or resume
+    description: Pauses and resumes ActionLists.
+    isEnabled: 1
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - fileName: ActionRunActionList
+    category: 0
+    title: Run
+    description: Runs any ActionList (either scene-based like Cutscenes, Triggers
+      and Interactions, or ActionList assets). If the new ActionList takes parameters,
+      this Action can be used to set them.
+    isEnabled: 1
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - fileName: ActionParallel
+    category: 0
+    title: Run in parallel
+    description: Runs any subsequent Actions (whether in the same list or in a new
+      one) simultaneously. This is useful when making complex cutscenes that require
+      timing to be exact.
+    isEnabled: 1
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - fileName: ActionParamSet
+    category: 0
+    title: Set parameter
+    description: Sets the value of a parameter in an ActionList.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
   - fileName: ActionCameraCrossfade
@@ -49,6 +81,20 @@ MonoBehaviour:
     title: Crossfade
     description: Crossfades the camera from its current GameCamera to a new one, over
       a specified time.
+    isEnabled: 1
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - fileName: ActionFade
+    category: 1
+    title: Fade
+    description: "Fades the camera in or out. The fade speed can be adjusted, as can
+      the overlay texture \u2013 this is black by default."
+    isEnabled: 1
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - fileName: ActionCameraTP
+    category: 1
+    title: Rotate third-person
+    description: Rotates a Game Camera Third-person to face a certain direction, either
+      fixed or relative to its target.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
   - fileName: ActionCameraShake
@@ -67,17 +113,11 @@ MonoBehaviour:
       clicks) can also be set.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionCameraTP
+  - fileName: ActionCamera
     category: 1
-    title: Rotate third-person
-    description: Rotates a Game Camera Third-person to face a certain direction, either
-      fixed or relative to its target.
-    isEnabled: 1
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionChangeMaterial
-    category: 11
-    title: Change material
-    description: Changes the material on any scene-based mesh object.
+    title: Switch
+    description: Moves the MainCamera to the position, rotation and field of view
+      of a specified GameCamera. Can be instantaneous or transition over time.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
   - fileName: ActionCharAnim
@@ -88,11 +128,11 @@ MonoBehaviour:
       revert the Character to idle.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionCharFace
+  - fileName: ActionCharRender
     category: 2
-    title: Face object
-    description: Makes a Character turn, either instantly or over time. Can turn to
-      face another object, or copy that object's facing direction.
+    title: Change rendering
+    description: Overrides a Character's scale, sorting order, sprite direction or
+      Sorting Map. This is intended mainly for 2D games.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
   - fileName: ActionCharFaceDirection
@@ -102,13 +142,11 @@ MonoBehaviour:
       direction relative to the camera \u2013 i.e. up, down, left or right."
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionCharFollow
+  - fileName: ActionCharFace
     category: 2
-    title: NPC follow
-    description: Makes an NPC follow another Character, whether it be a fellow NPC
-      or the Player. If they exceed a maximum distance from their target, they will
-      run towards them. Note that making an NPC move via another Action will make
-      them stop following anyone.
+    title: Face object
+    description: Makes a Character turn, either instantly or over time. Can turn to
+      face another object, or copy that object's facing direction.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
   - fileName: ActionCharHold
@@ -136,6 +174,21 @@ MonoBehaviour:
       in a straight line.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
+  - fileName: ActionCharFollow
+    category: 2
+    title: NPC follow
+    description: Makes an NPC follow another Character, whether it be a fellow NPC
+      or the Player. If they exceed a maximum distance from their target, they will
+      run towards them. Note that making an NPC move via another Action will make
+      them stop following anyone.
+    isEnabled: 1
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - fileName: ActionCharRename
+    category: 2
+    title: Rename
+    description: Changes the display name of a Character when subtitles are used.
+    isEnabled: 1
+    color: {r: 1, g: 1, b: 1, a: 1}
   - fileName: ActionCharPortrait
     category: 2
     title: Switch Portrait
@@ -145,39 +198,10 @@ MonoBehaviour:
       Resources folder, it will be stored in saved game files.'
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionCharRename
-    category: 2
-    title: Rename
-    description: Changes the display name of a Character when subtitles are used.
-    isEnabled: 1
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionCharRender
-    category: 2
-    title: Change rendering
-    description: Overrides a Character's scale, sorting order, sprite direction or
-      Sorting Map. This is intended mainly for 2D games.
-    isEnabled: 1
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionCheckActionList
-    category: 0
-    title: Check running
-    description: "Queries whether or not a supplied ActionList is currently running.
-      By looping the If condition is not met field back onto itself, this will effectively
-      \u201Cwait\u201D until the supplied ActionList has completed before continuing."
-    isEnabled: 1
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionCinemaDirector
-    category: 16
-    title: Cinema Director
-    description: Runs a Cutscene built with Cinema Director. Note that Cinema Director
-      is a separate Unity Asset, and the 'CinemaDirectorIsPresent' preprocessor must
-      be defined for this to work.
-    isEnabled: 1
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionComment
-    category: 0
-    title: Comment
-    description: Prints a comment for debug purposes.
+  - fileName: ActionContainerSet
+    category: 3
+    title: Add or remove
+    description: Adds or removes Inventory items from a Container.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
   - fileName: ActionContainerCheck
@@ -194,10 +218,18 @@ MonoBehaviour:
       to open. To close the Container, simply close the Menu.'
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionContainerSet
-    category: 3
-    title: Add or remove
-    description: Adds or removes Inventory items from a Container.
+  - fileName: ActionSpeech
+    category: 4
+    title: Play speech
+    description: "Makes a Character talk, or \u2013 if no Character is specified \u2013
+      displays a message. Subtitles only appear if they are enabled from the Options
+      menu. A 'thinking' effect can be produced by opting to not play any animation."
+    isEnabled: 1
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - fileName: ActionDialogOptionRename
+    category: 4
+    title: Rename option
+    description: Renames the label of a dialogue option.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
   - fileName: ActionConversation
@@ -207,16 +239,35 @@ MonoBehaviour:
       in a specified conversation.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
+  - fileName: ActionSpeechStop
+    category: 4
+    title: Stop speech
+    description: Ends any currently-playing speech instantly.
+    isEnabled: 1
+    color: {r: 1, g: 1, b: 1, a: 1}
   - fileName: ActionDialogOption
     category: 4
     title: Toggle option
     description: Sets the display of a dialogue option. Can hide, show, and lock options.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionDialogOptionRename
+  - fileName: ActionSpeechWait
     category: 4
-    title: Rename option
-    description: Renames the label of a dialogue option.
+    title: Wait for speech
+    description: Waits until a particular character has stopped speaking.
+    isEnabled: 1
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - fileName: ActionTimescale
+    category: 5
+    title: Change timescale
+    description: Changes the timescale to a value between 0 and 1. This allows for
+      slow-motion effects.
+    isEnabled: 1
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - fileName: ActionPlatformCheck
+    category: 5
+    title: Check platform
+    description: Queries either the plaform the game is running on.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
   - fileName: ActionEndGame
@@ -226,49 +277,25 @@ MonoBehaviour:
       or quitting the game executable.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionEvent
-    category: 11
-    title: Call event
-    description: Sends a given message to a GameObject. Can be either a message commonly-used
-      by Adventure Creator (Interact, TurnOn, etc) or a custom one, with an integer
-      argument.
+  - fileName: ActionSystemLock
+    category: 5
+    title: Manage systems
+    description: Enables and disables individual systems within Adventure Creator,
+      such as Interactions. Can also be used to change the 'Movement method', as set
+      in the Settings Manager, but note that this change will not be recorded in save
+      games.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionFade
-    category: 1
-    title: Fade
-    description: "Fades the camera in or out. The fade speed can be adjusted, as can
-      the overlay texture \u2013 this is black by default."
+  - fileName: ActionMovie
+    category: 5
+    title: Play movie clip
+    description: Plays movie clips either on a Texture, or full-screen on mobile devices.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionHighlight
-    category: 11
-    title: Highlight
-    description: Gives a glow effect to any mesh object with the Highlight script
-      component attached to it. Can also be used to make Inventory items glow, making
-      it useful for tutorial sections.
-    isEnabled: 1
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionHotspotEnable
-    category: 6
-    title: Enable or disable
-    description: Turns a Hotspot on or off. To record the state of a Hotspot in save
-      games, be sure to add the RememberHotspot script to the Hotspot in question.
-    isEnabled: 1
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionInputCheck
-    category: 7
-    title: Check
-    description: Queries whether or not the player is invoking a button or axis declared
-      in Unity's Input manager.
-    isEnabled: 1
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionInstantiate
-    category: 11
-    title: Add or remove
-    description: Instantiates or deletes GameObjects within the current scene. To
-      ensure this works with save games correctly, place any prefabs to be added in
-      a Resources asset folder.
+  - fileName: ActionPause
+    category: 5
+    title: Wait
+    description: Waits a set time before continuing.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
   - fileName: ActionInteraction
@@ -281,6 +308,42 @@ MonoBehaviour:
     category: 6
     title: Check interaction enabled
     description: Checks the enabled state of individual Interactions on a Hotspot.
+    isEnabled: 1
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - fileName: ActionHotspotEnable
+    category: 6
+    title: Enable or disable
+    description: Turns a Hotspot on or off. To record the state of a Hotspot in save
+      games, be sure to add the RememberHotspot script to the Hotspot in question.
+    isEnabled: 1
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - fileName: ActionRename
+    category: 6
+    title: Rename
+    description: Renames a Hotspot, or an NPC with a Hotspot component.
+    isEnabled: 1
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - fileName: ActionInputCheck
+    category: 7
+    title: Check
+    description: Queries whether or not the player is invoking a button or axis declared
+      in Unity's Input manager.
+    isEnabled: 1
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - fileName: ActionQTE
+    category: 7
+    title: QTE
+    description: Initiates a Quick Time Event for a set duration. The QTE type can
+      either be a single key- press, holding a button down, or button-mashing. The
+      Input button must be defined in Unity's Input Manager.
+    isEnabled: 1
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - fileName: ActionInventorySet
+    category: 8
+    title: Add or remove
+    description: Adds or removes an item from the Player's inventory. Items are defined
+      in the Inventory Manager. If the player can carry multiple amounts of the item,
+      more options will show.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
   - fileName: ActionInventoryCheck
@@ -313,24 +376,16 @@ MonoBehaviour:
       if it is not currently held.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionInventorySet
-    category: 8
-    title: Add or remove
-    description: Adds or removes an item from the Player's inventory. Items are defined
-      in the Inventory Manager. If the player can carry multiple amounts of the item,
-      more options will show.
+  - fileName: ActionMenuState
+    category: 9
+    title: Change state
+    description: Provides various options to show and hide both menus and menu elements.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionManageProfiles
-    category: 13
-    title: Manage profiles
-    description: Creates, renames and deletes save game profiles.
-    isEnabled: 1
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionManageSaves
-    category: 13
-    title: Manage saves
-    description: Renames and deletes save game files.
+  - fileName: ActionMenuSlotCheck
+    category: 9
+    title: Check num slots
+    description: Queries the number of slots on a given menu element.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
   - fileName: ActionMenuCheck
@@ -340,34 +395,16 @@ MonoBehaviour:
       state of menus.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionMenuJournal
-    category: 9
-    title: Set Journal page
-    description: Set which page of a Journal is currently open.
-    isEnabled: 1
-    color: {r: 1, g: 1, b: 1, a: 1}
   - fileName: ActionMenuSetInputBox
     category: 9
     title: Set Input box text
     description: Replaces the text within an Input box element.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionMenuSlotCheck
+  - fileName: ActionMenuJournal
     category: 9
-    title: Check num slots
-    description: Queries the number of slots on a given menu element.
-    isEnabled: 1
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionMenuState
-    category: 9
-    title: Change state
-    description: Provides various options to show and hide both menus and menu elements.
-    isEnabled: 1
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionMixerSnapshot
-    category: 15
-    title: Set Mixer snapshot
-    description: Transitions to a single or multiple Audio Mixer snapshots.
+    title: Set Journal page
+    description: Set which page of a Journal is currently open.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
   - fileName: ActionMoveableCheck
@@ -377,25 +414,62 @@ MonoBehaviour:
       being manipulated.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionMovie
-    category: 5
-    title: Play movie clip
-    description: Plays movie clips either on a Texture, or full-screen on mobile devices.
+  - fileName: ActionTrackCheck
+    category: 10
+    title: Check track position
+    description: Queries how far a Draggable object is along its track.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionMusic
-    category: 15
-    title: Play music
-    description: Plays or queues music clips.
+  - fileName: ActionTrackSet
+    category: 10
+    title: Set track position
+    description: Moves a Draggable object along its track automatically to a specific
+      point. The effect will be disabled once the object reaches the intended point,
+      or the Action is run again with the speed value set as a negative number.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionNavMesh
-    category: 14
-    title: Change setting
-    description: 'Changes any of the following scene parameters: NavMesh, Default
-      PlayerStart, Sorting Map, Tint Map, Cutscene On Load, and Cutscene On Start.
-      When the NavMesh is a Polygon Collider, this Action can also be used to add
-      or remove holes from it.'
+  - fileName: ActionInstantiate
+    category: 11
+    title: Add or remove
+    description: Instantiates or deletes GameObjects within the current scene. To
+      ensure this works with save games correctly, place any prefabs to be added in
+      a Resources asset folder.
+    isEnabled: 1
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - fileName: ActionAnim
+    category: 11
+    title: Animate
+    description: Causes a GameObject to play or stop an animation, or modify a Blend
+      Shape. The available options will differ depending on the chosen animation engine.
+    isEnabled: 1
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - fileName: ActionBlendShape
+    category: 11
+    title: Blend shape
+    description: Animates a Skinned Mesh Renderer's blend shape by a chosen amount.
+      If the Shapeable script attached to the renderer has grouped multiple shapes
+      into a group, all other shapes in that group will be deactivated.
+    isEnabled: 1
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - fileName: ActionEvent
+    category: 11
+    title: Call event
+    description: Sends a given message to a GameObject. Can be either a message commonly-used
+      by Adventure Creator (Interact, TurnOn, etc) or a custom one, with an integer
+      argument.
+    isEnabled: 1
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - fileName: ActionChangeMaterial
+    category: 11
+    title: Change material
+    description: Changes the material on any scene-based mesh object.
+    isEnabled: 1
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - fileName: ActionTintMap
+    category: 11
+    title: Change Tint map
+    description: Changes which Tint map a Follow Tint Map component uses, and the
+      intensity of the effect.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
   - fileName: ActionObjectCheck
@@ -405,24 +479,32 @@ MonoBehaviour:
       in the current scene.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionParallel
-    category: 0
-    title: Run in parallel
-    description: Runs any subsequent Actions (whether in the same list or in a new
-      one) simultaneously. This is useful when making complex cutscenes that require
-      timing to be exact.
+  - fileName: ActionVisibleCheck
+    category: 11
+    title: Check visibility
+    description: Checks the visibility of a GameObject.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionParamCheck
-    category: 0
-    title: Check parameter
-    description: Queries the value of parameters defined in the parent ActionList.
+  - fileName: ActionSpriteFade
+    category: 11
+    title: Fade sprite
+    description: Fades a sprite in or out.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionParamSet
-    category: 0
-    title: Set parameter
-    description: Sets the value of a parameter in an ActionList.
+  - fileName: ActionHighlight
+    category: 11
+    title: Highlight
+    description: Gives a glow effect to any mesh object with the Highlight script
+      component attached to it. Can also be used to make Inventory items glow, making
+      it useful for tutorial sections.
+    isEnabled: 1
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - fileName: ActionSendMessage
+    category: 11
+    title: Send message
+    description: Sends a given message to a GameObject. Can be either a message commonly-used
+      by Adventure Creator (Interact, TurnOn, etc) or a custom one, with an integer
+      argument.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
   - fileName: ActionParent
@@ -432,22 +514,28 @@ MonoBehaviour:
       position and rotation.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionPause
-    category: 5
-    title: Wait
-    description: Waits a set time before continuing.
+  - fileName: ActionTeleport
+    category: 11
+    title: Teleport
+    description: Moves a GameObject to a Marker instantly. Can also copy the Marker's
+      rotation. The final position can optionally be made relative to the active camera,
+      or the player. For example, if the Marker's position is (0, 0, 1) and Positon
+      relative to is set to Relative To Active Camera, then the object will be teleported
+      in front of the camera.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionPauseActionList
-    category: 0
-    title: Pause or resume
-    description: Pauses and resumes ActionLists.
+  - fileName: ActionTransform
+    category: 11
+    title: Transform
+    description: Transforms a GameObject over time, by or to a given amount, or towards
+      a Marker in the scene. The GameObject must have a Moveable script attached.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionPlatformCheck
-    category: 5
-    title: Check platform
-    description: Queries either the plaform the game is running on.
+  - fileName: ActionVisible
+    category: 11
+    title: Visibility
+    description: Hides or shows a GameObject. Can optionally affect the GameObject's
+      children.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
   - fileName: ActionPlayerCheck
@@ -475,48 +563,23 @@ MonoBehaviour:
       games for which 'Player switching' has been allowed in the Settings Manager."
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionPlayMaker
-    category: 16
-    title: PlayMaker
-    description: Calls a specified Event within a PlayMaker FSM. Note that PlayMaker
-      is a separate Unity Asset, and the 'PlayMakerIsPresent' preprocessor must be
-      defined for this to work.
-    isEnabled: 1
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionQTE
-    category: 7
-    title: QTE
-    description: Initiates a Quick Time Event for a set duration. The QTE type can
-      either be a single key- press, holding a button down, or button-mashing. The
-      Input button must be defined in Unity's Input Manager.
-    isEnabled: 1
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionRandomCheck
-    category: 17
-    title: Check random number
-    description: "Picks a number at random between zero and a specified integer \u2013
-      the value of which determine which subsequent Action is run next."
-    isEnabled: 1
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionRename
-    category: 6
-    title: Rename
-    description: Renames a Hotspot, or an NPC with a Hotspot component.
-    isEnabled: 1
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionRunActionList
-    category: 0
-    title: Run
-    description: Runs any ActionList (either scene-based like Cutscenes, Triggers
-      and Interactions, or ActionList assets). If the new ActionList takes parameters,
-      this Action can be used to set them.
-    isEnabled: 1
-    color: {r: 1, g: 1, b: 1, a: 1}
   - fileName: ActionSaveCheck
     category: 13
     title: Check
     description: Queries the number of save files or profiles created, or if saving
       is possible.
+    isEnabled: 1
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - fileName: ActionManageProfiles
+    category: 13
+    title: Manage profiles
+    description: Creates, renames and deletes save game profiles.
+    isEnabled: 1
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - fileName: ActionManageSaves
+    category: 13
+    title: Manage saves
+    description: Renames and deletes save game files.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
   - fileName: ActionSaveHandle
@@ -525,20 +588,19 @@ MonoBehaviour:
     description: Saves and loads save-game files
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionScene
-    category: 14
-    title: Switch
-    description: 'Moves the Player to a new scene. The scene must be listed in Unity''s
-      Build Settings. By default, the screen will cut to black during the transition,
-      but the last frame of the current scene can instead be overlayed. This allows
-      for cinematic effects: if the next scene fades in, it will cause a crossfade
-      effect; if the next scene doesn''t fade, it will cause a straight cut.'
-    isEnabled: 1
-    color: {r: 1, g: 1, b: 1, a: 1}
   - fileName: ActionSceneAdd
     category: 14
     title: Add or remove
     description: Adds or removes a scene without affecting any other open scenes.
+    isEnabled: 1
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - fileName: ActionNavMesh
+    category: 14
+    title: Change setting
+    description: 'Changes any of the following scene parameters: NavMesh, Default
+      PlayerStart, Sorting Map, Tint Map, Cutscene On Load, and Cutscene On Start.
+      When the NavMesh is a Polygon Collider, this Action can also be used to add
+      or remove holes from it.'
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
   - fileName: ActionSceneCheck
@@ -553,12 +615,20 @@ MonoBehaviour:
     description: Queries the value of a scene attribute declared in the Scene Manager.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionSendMessage
-    category: 11
-    title: Send message
-    description: Sends a given message to a GameObject. Can be either a message commonly-used
-      by Adventure Creator (Interact, TurnOn, etc) or a custom one, with an integer
-      argument.
+  - fileName: ActionScene
+    category: 14
+    title: Switch
+    description: 'Moves the Player to a new scene. The scene must be listed in Unity''s
+      Build Settings. By default, the screen will cut to black during the transition,
+      but the last frame of the current scene can instead be overlayed. This allows
+      for cinematic effects: if the next scene fades in, it will cause a crossfade
+      effect; if the next scene doesn''t fade, it will cause a straight cut.'
+    isEnabled: 1
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - fileName: ActionVolume
+    category: 15
+    title: Change volume
+    description: Alters the 'relative volume' of any Sound object.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
   - fileName: ActionSound
@@ -568,96 +638,45 @@ MonoBehaviour:
       in or out.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
+  - fileName: ActionMusic
+    category: 15
+    title: Play music
+    description: Plays or queues music clips.
+    isEnabled: 1
+    color: {r: 1, g: 1, b: 1, a: 1}
   - fileName: ActionSoundShot
     category: 15
     title: Play one-shot
     description: Plays an AudioClip once without the need for a Sound object.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionSpeech
-    category: 4
-    title: Play speech
-    description: "Makes a Character talk, or \u2013 if no Character is specified \u2013
-      displays a message. Subtitles only appear if they are enabled from the Options
-      menu. A 'thinking' effect can be produced by opting to not play any animation."
+  - fileName: ActionMixerSnapshot
+    category: 15
+    title: Set Mixer snapshot
+    description: Transitions to a single or multiple Audio Mixer snapshots.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionSpeechStop
-    category: 4
-    title: Stop speech
-    description: Ends any currently-playing speech instantly.
+  - fileName: ActionCinemaDirector
+    category: 16
+    title: Cinema Director
+    description: Runs a Cutscene built with Cinema Director. Note that Cinema Director
+      is a separate Unity Asset, and the 'CinemaDirectorIsPresent' preprocessor must
+      be defined for this to work.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionSpeechWait
-    category: 4
-    title: Wait for speech
-    description: Waits until a particular character has stopped speaking.
+  - fileName: ActionPlayMaker
+    category: 16
+    title: PlayMaker
+    description: Calls a specified Event within a PlayMaker FSM. Note that PlayMaker
+      is a separate Unity Asset, and the 'PlayMakerIsPresent' preprocessor must be
+      defined for this to work.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionSpriteFade
-    category: 11
-    title: Fade sprite
-    description: Fades a sprite in or out.
-    isEnabled: 1
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionStopActionList
-    category: 0
-    title: Kill
-    description: Instantly stops a scene or asset-based ActionList from running.
-    isEnabled: 1
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionSystemLock
-    category: 5
-    title: Manage systems
-    description: Enables and disables individual systems within Adventure Creator,
-      such as Interactions. Can also be used to change the 'Movement method', as set
-      in the Settings Manager, but note that this change will not be recorded in save
-      games.
-    isEnabled: 1
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionTeleport
-    category: 11
-    title: Teleport
-    description: Moves a GameObject to a Marker instantly. Can also copy the Marker's
-      rotation. The final position can optionally be made relative to the active camera,
-      or the player. For example, if the Marker's position is (0, 0, 1) and Positon
-      relative to is set to Relative To Active Camera, then the object will be teleported
-      in front of the camera.
-    isEnabled: 1
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionTimescale
-    category: 5
-    title: Change timescale
-    description: Changes the timescale to a value between 0 and 1. This allows for
-      slow-motion effects.
-    isEnabled: 1
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionTintMap
-    category: 11
-    title: Change Tint map
-    description: Changes which Tint map a Follow Tint Map component uses, and the
-      intensity of the effect.
-    isEnabled: 1
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionTrackCheck
-    category: 10
-    title: Check track position
-    description: Queries how far a Draggable object is along its track.
-    isEnabled: 1
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionTrackSet
-    category: 10
-    title: Set track position
-    description: Moves a Draggable object along its track automatically to a specific
-      point. The effect will be disabled once the object reaches the intended point,
-      or the Action is run again with the speed value set as a negative number.
-    isEnabled: 1
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionTransform
-    category: 11
-    title: Transform
-    description: Transforms a GameObject over time, by or to a given amount, or towards
-      a Marker in the scene. The GameObject must have a Moveable script attached.
+  - fileName: ActionVarPreset
+    category: 17
+    title: Assign preset
+    description: Bulk-assigns the values of all Global or Local values to a predefined
+      preset within the Variables Manager.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
   - fileName: ActionVarCheck
@@ -666,6 +685,13 @@ MonoBehaviour:
     description: Queries the value of both Global and Local Variables declared in
       the Variables Manager. Variables can be compared with a fixed value, or with
       the values of other Variables.
+    isEnabled: 1
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - fileName: ActionRandomCheck
+    category: 17
+    title: Check random number
+    description: "Picks a number at random between zero and a specified integer \u2013
+      the value of which determine which subsequent Action is run next."
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
   - fileName: ActionVarCopy
@@ -682,13 +708,6 @@ MonoBehaviour:
     description: Uses the value of a Pop Up Variable to determine which Action is
       run next. An option for each possible value the Variable can take will be displayed,
       allowing for different subsequent Actions to run.
-    isEnabled: 1
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionVarPreset
-    category: 17
-    title: Assign preset
-    description: Bulk-assigns the values of all Global or Local values to a predefined
-      preset within the Variables Manager.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
   - fileName: ActionVarSequence
@@ -713,23 +732,16 @@ MonoBehaviour:
       the Variables Manager.
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionVisible
-    category: 11
-    title: Visibility
-    description: Hides or shows a GameObject. Can optionally affect the GameObject's
-      children.
+  - fileName: CheckLastPanelInput
+    category: 18
+    title: Check Panel Click
+    description: 
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionVisibleCheck
-    category: 11
-    title: Check visibility
-    description: Checks the visibility of a GameObject.
-    isEnabled: 1
-    color: {r: 1, g: 1, b: 1, a: 1}
-  - fileName: ActionVolume
-    category: 15
-    title: Change volume
-    description: Alters the 'relative volume' of any Sound object.
+  - fileName: CheckWinScenario
+    category: 18
+    title: Check Win Scenario
+    description: 
     isEnabled: 1
     color: {r: 1, g: 1, b: 1, a: 1}
   EnabledActions:

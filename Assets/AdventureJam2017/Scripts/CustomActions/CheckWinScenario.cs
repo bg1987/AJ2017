@@ -26,7 +26,7 @@ namespace AC
     [System.Serializable]
     public class CheckWinScenario : ActionCheck
     {
-        public string complete = "11233545";
+        public string complt = "11233545";
 
         public int constantID;
         public int parameterID;
@@ -46,7 +46,7 @@ namespace AC
 		 */
         public override bool CheckCondition()
         {
-            return CheckLastPanelInput.totalinput == complete;
+            return CheckLastPanelInput.totalinput == complt;
         }
     }
 }

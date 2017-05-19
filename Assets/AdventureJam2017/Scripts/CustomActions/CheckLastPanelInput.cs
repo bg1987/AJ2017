@@ -27,7 +27,7 @@ namespace AC
     public class CheckLastPanelInput : ActionCheck
     {
         public string input = "";
-        public string solution = "11233545";
+        public string sol = "11233545";
 
         public int constantID;
         public int parameterID;
@@ -56,7 +56,7 @@ namespace AC
             if (string.IsNullOrEmpty(input))
                 return false;
 
-            if (solution.StartsWith(totalinput))
+            if (sol.StartsWith(totalinput))
                 return true;
 
             totalinput = "";
