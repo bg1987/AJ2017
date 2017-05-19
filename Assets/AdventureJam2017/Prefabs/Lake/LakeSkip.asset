@@ -40,10 +40,12 @@ MonoBehaviour:
   - {fileID: 114186477229624110}
   - {fileID: 114847239610978692}
   - {fileID: 114354425952802724}
-  - {fileID: 114441348079598388}
   - {fileID: 114363985509889154}
   - {fileID: 114832775858152526}
   - {fileID: 114256700757838810}
+  - {fileID: 114785905847243582}
+  - {fileID: 114986235256112082}
+  - {fileID: 114687684217429544}
   isSkippable: 1
   actionListType: 0
   unfreezePauseMenus: 1
@@ -77,13 +79,13 @@ MonoBehaviour:
   isRunning: 0
   lastResult:
     resultAction: 2
-    skipAction: 17
+    skipAction: 27
     skipActionActual: {fileID: 0}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
   endAction: 2
-  skipAction: 17
-  skipActionActual: {fileID: 114631333289144368}
+  skipAction: 27
+  skipActionActual: {fileID: 114354425952802724}
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -93,7 +95,7 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 2566
+    y: 3504
     width: 300
     height: 21
   nodeHeight: 0
@@ -169,7 +171,7 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 2362
+    y: 3351
     width: 300
     height: 21
   nodeHeight: 0
@@ -228,12 +230,12 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 3622
+    y: 4694
     width: 300
     height: 21
   nodeHeight: 0
   parameterID: -1
-  timeToPause: 0.2
+  timeToPause: 0.4
 --- !u!114 &114128918952513976
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -275,12 +277,12 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 3270
+    y: 4342
     width: 300
     height: 21
   nodeHeight: 0
   parameterID: -1
-  timeToPause: 0.2
+  timeToPause: 0.4
 --- !u!114 &114148209966751908
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -322,12 +324,12 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 2918
+    y: 3990
     width: 300
     height: 21
   nodeHeight: 0
   parameterID: -1
-  timeToPause: 0.2
+  timeToPause: 0.4
 --- !u!114 &114186477229624110
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -353,7 +355,7 @@ MonoBehaviour:
   isRunning: 0
   lastResult:
     resultAction: 2
-    skipAction: 26
+    skipAction: -10
     skipActionActual: {fileID: 0}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
@@ -369,12 +371,12 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 3974
+    y: 5046
     width: 300
     height: 21
   nodeHeight: 0
   parameterID: -1
-  timeToPause: 0.2
+  timeToPause: 0.4
 --- !u!114 &114213768819569920
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -417,7 +419,7 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 954
+    y: 1694
     width: 335
     height: 271
   nodeHeight: 0
@@ -430,16 +432,16 @@ MonoBehaviour:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 2
-      time: 0.50318146
-      value: 0.004043579
-      inSlope: -1.6434809
-      outSlope: -1.6434809
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
     - serializedVersion: 2
       time: 1
-      value: 0.9936981
-      inSlope: 2
-      outSlope: 2
+      value: 1
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -448,11 +450,63 @@ MonoBehaviour:
   constantID: 289338
   linkedProp: {fileID: 0}
   newVector: {x: -0.41, y: -0.99, z: -0.15186}
-  transitionTime: 1.5
+  transitionTime: 0.4
   transitionTimeParameterID: -1
   transformType: 0
   moveMethod: 5
   toBy: 0
+--- !u!114 &114226726895889290
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc97f6c6b883c492b87b252ed835136e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 2
+  title: Face direction
+  description: "Makes a Character turn, either instantly or over time, to face a direction
+    relative to the camera \u2013 i.e. up, down, left or right."
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 2
+  skipAction: 18
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 300
+    height: 60
+  nodeHeight: 0
+  charToMoveParameterID: -1
+  charToMoveID: 0
+  isInstant: 0
+  direction: 0
+  charToMove: {fileID: 0}
+  isPlayer: 0
 --- !u!114 &114228109787454524
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -495,7 +549,7 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 602
+    y: 1259
     width: 335
     height: 271
   nodeHeight: 0
@@ -508,16 +562,16 @@ MonoBehaviour:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 2
-      time: 0.50318146
-      value: 0.004043579
-      inSlope: -1.6434809
-      outSlope: -1.6434809
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
     - serializedVersion: 2
       time: 1
-      value: 0.9936981
-      inSlope: 2
-      outSlope: 2
+      value: 1
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -526,7 +580,7 @@ MonoBehaviour:
   constantID: 289338
   linkedProp: {fileID: 0}
   newVector: {x: 0.7, y: -1.5, z: -0.15186}
-  transitionTime: 1.5
+  transitionTime: 0.4
   transitionTimeParameterID: -1
   transformType: 0
   moveMethod: 5
@@ -573,7 +627,7 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 1658
+    y: 2564
     width: 335
     height: 271
   nodeHeight: 0
@@ -586,16 +640,16 @@ MonoBehaviour:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 2
-      time: 0.50318146
-      value: 0.004043579
-      inSlope: -1.6434809
-      outSlope: -1.6434809
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
     - serializedVersion: 2
       time: 1
-      value: 0.9936981
-      inSlope: 2
-      outSlope: 2
+      value: 1
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -604,7 +658,7 @@ MonoBehaviour:
   constantID: 289338
   linkedProp: {fileID: 0}
   newVector: {x: -2.32, y: -0.26, z: -0.15186}
-  transitionTime: 1.5
+  transitionTime: 0.4
   transitionTimeParameterID: -1
   transformType: 0
   moveMethod: 5
@@ -631,18 +685,18 @@ MonoBehaviour:
   comment: 
   showOutputSockets: 1
   numSockets: 1
-  willWait: 0
+  willWait: 1
   defaultPauseTime: 0.1
   isRunning: 0
   lastResult:
     resultAction: 1
-    skipAction: -1
+    skipAction: -10
     skipActionActual: {fileID: 0}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
   endAction: 1
   skipAction: 31
-  skipActionActual: {fileID: 0}
+  skipActionActual: {fileID: 114256700757838810}
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -652,17 +706,17 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 4678
+    y: 5884
     width: 300
-    height: 194
+    height: 212
   nodeHeight: 0
   parameterID: -1
   constantID: 0
   editingAnimEngine: {fileID: 0}
   isPlayer: 1
-  animChar: {fileID: 0}
+  animChar: {fileID: 114027176508567914, guid: fc8c417e545d0ae4489fee3355f12179, type: 2}
   clip: {fileID: 0}
-  clip2D: idle_L
+  clip2D: idle_R
   clip2DParameterID: -1
   method: 0
   blendMode: 0
@@ -673,7 +727,7 @@ MonoBehaviour:
   newSound: {fileID: 0}
   newSoundParameterID: -1
   layerInt: 0
-  idleAfter: 1
+  idleAfter: 0
   idleAfterCustom: 0
   playMode: 0
   playModeBase: 1
@@ -701,7 +755,7 @@ MonoBehaviour:
   category: 5
   title: Wait
   description: Waits a set time before continuing.
-  isDisplayed: 0
+  isDisplayed: 1
   showComment: 0
   comment: 
   showOutputSockets: 1
@@ -727,12 +781,12 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 1607
+    y: 2430
     width: 300
-    height: 21
+    height: 104
   nodeHeight: 0
   parameterID: -1
-  timeToPause: 0.2
+  timeToPause: 0.4
 --- !u!114 &114307866310246664
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -775,7 +829,7 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 3321
+    y: 4393
     width: 335
     height: 271
   nodeHeight: 0
@@ -788,16 +842,16 @@ MonoBehaviour:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 2
-      time: 0.50318146
-      value: 0.004043579
-      inSlope: -2.6107848
-      outSlope: -2.6107848
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
     - serializedVersion: 2
       time: 1
-      value: 0.9936981
-      inSlope: 2
-      outSlope: 2
+      value: 1
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -806,7 +860,7 @@ MonoBehaviour:
   constantID: 289338
   linkedProp: {fileID: 0}
   newVector: {x: -0.41, y: -0.99, z: -0.15186}
-  transitionTime: 1.5
+  transitionTime: 0.4
   transitionTimeParameterID: -1
   transformType: 0
   moveMethod: 5
@@ -826,7 +880,7 @@ MonoBehaviour:
   category: 5
   title: Wait
   description: Waits a set time before continuing.
-  isDisplayed: 0
+  isDisplayed: 1
   showComment: 0
   comment: 
   showOutputSockets: 1
@@ -836,13 +890,13 @@ MonoBehaviour:
   isRunning: 0
   lastResult:
     resultAction: 2
-    skipAction: 18
+    skipAction: 17
     skipActionActual: {fileID: 0}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
   endAction: 2
-  skipAction: 18
-  skipActionActual: {fileID: 114019908223539292}
+  skipAction: 17
+  skipActionActual: {fileID: 114631333289144368}
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -852,12 +906,12 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 2515
+    y: 3555
     width: 300
-    height: 21
+    height: 104
   nodeHeight: 0
   parameterID: -1
-  timeToPause: 0.3
+  timeToPause: 0.24
 --- !u!114 &114363985509889154
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -883,7 +937,7 @@ MonoBehaviour:
   isRunning: 0
   lastResult:
     resultAction: 2
-    skipAction: 30
+    skipAction: -10
     skipActionActual: {fileID: 0}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
@@ -899,12 +953,12 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 4326
+    y: 5398
     width: 300
     height: 21
   nodeHeight: 0
   parameterID: -1
-  timeToPause: 0.2
+  timeToPause: 0.4
 --- !u!114 &114400461832607422
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -920,7 +974,7 @@ MonoBehaviour:
   category: 5
   title: Wait
   description: Waits a set time before continuing.
-  isDisplayed: 0
+  isDisplayed: 1
   showComment: 0
   comment: 
   showOutputSockets: 1
@@ -946,89 +1000,12 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 1959
+    y: 2865
     width: 300
-    height: 21
+    height: 104
   nodeHeight: 0
   parameterID: -1
-  timeToPause: 0.2
---- !u!114 &114441348079598388
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e71317434ca91481a8e97d91e89df8c0, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 2
-  title: Animate
-  description: Affects a Character's animation. Can play or stop a custom animation,
-    change a standard animation (idle, walk or run), change a footstep sound, or revert
-    the Character to idle.
-  isDisplayed: 0
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 2
-    skipAction: 27
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 2
-  skipAction: 27
-  skipActionActual: {fileID: 114354425952802724}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 1
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 2464
-    width: 300
-    height: 21
-  nodeHeight: 0
-  parameterID: -1
-  constantID: 0
-  editingAnimEngine: {fileID: 0}
-  isPlayer: 1
-  animChar: {fileID: 0}
-  clip: {fileID: 0}
-  clip2D: idle_R
-  clip2DParameterID: -1
-  method: 0
-  blendMode: 0
-  layer: 0
-  standard: 0
-  includeDirection: 0
-  changeSound: 0
-  newSound: {fileID: 0}
-  newSoundParameterID: -1
-  layerInt: 0
-  idleAfter: 1
-  idleAfterCustom: 0
-  playMode: 0
-  playModeBase: 1
-  fadeTime: 0.5
-  changeSpeed: 0
-  newSpeed: 0
-  methodMecanim: 0
-  mecanimCharParameter: 0
-  mecanimParameterType: 0
-  parameterName: 
-  parameterNameID: -1
-  parameterValue: 0
+  timeToPause: 0.4
 --- !u!114 &114576499456197630
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1072,7 +1049,7 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 2311
+    y: 3300
     width: 300
     height: 21
   nodeHeight: 0
@@ -1195,7 +1172,7 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 2617
+    y: 3689
     width: 335
     height: 271
   nodeHeight: 0
@@ -1208,16 +1185,16 @@ MonoBehaviour:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 2
-      time: 0.50318146
-      value: 0.004043579
-      inSlope: -2.6107848
-      outSlope: -2.6107848
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
     - serializedVersion: 2
       time: 1
-      value: 0.9936981
-      inSlope: 2
-      outSlope: 2
+      value: 1
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -1226,11 +1203,58 @@ MonoBehaviour:
   constantID: 289338
   linkedProp: {fileID: 0}
   newVector: {x: -2.32, y: -0.26, z: -0.15186}
-  transitionTime: 1.5
+  transitionTime: 0.4
   transitionTimeParameterID: -1
   transformType: 0
   moveMethod: 5
   toBy: 0
+--- !u!114 &114687684217429544
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9289eb0ca58ef471f9062a5f77161403, type: 3}
+  m_Name: Wait
+  m_EditorClassIdentifier: 
+  id: 2
+  category: 5
+  title: Wait
+  description: Waits a set time before continuing.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 2
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 2
+  skipAction: 31
+  skipActionActual: {fileID: 114256700757838810}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 5750
+    width: 300
+    height: 104
+  nodeHeight: 0
+  parameterID: -1
+  timeToPause: 0.2
 --- !u!114 &114692171682278988
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1246,7 +1270,7 @@ MonoBehaviour:
   category: 5
   title: Wait
   description: Waits a set time before continuing.
-  isDisplayed: 0
+  isDisplayed: 1
   showComment: 0
   comment: 
   showOutputSockets: 1
@@ -1272,12 +1296,12 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 551
+    y: 1125
     width: 300
-    height: 21
+    height: 104
   nodeHeight: 0
   parameterID: -1
-  timeToPause: 0.2
+  timeToPause: 0.4
 --- !u!114 &114710831525886232
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1305,13 +1329,13 @@ MonoBehaviour:
   isRunning: 0
   lastResult:
     resultAction: 2
-    skipAction: 3
+    skipAction: 33
     skipActionActual: {fileID: 0}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
   endAction: 2
-  skipAction: 3
-  skipActionActual: {fileID: 114809329917410530}
+  skipAction: 33
+  skipActionActual: {fileID: 114986235256112082}
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -1322,7 +1346,7 @@ MonoBehaviour:
     serializedVersion: 2
     x: 14
     y: 148
-    width: 300
+    width: 335
     height: 201
   nodeHeight: 0
   charToMoveParameterID: -1
@@ -1377,7 +1401,7 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 250
+    y: 824
     width: 335
     height: 271
   nodeHeight: 0
@@ -1390,16 +1414,16 @@ MonoBehaviour:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 2
-      time: 0.50318146
-      value: 0.004043579
-      inSlope: -1.6434809
-      outSlope: -1.6434809
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
     - serializedVersion: 2
       time: 1
-      value: 0.9936981
-      inSlope: 2
-      outSlope: 2
+      value: 1
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -1408,11 +1432,58 @@ MonoBehaviour:
   constantID: 289338
   linkedProp: {fileID: 0}
   newVector: {x: 2.11, y: -2.06, z: -0.15186}
-  transitionTime: 1.5
+  transitionTime: 0.4
   transitionTimeParameterID: -1
   transformType: 0
   moveMethod: 5
   toBy: 0
+--- !u!114 &114785905847243582
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9289eb0ca58ef471f9062a5f77161403, type: 3}
+  m_Name: Wait
+  m_EditorClassIdentifier: 
+  id: 1
+  category: 5
+  title: Wait
+  description: Waits a set time before continuing.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 2
+    skipAction: 2
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 2
+  skipAction: 2
+  skipActionActual: {fileID: 114776790025746922}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 690
+    width: 300
+    height: 104
+  nodeHeight: 0
+  parameterID: -1
+  timeToPause: 0.24
 --- !u!114 &114802527733657930
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1444,7 +1515,7 @@ MonoBehaviour:
     linkedAsset: {fileID: 0}
   endAction: 2
   skipAction: 28
-  skipActionActual: {fileID: 114441348079598388}
+  skipActionActual: {fileID: 0}
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -1454,7 +1525,7 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 2413
+    y: 3402
     width: 300
     height: 21
   nodeHeight: 0
@@ -1490,13 +1561,13 @@ MonoBehaviour:
   isRunning: 0
   lastResult:
     resultAction: 2
-    skipAction: 2
+    skipAction: 32
     skipActionActual: {fileID: 0}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
   endAction: 2
-  skipAction: 2
-  skipActionActual: {fileID: 114776790025746922}
+  skipAction: 32
+  skipActionActual: {fileID: 114785905847243582}
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -1506,7 +1577,7 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 199
+    y: 639
     width: 300
     height: 21
   nodeHeight: 0
@@ -1563,10 +1634,10 @@ MonoBehaviour:
   numSockets: 1
   willWait: 1
   defaultPauseTime: 0.1
-  isRunning: 0
+  isRunning: 1
   lastResult:
     resultAction: 2
-    skipAction: 25
+    skipAction: -10
     skipActionActual: {fileID: 0}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
@@ -1582,7 +1653,7 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 3673
+    y: 4745
     width: 335
     height: 271
   nodeHeight: 0
@@ -1595,16 +1666,16 @@ MonoBehaviour:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 2
-      time: 0.50318146
-      value: 0.004043579
-      inSlope: -2.6107848
-      outSlope: -2.6107848
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
     - serializedVersion: 2
       time: 1
-      value: 0.9936981
-      inSlope: 2
-      outSlope: 2
+      value: 1
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -1613,7 +1684,7 @@ MonoBehaviour:
   constantID: 289338
   linkedProp: {fileID: 0}
   newVector: {x: 0.7, y: -1.5, z: -0.15186}
-  transitionTime: 1.5
+  transitionTime: 0.4
   transitionTimeParameterID: -1
   transformType: 0
   moveMethod: 5
@@ -1644,13 +1715,13 @@ MonoBehaviour:
   isRunning: 0
   lastResult:
     resultAction: 2
-    skipAction: 31
+    skipAction: -10
     skipActionActual: {fileID: 0}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
   endAction: 2
-  skipAction: 31
-  skipActionActual: {fileID: 114256700757838810}
+  skipAction: 34
+  skipActionActual: {fileID: 114687684217429544}
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -1659,8 +1730,8 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 13
-    y: 4380
+    x: 14
+    y: 5449
     width: 335
     height: 271
   nodeHeight: 0
@@ -1673,16 +1744,16 @@ MonoBehaviour:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 2
-      time: 0.50318146
-      value: 0.004043579
-      inSlope: -2.6107848
-      outSlope: -2.6107848
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
     - serializedVersion: 2
       time: 1
-      value: 0.9936981
-      inSlope: 2
-      outSlope: 2
+      value: 1
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -1691,7 +1762,7 @@ MonoBehaviour:
   constantID: 289338
   linkedProp: {fileID: 0}
   newVector: {x: 3.5, y: -2.89, z: -0.15186}
-  transitionTime: 1.5
+  transitionTime: 0.4
   transitionTimeParameterID: -1
   transformType: 0
   moveMethod: 5
@@ -1722,7 +1793,7 @@ MonoBehaviour:
   isRunning: 0
   lastResult:
     resultAction: 2
-    skipAction: 29
+    skipAction: -10
     skipActionActual: {fileID: 0}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
@@ -1738,7 +1809,7 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 4025
+    y: 5097
     width: 335
     height: 271
   nodeHeight: 0
@@ -1751,16 +1822,16 @@ MonoBehaviour:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 2
-      time: 0.50318146
-      value: 0.004043579
-      inSlope: -2.6107848
-      outSlope: -2.6107848
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
     - serializedVersion: 2
       time: 1
-      value: 0.9936981
-      inSlope: 2
-      outSlope: 2
+      value: 1
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -1769,7 +1840,7 @@ MonoBehaviour:
   constantID: 289338
   linkedProp: {fileID: 0}
   newVector: {x: 2.11, y: -2.06, z: -0.15186}
-  transitionTime: 1.5
+  transitionTime: 0.4
   transitionTimeParameterID: -1
   transformType: 0
   moveMethod: 5
@@ -1789,7 +1860,7 @@ MonoBehaviour:
   category: 5
   title: Wait
   description: Waits a set time before continuing.
-  isDisplayed: 0
+  isDisplayed: 1
   showComment: 0
   comment: 
   showOutputSockets: 1
@@ -1815,12 +1886,12 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 1255
+    y: 1995
     width: 300
-    height: 21
+    height: 104
   nodeHeight: 0
   parameterID: -1
-  timeToPause: 0.2
+  timeToPause: 0.4
 --- !u!114 &114879399252932214
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1863,7 +1934,7 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 2010
+    y: 2999
     width: 335
     height: 271
   nodeHeight: 0
@@ -1876,16 +1947,16 @@ MonoBehaviour:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 2
-      time: 0.50318146
-      value: 0.004043579
-      inSlope: -1.6434809
-      outSlope: -1.6434809
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
     - serializedVersion: 2
       time: 1
-      value: 0.9936981
-      inSlope: 2
-      outSlope: 2
+      value: 1
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -1894,7 +1965,7 @@ MonoBehaviour:
   constantID: 289338
   linkedProp: {fileID: 0}
   newVector: {x: -3.22, y: 0.14, z: -0.15186}
-  transitionTime: 1.5
+  transitionTime: 0.4
   transitionTimeParameterID: -1
   transformType: 0
   moveMethod: 5
@@ -1941,7 +2012,7 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 1306
+    y: 2129
     width: 335
     height: 271
   nodeHeight: 0
@@ -1954,16 +2025,16 @@ MonoBehaviour:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 2
-      time: 0.50318146
-      value: 0.004043579
-      inSlope: -1.6434809
-      outSlope: -1.6434809
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
     - serializedVersion: 2
       time: 1
-      value: 0.9936981
-      inSlope: 2
-      outSlope: 2
+      value: 1
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -1972,7 +2043,7 @@ MonoBehaviour:
   constantID: 289338
   linkedProp: {fileID: 0}
   newVector: {x: -1.37, y: -0.57, z: -0.15186}
-  transitionTime: 1.5
+  transitionTime: 0.4
   transitionTimeParameterID: -1
   transformType: 0
   moveMethod: 5
@@ -2019,7 +2090,7 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 2969
+    y: 4041
     width: 335
     height: 271
   nodeHeight: 0
@@ -2032,14 +2103,14 @@ MonoBehaviour:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 2
-      time: 0.50318146
-      value: 0.004043579
-      inSlope: -2.6107848
-      outSlope: -2.6107848
+      time: 0.4624977
+      value: -0.038467407
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
     - serializedVersion: 2
       time: 1
-      value: 0.9936981
+      value: 1
       inSlope: 2
       outSlope: 2
       tangentMode: 0
@@ -2050,11 +2121,88 @@ MonoBehaviour:
   constantID: 289338
   linkedProp: {fileID: 0}
   newVector: {x: -1.37, y: -0.57, z: -0.15186}
-  transitionTime: 1.5
+  transitionTime: 0.4
   transitionTimeParameterID: -1
   transformType: 0
   moveMethod: 5
   toBy: 0
+--- !u!114 &114986235256112082
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e71317434ca91481a8e97d91e89df8c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 2
+  title: Animate
+  description: Affects a Character's animation. Can play or stop a custom animation,
+    change a standard animation (idle, walk or run), change a footstep sound, or revert
+    the Character to idle.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 1
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 2
+    skipAction: 3
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 2
+  skipAction: 3
+  skipActionActual: {fileID: 114809329917410530}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 379
+    width: 300
+    height: 230
+  nodeHeight: 0
+  parameterID: -1
+  constantID: 0
+  editingAnimEngine: {fileID: 0}
+  isPlayer: 1
+  animChar: {fileID: 114027176508567914, guid: fc8c417e545d0ae4489fee3355f12179, type: 2}
+  clip: {fileID: 0}
+  clip2D: idle_L
+  clip2DParameterID: -1
+  method: 0
+  blendMode: 0
+  layer: 0
+  standard: 0
+  includeDirection: 0
+  changeSound: 0
+  newSound: {fileID: 0}
+  newSoundParameterID: -1
+  layerInt: 0
+  idleAfter: 0
+  idleAfterCustom: 0
+  playMode: 0
+  playModeBase: 1
+  fadeTime: 0
+  changeSpeed: 0
+  newSpeed: 0
+  methodMecanim: 0
+  mecanimCharParameter: 0
+  mecanimParameterType: 0
+  parameterName: 
+  parameterNameID: -1
+  parameterValue: 0
 --- !u!114 &114988019420110180
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2070,7 +2218,7 @@ MonoBehaviour:
   category: 5
   title: Wait
   description: Waits a set time before continuing.
-  isDisplayed: 0
+  isDisplayed: 1
   showComment: 0
   comment: 
   showOutputSockets: 1
@@ -2096,9 +2244,9 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 903
+    y: 1560
     width: 300
-    height: 21
+    height: 104
   nodeHeight: 0
   parameterID: -1
-  timeToPause: 0.2
+  timeToPause: 0.4
