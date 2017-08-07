@@ -34,8 +34,8 @@ public class LilypadsPetal : MonoBehaviour {
     void Start () {
 		
 	}
-	
-    public void OpenLilypad()
+
+    public void OpenLily()
     {
         switch (StaffHeadColor.CurrentColorIndex)
         {
