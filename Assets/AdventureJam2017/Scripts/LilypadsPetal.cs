@@ -13,6 +13,8 @@ enum LilyState
 
 public class LilypadsPetal : MonoBehaviour {
 
+	public const float timeBetweenLilies = 1f;
+
     [Header("Yellow Path")]
     public LilypadsPetal nextYellowLily;
 
@@ -37,73 +39,116 @@ public class LilypadsPetal : MonoBehaviour {
 
     public void OpenLily()
     {
-        switch (StaffHeadColor.CurrentColorIndex)
-        {
-            case 0:
-                SwitchToNone();
-                break;
-            case 1:
-                SwitchToGreen();
-                break;
-            case 2:
-                SwitchToPurple();
-                break;
-            case 3:
-                SwitchToYellow();
-                break;
-            default:
-                break;
-        }
+		//	Move if they match
+		if(StaffHeadColor.CurrentColorIndex == (int)currentState && currentState != LilyState.Closed)
+		{
+			StartCoroutine(StartMovingSequence());
+		}
+		else
+		{
+			//	Switch the color if they don't
+			switch (StaffHeadColor.CurrentColorIndex)
+			{
+			case 0:
+				StartCoroutine(ActivateAllLilliesSequence(LilyState.Closed));
+				break;
+			case 1:
+				StartCoroutine(ActivateAllLilliesSequence(LilyState.Green));
+				break;
+			case 2:
+				StartCoroutine(ActivateAllLilliesSequence(LilyState.Purple));
+				break;
+			case 3:
+				StartCoroutine(ActivateAllLilliesSequence(LilyState.Yellow));
+				break;
+			default:
+				break;
+			}
+		}
+
     }
 
-    private void SwitchToYellow()
-    {
-        currentState = LilyState.Yellow;
-        ClosedState.SetActive(false);
-        OpenedState.SetActive(true);
-    }
+	IEnumerator StartMovingSequence() {
+		LilypadsPetal currentLily = this;
+		Transform player = AC.KickStarter.player.transform;
 
-    private void SwitchToPurple()
-    {
-        currentState = LilyState.Purple;
-        ClosedState.SetActive(false);
-        OpenedState.SetActive(true);
-    }
+		while(currentLily != null)
+		{
+			player.transform.position = currentLily.transform.position;
 
-    /// <summary>
-    /// This is the return path back to start from every spot
-    /// </summary>
-    private void SwitchToGreen()
-    {
-        currentState = LilyState.Green;
-        ClosedState.SetActive(false);
-        OpenedState.SetActive(true);
-    }
+			yield return new WaitForSeconds(1f);
 
-    private void SwitchToNone()
-    {
-        currentState = LilyState.Closed;
-        ClosedState.SetActive(true);
-        OpenedState.SetActive(false);
-    }
+			switch (currentState) {
+			case LilyState.Green:
+				currentLily = currentLily.nextGreenLily;
+				break;
+			case LilyState.Purple:
+				currentLily = currentLily.nextPurpleLily;
+				break;
+			case LilyState.Yellow:
+				currentLily = currentLily.nextYellowLily;
+				break;
+			default:
+				currentLily = null;
+				break;
+			}
+		}
+	}
+		
+	IEnumerator ActivateAllLilliesSequence(LilyState newState)
+	{
+		LilypadsPetal currentLily = this;
+		LilyState oldState = currentLily.currentState;
 
-    public bool HasMoreJumps
-    {
-        get
-        {
-            switch (currentState)
-            {
-                case LilyState.Closed:
-                    return false;
-                case LilyState.Green:
-                    return nextGreenLily != null;
-                case LilyState.Purple:
-                    return nextPurpleLily != null;
-                case LilyState.Yellow:
-                    return nextYellowLily != null;
-                default:
-                    return false;
-            }
-        }
-    }
+		while(currentLily != null)
+		{
+			currentLily.ActivateLilyState(newState, currentLily);
+
+			yield return new WaitForSeconds(timeBetweenLilies);
+
+			//	Traverse according to old state
+			switch (oldState) {
+			case LilyState.Green:
+				currentLily = currentLily.nextGreenLily;
+				break;
+			case LilyState.Purple:
+				currentLily = currentLily.nextPurpleLily;
+				break;
+			case LilyState.Yellow:
+				currentLily = currentLily.nextYellowLily;
+				break;
+			default:
+				currentLily = null;
+				break;
+			}
+		}
+	}
+
+	void ActivateLilyState(LilyState state, LilypadsPetal lilypad)
+	{
+		switch (state) {
+		case LilyState.Closed:
+			lilypad.currentState = LilyState.Closed;
+			lilypad.ClosedState.SetActive(true);
+			lilypad.OpenedState.SetActive(false);
+			break;
+		case LilyState.Green:
+			lilypad.currentState = LilyState.Green;
+			lilypad.ClosedState.SetActive(false);
+			lilypad.OpenedState.SetActive(true);
+			break;
+		case LilyState.Purple:
+			lilypad.currentState = LilyState.Purple;
+			lilypad.ClosedState.SetActive(false);
+			lilypad.OpenedState.SetActive(true);
+			break;
+		case LilyState.Yellow:
+			lilypad.currentState = LilyState.Yellow;
+			lilypad.ClosedState.SetActive(false);
+			lilypad.OpenedState.SetActive(true);
+			break;
+		default:
+			break;
+		}
+	}
 }
