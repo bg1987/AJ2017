@@ -13,9 +13,12 @@ public class TargetMushroom : MonoBehaviour {
     private float minG;
     private float minB;
 
+    private Transform imageTrans;
+
     public void Awake()
     {
-        particles.Stop();
+        imageTrans = Image.gameObject.transform;
+        Reset();
     }
 
     public void AddColor(Color c)
@@ -26,24 +29,25 @@ public class TargetMushroom : MonoBehaviour {
         color.r = Mathf.Max(color.r, minR);
         color.g = Mathf.Max(color.g, minG);
         color.b = Mathf.Max(color.b, minB);
-
+        color.a = color.a + 0.5f / 6f;
         Image.color = color;
-        if (color == Color.white)
-            Reset();
-
-        CheckMatch();
+        imageTrans.localScale +=Vector3.one * 0.8f / 6;
+        
+        if (!CheckMatch() && (color == Color.white || color.a > 0.999f))//close enough, floating point rounding errors.
+            LeanTween.delayedCall(1,Reset);
     }
 
     public void Reset()
     {
-        Image.color = new Color(1, 1, 1, 1);
+        Image.color = new Color(1, 1, 1, 0.5f);
         minR = 0;
         minG = 0;
         minB = 0;
+        imageTrans.localScale = Vector3.one * 0.2f;
         particles.Stop();
     }
 
-    public void CheckMatch()
+    public bool CheckMatch()
     {
         if(Image.color == TargetColor)
         {
@@ -51,7 +55,9 @@ public class TargetMushroom : MonoBehaviour {
             var parts = particles.main;
             parts.startColor = TargetColor;
             particles.Play();
+            return true;
         }
+        return false;
         
     }
 
