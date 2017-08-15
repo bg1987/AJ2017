@@ -1,9 +1,11 @@
-﻿using System;
+﻿using AC;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
-enum LilyState
+public enum LilyState
 {
     Closed = 0,
     Green = 1,
@@ -13,19 +15,11 @@ enum LilyState
 
 public class LilypadsPetal : MonoBehaviour {
 
-	public const float timeBetweenLilies = 0.3f;
+    public const float timeBetweenLilies = 0.3f;
 
-    [Header("Yellow Path")]
-    public LilypadsPetal nextYellowLily;
-    public LilypadsPetal prevYellowLily;
+    public LilyState lilyColor;
 
-    [Header("Purple Path")]
-    public LilypadsPetal nextPurpleLily;
-    public LilypadsPetal prevPurpleLily;
-
-    [Header("Return Path")]
-    public LilypadsPetal nextGreenLily;
-    public LilypadsPetal prevGreenLily;
+    public LilypadsPetal[] AffectedLillies;
 
     [Space]
     [Header("Refs")]
@@ -33,200 +27,40 @@ public class LilypadsPetal : MonoBehaviour {
     public GameObject OpenedState;
     public GameObject Gem;
 
-    private LilyState currentState;
+    LilyState currentState;
 
-    // Use this for initialization
-    void Start () {
-		
-	}
+    internal void UpdateAffectedLilies()
+    {
+        foreach (var lily in AffectedLillies)
+        {
+            UpdateLily(lily);
+        }
+    }
+
+    public static void UpdateLily(LilypadsPetal lily)
+    {
+        if (StaffHeadColor.CurrentColorIndex == (int)lily.lilyColor)
+        {
+            lily.ActivateLilyState(lily.lilyColor);
+        }
+        else if (lily.currentState != LilyState.Closed)
+        {
+            lily.ActivateLilyState(LilyState.Closed);
+        }
+    }
 
     public void OpenLily()
     {
-		//	Move if they match
-		if(StaffHeadColor.CurrentColorIndex == (int)currentState && currentState != LilyState.Closed)
-		{
-            switch (StaffHeadColor.CurrentColorIndex)
-            {
-                case 1:
-                    if (prevGreenLily != null)
-                        StartCoroutine(MoveBackSequence());
-                    else if (prevGreenLily == null && nextGreenLily != null)
-                        StartCoroutine(StartMovingForwardSequence());
-                    break;
-                case 2:
-                    if (prevPurpleLily != null)
-                        StartCoroutine(MoveBackSequence());
-                    else if (prevPurpleLily == null && nextPurpleLily != null)
-                        StartCoroutine(StartMovingForwardSequence());
-                    break;
-                case 3:
-                    if (prevYellowLily != null)
-                        StartCoroutine(MoveBackSequence());
-                    else if (prevYellowLily == null && nextYellowLily != null)
-                        StartCoroutine(StartMovingForwardSequence());
-                    break;
-                default:
-                    break;
-            }
-		}
-		else
-		{
-			//	Switch the color if they don't
-			switch (StaffHeadColor.CurrentColorIndex)
-			{
-			case 0:
-				StartCoroutine(ActivateAllLilliesSequence(LilyState.Closed));
-				break;
-			case 1:
-                if(nextGreenLily != null && prevGreenLily == null)
-				    StartCoroutine(ActivateAllLilliesSequence(LilyState.Green));
-                else if(nextGreenLily == null && prevGreenLily != null)
-                    StartCoroutine(ActivateAllLilliesSequence(LilyState.Green));
-                break;
-			case 2:
-                    if (nextPurpleLily != null && prevPurpleLily == null)
-                        StartCoroutine(ActivateAllLilliesSequence(LilyState.Purple));
-                    if (nextPurpleLily == null && prevPurpleLily != null)
-                        StartCoroutine(ActivateAllLilliesSequence(LilyState.Purple));
-                    break;
-			case 3:
-                    if (nextYellowLily != null && prevYellowLily == null)
-                        StartCoroutine(ActivateAllLilliesSequence(LilyState.Yellow));
-                    if (nextYellowLily == null && prevYellowLily != null)
-                        StartCoroutine(ActivateAllLilliesSequence(LilyState.Yellow));
-                    break;
-			default:
-				break;
-			}
-		}
-
-    }
-
-	IEnumerator StartMovingForwardSequence() {
-		LilypadsPetal currentLily = this;
-		Transform player = AC.KickStarter.player.transform;
-
-		while(currentLily != null)
-		{
-			player.transform.position = currentLily.transform.position;
-
-			yield return new WaitForSeconds(1f);
-
-			switch (currentState) {
-			case LilyState.Green:
-				currentLily = currentLily.nextGreenLily;
-				break;
-			case LilyState.Purple:
-				currentLily = currentLily.nextPurpleLily;
-				break;
-			case LilyState.Yellow:
-				currentLily = currentLily.nextYellowLily;
-				break;
-			default:
-				currentLily = null;
-				break;
-			}
-		}
-	}
-
-    IEnumerator MoveBackSequence()
-    {
-        LilypadsPetal currentLily = this;
-        Transform player = AC.KickStarter.player.transform;
-
-        while (currentLily != null)
+        //	Move if they match
+        if (StaffHeadColor.CurrentColorIndex == (int)currentState && currentState != LilyState.Closed)
         {
-            player.transform.position = currentLily.transform.position;
-
-            yield return new WaitForSeconds(0.7f);
-
-            switch (currentState)
-            {
-                case LilyState.Green:
-                    currentLily = currentLily.prevGreenLily;
-                    break;
-                case LilyState.Purple:
-                    currentLily = currentLily.prevPurpleLily;
-                    break;
-                case LilyState.Yellow:
-                    currentLily = currentLily.prevYellowLily;
-                    break;
-                default:
-                    currentLily = null;
-                    break;
-            }
+            KickStarter.player.transform.position = transform.position;
+            LilyPadContainer.instance.currentlySelectedLily = this;
+            UpdateAffectedLilies();
         }
     }
 
-    IEnumerator ActivateAllLilliesSequence(LilyState newState)
-	{
-		LilypadsPetal currentLily = this;
-
-        //LilyState oldState = currentLily.currentState == LilyState.Closed ? newState : currentLily.currentState;
-        LilyState oldState = currentState;
-        currentLily.ActivateLilyState(newState);
-
-        //  Close previous path
-        while (currentLily != null)
-        {
-            switch (oldState)
-            {
-                case LilyState.Green:
-                    currentLily = currentLily.nextGreenLily;
-                    break;
-                case LilyState.Purple:
-                    currentLily = currentLily.nextPurpleLily;
-                    break;
-                case LilyState.Yellow:
-                    currentLily = currentLily.nextYellowLily;
-                    break;
-                default:
-                    currentLily = null;
-                    break;
-            }
-
-            if(currentLily != null)
-            {
-                currentLily.ActivateLilyState(LilyState.Closed);
-
-                yield return new WaitForSeconds(timeBetweenLilies);     
-            }
-        }
-
-        if (newState != LilyState.Closed)
-        {
-            currentLily = this;
-
-            while (currentLily != null)
-		    {
-                //	Traverse according to old state
-                switch (newState)
-                {
-                    case LilyState.Green:
-                        currentLily = currentLily.nextGreenLily;
-                        break;
-                    case LilyState.Purple:
-                        currentLily = currentLily.nextPurpleLily;
-                        break;
-                    case LilyState.Yellow:
-                        currentLily = currentLily.nextYellowLily;
-                        break;
-                    default:
-                        currentLily = null;
-                        break;
-                }
-
-                if(currentLily != null)
-                {
-                    currentLily.ActivateLilyState(newState);
-
-			        yield return new WaitForSeconds(timeBetweenLilies);
-                }
-		    }
-        }
-	}
-
-	void ActivateLilyState(LilyState state)
+    void ActivateLilyState(LilyState state)
 	{
 		switch (state) {
 		    case LilyState.Closed:
