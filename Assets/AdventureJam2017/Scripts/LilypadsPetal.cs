@@ -10,7 +10,8 @@ public enum LilyState
     Closed = 0,
     Green = 1,
     Purple = 2,
-    Yellow = 3
+    Yellow = 3,
+	Complete = 4
 }
 
 public class LilypadsPetal : MonoBehaviour {
@@ -29,6 +30,9 @@ public class LilypadsPetal : MonoBehaviour {
 
     LilyState currentState;
 
+	public int StepsToComplete;
+	int currentSteps;
+
     internal void UpdateAffectedLilies()
     {
         foreach (var lily in AffectedLillies)
@@ -37,8 +41,28 @@ public class LilypadsPetal : MonoBehaviour {
         }
     }
 
+	public void Reset ()
+	{
+		currentSteps = 0;
+	}
+
     public static void UpdateLily(LilypadsPetal lily)
     {
+		switch (lily.StepsToComplete - lily.currentSteps) {
+			case 0:
+				lily.lilyColor = LilyState.Complete;
+				break;
+			case 1:
+				lily.lilyColor = LilyState.Green;
+				break;
+			case 2:
+				lily.lilyColor = LilyState.Purple;
+				break;
+			case 3:
+				lily.lilyColor = LilyState.Yellow;
+				break;
+		}
+
         if (StaffHeadColor.CurrentColorIndex == (int)lily.lilyColor)
         {
             lily.ActivateLilyState(lily.lilyColor);
@@ -49,15 +73,24 @@ public class LilypadsPetal : MonoBehaviour {
         }
     }
 
+	public void StepAway() {
+		currentSteps ++;
+	}
+
     public void OpenLily()
     {
         //	Move if they match
         if (StaffHeadColor.CurrentColorIndex == (int)currentState && currentState != LilyState.Closed)
-        {
+		{
             KickStarter.player.transform.position = transform.position;
+			LilyPadContainer.instance.currentlySelectedLily.StepAway();
             LilyPadContainer.instance.currentlySelectedLily = this;
             UpdateAffectedLilies();
         }
+		else if(currentState == LilyState.Complete)
+		{
+			LilyPadContainer.instance.ResetMaze();
+		}
     }
 
     void ActivateLilyState(LilyState state)
@@ -90,6 +123,12 @@ public class LilypadsPetal : MonoBehaviour {
                 ClosedState.SetActive(false);
 			    OpenedState.SetActive(true);
 			    break;
+			case LilyState.Complete:
+				currentState = LilyState.Closed;
+				Gem.SetActive(false);
+				ClosedState.SetActive(true);
+				OpenedState.SetActive(false);
+				break;
 		    default:
 			    break;
 		}

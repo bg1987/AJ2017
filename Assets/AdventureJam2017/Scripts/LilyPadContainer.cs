@@ -8,6 +8,7 @@ public class LilyPadContainer : MonoBehaviour {
 
     public LilypadsPetal startingLily;
     public LilypadsPetal currentlySelectedLily;
+	public LilypadsPetal[] AllLilies;
 
     public void Awake()
     {
@@ -31,6 +32,18 @@ public class LilyPadContainer : MonoBehaviour {
             currentlySelectedLily.UpdateAffectedLilies();
         }
     }
+
+	public void ResetMaze ()
+	{
+		AC.KickStarter.player.transform.position = (startingLily.transform.position + Vector3.right);
+
+		foreach (var l in AllLilies) {
+			l.Reset();
+		}
+
+		currentlySelectedLily = null;
+		UpdateLilyState();
+	}
 
     private void OnDisable()
     {
