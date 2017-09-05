@@ -27,6 +27,7 @@ public class LilypadsPetal : MonoBehaviour {
     public GameObject ClosedState;
     public GameObject OpenedState;
     public GameObject Gem;
+    public GameObject CompleteEmitter;
 
     LilyState currentState;
 
@@ -44,6 +45,7 @@ public class LilypadsPetal : MonoBehaviour {
 	public void Reset ()
 	{
 		currentSteps = 0;
+        ActivateLilyState(LilyState.Closed);
 	}
 
     public static void UpdateLily(LilypadsPetal lily)
@@ -63,7 +65,7 @@ public class LilypadsPetal : MonoBehaviour {
 				break;
 		}
 
-        if (StaffHeadColor.CurrentColorIndex == (int)lily.lilyColor)
+        if (StaffHeadColor.CurrentColorIndex == (int)lily.lilyColor || lily.lilyColor == LilyState.Complete)
         {
             lily.ActivateLilyState(lily.lilyColor);
         }
@@ -73,24 +75,37 @@ public class LilypadsPetal : MonoBehaviour {
         }
     }
 
-	public void StepAway() {
-		currentSteps ++;
+	public void StepAway(LilypadsPetal target) {
+        foreach (var lily in AffectedLillies)
+        {
+            if(lily != target)
+            {
+                if (lily.lilyColor != LilyState.Complete)
+                    lily.ActivateLilyState(LilyState.Closed);
+                else
+                    lily.ActivateLilyState(LilyState.Complete);
+            }
+        }
+        currentSteps ++;
 	}
 
     public void OpenLily()
     {
+        if (currentState == LilyState.Complete)
+        {
+            LilyPadContainer.instance.ResetMaze();
+            return;
+        }
+
         //	Move if they match
         if (StaffHeadColor.CurrentColorIndex == (int)currentState && currentState != LilyState.Closed)
 		{
             KickStarter.player.transform.position = transform.position;
-			LilyPadContainer.instance.currentlySelectedLily.StepAway();
+            if(LilyPadContainer.instance.currentlySelectedLily != null)
+			    LilyPadContainer.instance.currentlySelectedLily.StepAway(this);
             LilyPadContainer.instance.currentlySelectedLily = this;
             UpdateAffectedLilies();
         }
-		else if(currentState == LilyState.Complete)
-		{
-			LilyPadContainer.instance.ResetMaze();
-		}
     }
 
     void ActivateLilyState(LilyState state)
@@ -101,34 +116,39 @@ public class LilypadsPetal : MonoBehaviour {
                 Gem.SetActive(false);
 			    ClosedState.SetActive(true);
 			    OpenedState.SetActive(false);
-			    break;
+                CompleteEmitter.SetActive(false);
+                break;
 		    case LilyState.Green:
 			    currentState = LilyState.Green;
                 Gem.SetActive(true);
                 Gem.GetComponent<SpriteRenderer>().color = Color.green;
                 ClosedState.SetActive(false);
 			    OpenedState.SetActive(true);
-			    break;
+                CompleteEmitter.SetActive(false);
+                break;
 		    case LilyState.Purple:
 			    currentState = LilyState.Purple;
                 Gem.SetActive(true);
                 Gem.GetComponent<SpriteRenderer>().color = new Color(132, 115, 255);
                 ClosedState.SetActive(false);
 			    OpenedState.SetActive(true);
-			    break;
+                CompleteEmitter.SetActive(false);
+                break;
 		    case LilyState.Yellow:
 			    currentState = LilyState.Yellow;
                 Gem.SetActive(true);
                 Gem.GetComponent<SpriteRenderer>().color = Color.yellow;
                 ClosedState.SetActive(false);
 			    OpenedState.SetActive(true);
-			    break;
+                CompleteEmitter.SetActive(false);
+                break;
 			case LilyState.Complete:
-				currentState = LilyState.Closed;
+				currentState = LilyState.Complete;
 				Gem.SetActive(false);
 				ClosedState.SetActive(true);
 				OpenedState.SetActive(false);
-				break;
+                CompleteEmitter.SetActive(true);
+                break;
 		    default:
 			    break;
 		}
