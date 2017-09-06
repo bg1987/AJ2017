@@ -517,7 +517,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
       propertyPath: m_LocalPosition.y
-      value: -1.11
+      value: -1.97
       objectReference: {fileID: 0}
     - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
       propertyPath: m_LocalPosition.z
@@ -570,13 +570,13 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1933759488717272, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
       propertyPath: m_Name
-      value: FloatingPetal (6)
+      value: FloatingPetal6
       objectReference: {fileID: 0}
     - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
         type: 2}
       propertyPath: AffectedLillies.Array.data[0]
       value: 
-      objectReference: {fileID: 1522860852}
+      objectReference: {fileID: 815768169}
     - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
         type: 2}
       propertyPath: AffectedLillies.Array.data[1]
@@ -586,16 +586,21 @@ Prefab:
         type: 2}
       propertyPath: AffectedLillies.Array.data[2]
       value: 
-      objectReference: {fileID: 815768169}
+      objectReference: {fileID: 2014628450}
     - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
         type: 2}
       propertyPath: AffectedLillies.Array.data[3]
       value: 
-      objectReference: {fileID: 1425384713}
+      objectReference: {fileID: 1148536571}
     - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
         type: 2}
       propertyPath: lilyColor
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: StepsToComplete
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
@@ -857,6 +862,84 @@ Prefab:
 Transform:
   m_PrefabParentObject: {fileID: 400000, guid: 91d6ab39027244ea689b8f0ec9b5b548, type: 2}
   m_PrefabInternal: {fileID: 252461962}
+--- !u!114 &279478570
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f639be51345dd4ab29e6441abd4a9780, type: 3}
+  m_Name: (Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 11
+  title: Transform
+  description: Transforms a GameObject over time, by or to a given amount, or towards
+    a Marker in the scene. The GameObject must have a Moveable script attached.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 300
+    height: 60
+  nodeHeight: 0
+  marker: {fileID: 0}
+  markerParameterID: -1
+  markerID: 0
+  doEulerRotation: 0
+  clearExisting: 1
+  timeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  parameterID: -1
+  constantID: 0
+  linkedProp: {fileID: 0}
+  newVector: {x: -23.9, y: -3.36, z: 0}
+  transitionTime: 10
+  transitionTimeParameterID: -1
+  transformType: 0
+  moveMethod: 1
+  toBy: 0
 --- !u!1001 &343990750
 Prefab:
   m_ObjectHideFlags: 0
@@ -867,7 +950,7 @@ Prefab:
     - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
         type: 2}
       propertyPath: AffectedLillies.Array.size
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
       propertyPath: m_LocalPosition.x
@@ -875,7 +958,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
       propertyPath: m_LocalPosition.y
-      value: -2.43
+      value: -3.02
       objectReference: {fileID: 0}
     - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
       propertyPath: m_LocalPosition.z
@@ -928,7 +1011,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1933759488717272, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
       propertyPath: m_Name
-      value: FloatingPetal (11)
+      value: FloatingPetal21,25
       objectReference: {fileID: 0}
     - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
         type: 2}
@@ -949,6 +1032,11 @@ Prefab:
         type: 2}
       propertyPath: lilyColor
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: StepsToComplete
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
@@ -1002,7 +1090,7 @@ Prefab:
     - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
         type: 2}
       propertyPath: AffectedLillies.Array.size
-      value: 6
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
       propertyPath: m_LocalPosition.x
@@ -1010,7 +1098,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
       propertyPath: m_LocalPosition.y
-      value: -2.43
+      value: -3.02
       objectReference: {fileID: 0}
     - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
       propertyPath: m_LocalPosition.z
@@ -1063,13 +1151,13 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1933759488717272, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
       propertyPath: m_Name
-      value: FloatingPetal (8)
+      value: FloatingPetal11,17,23
       objectReference: {fileID: 0}
     - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
         type: 2}
       propertyPath: AffectedLillies.Array.data[0]
       value: 
-      objectReference: {fileID: 601960355}
+      objectReference: {fileID: 1052131541}
     - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
         type: 2}
       propertyPath: AffectedLillies.Array.data[1]
@@ -1099,6 +1187,11 @@ Prefab:
         type: 2}
       propertyPath: lilyColor
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: StepsToComplete
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
@@ -1156,6 +1249,65 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fc8c417e545d0ae4489fee3355f12179, type: 2}
   m_IsPrefabParent: 0
+--- !u!114 &419913546
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3052b912e1b846d6b933e3b459ff5b4, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 12
+  title: Check
+  description: Queries which Player prefab is currently being controlled. This only
+    applies to games for which 'Player switching' has been allowed in the Settings
+    Manager.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 2
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 300
+    height: 60
+  nodeHeight: 0
+  resultActionTrue: 0
+  skipActionTrue: -1
+  skipActionTrueActual: {fileID: 0}
+  linkedCutsceneTrue: {fileID: 0}
+  linkedAssetTrue: {fileID: 0}
+  resultActionFail: 1
+  skipActionFail: -1
+  skipActionFailActual: {fileID: 0}
+  linkedCutsceneFail: {fileID: 0}
+  linkedAssetFail: {fileID: 0}
+  playerID: 0
+  playerNumber: 0
 --- !u!1001 &421945929
 Prefab:
   m_ObjectHideFlags: 0
@@ -1417,7 +1569,7 @@ Prefab:
     - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
         type: 2}
       propertyPath: AffectedLillies.Array.size
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
       propertyPath: m_LocalPosition.x
@@ -1478,7 +1630,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1933759488717272, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
       propertyPath: m_Name
-      value: FloatingPetal (3)
+      value: FloatingPetal2
       objectReference: {fileID: 0}
     - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
         type: 2}
@@ -1500,6 +1652,11 @@ Prefab:
       propertyPath: lilyColor
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: StepsToComplete
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
   m_IsPrefabParent: 0
@@ -1514,6 +1671,63 @@ Transform:
   m_PrefabParentObject: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd,
     type: 2}
   m_PrefabInternal: {fileID: 516307774}
+--- !u!114 &524083672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0643024da91f402a9281e781736a4c6, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 2
+  title: Move to point
+  description: Moves a character to a given Marker object. By default, the character
+    will attempt to pathfind their way to the marker, but can optionally just move
+    in a straight line.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 1
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 14
+    width: 300
+    height: 176
+  nodeHeight: 0
+  charToMoveParameterID: -1
+  markerParameterID: -1
+  charToMoveID: 0
+  markerID: 0
+  marker: {fileID: 0}
+  isPlayer: 1
+  charToMove: {fileID: 0}
+  speed: 0
+  pathFind: 1
+  doFloat: 0
 --- !u!1 &527622961
 GameObject:
   m_ObjectHideFlags: 0
@@ -1582,7 +1796,7 @@ Prefab:
     - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
         type: 2}
       propertyPath: AffectedLillies.Array.size
-      value: 6
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
       propertyPath: m_LocalPosition.x
@@ -1590,7 +1804,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
       propertyPath: m_LocalPosition.y
-      value: -2.43
+      value: -3.02
       objectReference: {fileID: 0}
     - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
       propertyPath: m_LocalPosition.z
@@ -1643,7 +1857,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1933759488717272, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
       propertyPath: m_Name
-      value: FloatingPetal (5)
+      value: FloatingPetal9,15
       objectReference: {fileID: 0}
     - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
         type: 2}
@@ -1659,7 +1873,7 @@ Prefab:
         type: 2}
       propertyPath: AffectedLillies.Array.data[2]
       value: 
-      objectReference: {fileID: 815768169}
+      objectReference: {fileID: 1800530942}
     - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
         type: 2}
       propertyPath: AffectedLillies.Array.data[3]
@@ -1678,6 +1892,11 @@ Prefab:
     - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
         type: 2}
       propertyPath: lilyColor
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: StepsToComplete
       value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -1732,7 +1951,7 @@ Prefab:
     - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
         type: 2}
       propertyPath: AffectedLillies.Array.size
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
       propertyPath: m_LocalPosition.x
@@ -1793,7 +2012,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1933759488717272, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
       propertyPath: m_Name
-      value: FloatingPetal (10)
+      value: FloatingPetal22,24
       objectReference: {fileID: 0}
     - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
         type: 2}
@@ -1804,7 +2023,7 @@ Prefab:
         type: 2}
       propertyPath: AffectedLillies.Array.data[1]
       value: 
-      objectReference: {fileID: 1800530942}
+      objectReference: {fileID: 343990751}
     - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
         type: 2}
       propertyPath: AffectedLillies.Array.data[2]
@@ -1813,6 +2032,11 @@ Prefab:
     - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
         type: 2}
       propertyPath: lilyColor
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: StepsToComplete
       value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -1902,7 +2126,7 @@ Prefab:
     - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
         type: 2}
       propertyPath: AffectedLillies.Array.size
-      value: 4
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
       propertyPath: m_LocalPosition.x
@@ -1963,13 +2187,13 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1933759488717272, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
       propertyPath: m_Name
-      value: FloatingPetal (4)
+      value: FloatingPetal8
       objectReference: {fileID: 0}
     - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
         type: 2}
       propertyPath: AffectedLillies.Array.data[0]
       value: 
-      objectReference: {fileID: 516307775}
+      objectReference: {fileID: 601960355}
     - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
         type: 2}
       propertyPath: AffectedLillies.Array.data[1]
@@ -1989,6 +2213,11 @@ Prefab:
         type: 2}
       propertyPath: lilyColor
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: StepsToComplete
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
@@ -2154,6 +2383,120 @@ Transform:
   m_Father: {fileID: 752508300}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &767518882
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b04ecc3c200434bdbae730cccfddb10a, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 1
+  title: Fade
+  description: "Fades the camera in or out. The fade speed can be adjusted, as can
+    the overlay texture \u2013 this is black by default."
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 1
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 220
+    width: 300
+    height: 176
+  nodeHeight: 0
+  fadeType: 1
+  isInstant: 0
+  fadeSpeed: 0.5
+  setTexture: 0
+  tempTexture: {fileID: 0}
+  tempTextureParameterID: -1
+  forceCompleteTransition: 1
+--- !u!114 &812563011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1d11677f69f745f88dbe9922511d53f, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 14
+  title: Switch
+  description: 'Moves the Player to a new scene. The scene must be listed in Unity''s
+    Build Settings. By default, the screen will cut to black during the transition,
+    but the last frame of the current scene can instead be overlayed. This allows
+    for cinematic effects: if the next scene fades in, it will cause a crossfade effect;
+    if the next scene doesn''t fade, it will cause a straight cut.'
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 0
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 1
+    y: 14
+    width: 300
+    height: 150
+  nodeHeight: 0
+  chooseSceneBy: 1
+  sceneNumber: 0
+  sceneNumberParameterID: -1
+  sceneName: Lake
+  sceneNameParameterID: -1
+  assignScreenOverlay: 0
+  onlyPreload: 0
+  relativePosition: 0
+  relativeMarker: {fileID: 0}
+  relativeMarkerID: 0
+  relativeMarkerParameterID: -1
+  forceReload: 0
 --- !u!1001 &815768168
 Prefab:
   m_ObjectHideFlags: 0
@@ -2164,7 +2507,7 @@ Prefab:
     - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
         type: 2}
       propertyPath: AffectedLillies.Array.size
-      value: 6
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
       propertyPath: m_LocalPosition.x
@@ -2172,7 +2515,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
       propertyPath: m_LocalPosition.y
-      value: -2.43
+      value: -3.02
       objectReference: {fileID: 0}
     - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
       propertyPath: m_LocalPosition.z
@@ -2225,18 +2568,18 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1933759488717272, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
       propertyPath: m_Name
-      value: FloatingPetal (2)
+      value: FloatingPetal3,7
       objectReference: {fileID: 0}
     - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
         type: 2}
       propertyPath: AffectedLillies.Array.data[0]
       value: 
-      objectReference: {fileID: 722664459}
+      objectReference: {fileID: 1425384713}
     - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
         type: 2}
       propertyPath: AffectedLillies.Array.data[1]
       value: 
-      objectReference: {fileID: 601960355}
+      objectReference: {fileID: 516307775}
     - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
         type: 2}
       propertyPath: AffectedLillies.Array.data[2]
@@ -2246,7 +2589,7 @@ Prefab:
         type: 2}
       propertyPath: AffectedLillies.Array.data[3]
       value: 
-      objectReference: {fileID: 189885937}
+      objectReference: {fileID: 722664459}
     - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
         type: 2}
       propertyPath: AffectedLillies.Array.data[4]
@@ -2261,6 +2604,11 @@ Prefab:
         type: 2}
       propertyPath: lilyColor
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: StepsToComplete
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
@@ -2286,7 +2634,7 @@ Prefab:
     - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
         type: 2}
       propertyPath: AffectedLillies.Array.size
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
       propertyPath: m_LocalPosition.x
@@ -2294,7 +2642,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
       propertyPath: m_LocalPosition.y
-      value: -2.47
+      value: -3.06
       objectReference: {fileID: 0}
     - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
       propertyPath: m_LocalPosition.z
@@ -2359,76 +2707,24 @@ Prefab:
         type: 2}
       propertyPath: AffectedLillies.Array.data[1]
       value: 
-      objectReference: {fileID: 815768169}
+      objectReference: {fileID: 516307775}
     - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
         type: 2}
       propertyPath: AffectedLillies.Array.data[2]
       value: 
-      objectReference: {fileID: 516307775}
+      objectReference: {fileID: 0}
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: StepsToComplete
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1933759488717272, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
+      propertyPath: m_Name
+      value: FloatingPetal1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
   m_IsPrefabParent: 0
---- !u!114 &818352748
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f1d11677f69f745f88dbe9922511d53f, type: 3}
-  m_Name: (Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 14
-  title: Switch
-  description: 'Moves the Player to a new scene. The scene must be listed in Unity''s
-    Build Settings. By default, the screen will cut to black during the transition,
-    but the last frame of the current scene can instead be overlayed. This allows
-    for cinematic effects: if the next scene fades in, it will cause a crossfade effect;
-    if the next scene doesn''t fade, it will cause a straight cut.'
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 0
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 1
-  skipAction: -1
-  skipActionActual: {fileID: 0}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 426
-    width: 300
-    height: 150
-  nodeHeight: 0
-  chooseSceneBy: 1
-  sceneNumber: 0
-  sceneNumberParameterID: -1
-  sceneName: Entrance
-  sceneNameParameterID: -1
-  assignScreenOverlay: 0
-  onlyPreload: 0
-  relativePosition: 0
-  relativeMarker: {fileID: 0}
-  relativeMarkerID: 0
-  relativeMarkerParameterID: -1
-  forceReload: 0
 --- !u!1 &819445879 stripped
 GameObject:
   m_PrefabParentObject: {fileID: 1446441781077794, guid: fc8c417e545d0ae4489fee3355f12179,
@@ -2755,7 +3051,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
       propertyPath: m_LocalPosition.y
-      value: -1.11
+      value: -1.97
       objectReference: {fileID: 0}
     - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
       propertyPath: m_LocalPosition.z
@@ -2808,7 +3104,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1933759488717272, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
       propertyPath: m_Name
-      value: FloatingPetal (12)
+      value: FloatingPetal18,20
       objectReference: {fileID: 0}
     - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
         type: 2}
@@ -2824,11 +3120,16 @@ Prefab:
         type: 2}
       propertyPath: AffectedLillies.Array.data[2]
       value: 
-      objectReference: {fileID: 1522860852}
+      objectReference: {fileID: 1896810668}
     - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
         type: 2}
       propertyPath: lilyColor
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: StepsToComplete
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
@@ -2928,7 +3229,7 @@ Transform:
   m_Father: {fileID: 752508300}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1145849987
+--- !u!114 &1138634208
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -2936,21 +3237,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0643024da91f402a9281e781736a4c6, type: 3}
+  m_Script: {fileID: 11500000, guid: b04ecc3c200434bdbae730cccfddb10a, type: 3}
   m_Name: (Clone)
   m_EditorClassIdentifier: 
   id: 0
-  category: 2
-  title: Move to point
-  description: Moves a character to a given Marker object. By default, the character
-    will attempt to pathfind their way to the marker, but can optionally just move
-    in a straight line.
+  category: 1
+  title: Fade
+  description: "Fades the camera in or out. The fade speed can be adjusted, as can
+    the overlay texture \u2013 this is black by default."
   isDisplayed: 1
   showComment: 0
   comment: 
   showOutputSockets: 1
   numSockets: 1
-  willWait: 1
+  willWait: 0
   defaultPauseTime: 0.1
   isRunning: 0
   lastResult:
@@ -2970,21 +3270,24 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 14
+    x: 1
     y: 14
     width: 300
     height: 176
   nodeHeight: 0
-  charToMoveParameterID: -1
-  markerParameterID: -1
-  charToMoveID: 0
-  markerID: 0
-  marker: {fileID: 0}
-  isPlayer: 1
-  charToMove: {fileID: 0}
-  speed: 0
-  pathFind: 1
-  doFloat: 0
+  fadeType: 1
+  isInstant: 0
+  fadeSpeed: 0.5
+  setTexture: 0
+  tempTexture: {fileID: 0}
+  tempTextureParameterID: -1
+  forceCompleteTransition: 1
+--- !u!114 &1148536571 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+    type: 2}
+  m_PrefabInternal: {fileID: 1852762614}
+  m_Script: {fileID: 11500000, guid: 3883b2682c0a41d42aab8fa5e4ea3c93, type: 3}
 --- !u!114 &1154336007
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3067,6 +3370,63 @@ Transform:
   m_Father: {fileID: 752508300}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1259896957
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0643024da91f402a9281e781736a4c6, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 2
+  title: Move to point
+  description: Moves a character to a given Marker object. By default, the character
+    will attempt to pathfind their way to the marker, but can optionally just move
+    in a straight line.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 1
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 14
+    width: 300
+    height: 176
+  nodeHeight: 0
+  charToMoveParameterID: -1
+  markerParameterID: -1
+  charToMoveID: 0
+  markerID: 0
+  marker: {fileID: 0}
+  isPlayer: 1
+  charToMove: {fileID: 0}
+  speed: 0
+  pathFind: 1
+  doFloat: 0
 --- !u!1 &1266206060
 GameObject:
   m_ObjectHideFlags: 0
@@ -3154,84 +3514,6 @@ MonoBehaviour:
   speed: 0
   pathFind: 1
   doFloat: 0
---- !u!114 &1353101875
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f639be51345dd4ab29e6441abd4a9780, type: 3}
-  m_Name: (Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 11
-  title: Transform
-  description: Transforms a GameObject over time, by or to a given amount, or towards
-    a Marker in the scene. The GameObject must have a Moveable script attached.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 0
-  skipAction: -1
-  skipActionActual: {fileID: 0}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 0
-    y: 0
-    width: 300
-    height: 60
-  nodeHeight: 0
-  marker: {fileID: 0}
-  markerParameterID: -1
-  markerID: 0
-  doEulerRotation: 0
-  clearExisting: 1
-  timeCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 2
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    - serializedVersion: 2
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  parameterID: -1
-  constantID: 0
-  linkedProp: {fileID: 0}
-  newVector: {x: -23.9, y: -3.36, z: 0}
-  transitionTime: 10
-  transitionTimeParameterID: -1
-  transformType: 0
-  moveMethod: 1
-  toBy: 0
 --- !u!1 &1358934883
 GameObject:
   m_ObjectHideFlags: 0
@@ -3297,6 +3579,112 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1406886581
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1960312759}
+    m_Modifications:
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: AffectedLillies.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 13.03
+      objectReference: {fileID: 0}
+    - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
+      propertyPath: m_RootOrder
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 114813649196370322, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: useButtons.Array.data[0].interaction
+      value: 
+      objectReference: {fileID: 462679239}
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: nextYellowLily
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: nextPurpleLily
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 114004740561051682, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: constantID
+      value: 19024
+      objectReference: {fileID: 0}
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: IsStartingLily
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1933759488717272, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
+      propertyPath: m_Name
+      value: FloatingPetal19
+      objectReference: {fileID: 0}
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: AffectedLillies.Array.data[0]
+      value: 
+      objectReference: {fileID: 343990751}
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: AffectedLillies.Array.data[1]
+      value: 
+      objectReference: {fileID: 394553058}
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: AffectedLillies.Array.data[2]
+      value: 
+      objectReference: {fileID: 1522860852}
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: lilyColor
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: StepsToComplete
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
+  m_IsPrefabParent: 0
+--- !u!4 &1406886582 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+    type: 2}
+  m_PrefabInternal: {fileID: 1406886581}
 --- !u!1001 &1425384712
 Prefab:
   m_ObjectHideFlags: 0
@@ -3315,7 +3703,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
       propertyPath: m_LocalPosition.y
-      value: -1.11
+      value: -1.97
       objectReference: {fileID: 0}
     - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
       propertyPath: m_LocalPosition.z
@@ -3368,7 +3756,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1933759488717272, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
       propertyPath: m_Name
-      value: FloatingPetal (1)
+      value: FloatingPetal4
       objectReference: {fileID: 0}
     - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
         type: 2}
@@ -3384,10 +3772,15 @@ Prefab:
         type: 2}
       propertyPath: AffectedLillies.Array.data[2]
       value: 
-      objectReference: {fileID: 206699230}
+      objectReference: {fileID: 2014628450}
     - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
         type: 2}
       propertyPath: lilyColor
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: StepsToComplete
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -3422,7 +3815,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
       propertyPath: m_LocalPosition.y
-      value: -1.11
+      value: -1.97
       objectReference: {fileID: 0}
     - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
       propertyPath: m_LocalPosition.z
@@ -3475,7 +3868,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1933759488717272, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
       propertyPath: m_Name
-      value: FloatingPetal (7)
+      value: FloatingPetal12,14
       objectReference: {fileID: 0}
     - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
         type: 2}
@@ -3486,21 +3879,26 @@ Prefab:
         type: 2}
       propertyPath: AffectedLillies.Array.data[1]
       value: 
-      objectReference: {fileID: 206699230}
+      objectReference: {fileID: 394553058}
     - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
         type: 2}
       propertyPath: AffectedLillies.Array.data[2]
       value: 
-      objectReference: {fileID: 394553058}
+      objectReference: {fileID: 1148536571}
     - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
         type: 2}
       propertyPath: AffectedLillies.Array.data[3]
       value: 
-      objectReference: {fileID: 1052131541}
+      objectReference: {fileID: 1896810668}
     - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
         type: 2}
       propertyPath: lilyColor
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: StepsToComplete
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
@@ -3557,59 +3955,6 @@ Transform:
   m_Father: {fileID: 1400194094}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1541719415
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b04ecc3c200434bdbae730cccfddb10a, type: 3}
-  m_Name: (Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 1
-  title: Fade
-  description: "Fades the camera in or out. The fade speed can be adjusted, as can
-    the overlay texture \u2013 this is black by default."
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 1
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 0
-  skipAction: -1
-  skipActionActual: {fileID: 0}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 220
-    width: 300
-    height: 176
-  nodeHeight: 0
-  fadeType: 1
-  isInstant: 0
-  fadeSpeed: 0.5
-  setTexture: 0
-  tempTexture: {fileID: 0}
-  tempTextureParameterID: -1
-  forceCompleteTransition: 1
 --- !u!1 &1558418297
 GameObject:
   m_ObjectHideFlags: 0
@@ -3727,65 +4072,6 @@ MonoBehaviour:
   relativeMarkerID: 0
   relativeMarkerParameterID: -1
   forceReload: 0
---- !u!114 &1607824715
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a3052b912e1b846d6b933e3b459ff5b4, type: 3}
-  m_Name: (Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 12
-  title: Check
-  description: Queries which Player prefab is currently being controlled. This only
-    applies to games for which 'Player switching' has been allowed in the Settings
-    Manager.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 2
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 0
-  skipAction: -1
-  skipActionActual: {fileID: 0}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 0
-    y: 0
-    width: 300
-    height: 60
-  nodeHeight: 0
-  resultActionTrue: 0
-  skipActionTrue: -1
-  skipActionTrueActual: {fileID: 0}
-  linkedCutsceneTrue: {fileID: 0}
-  linkedAssetTrue: {fileID: 0}
-  resultActionFail: 1
-  skipActionFail: -1
-  skipActionFailActual: {fileID: 0}
-  linkedCutsceneFail: {fileID: 0}
-  linkedAssetFail: {fileID: 0}
-  playerID: 0
-  playerNumber: 0
 --- !u!1 &1668773866
 GameObject:
   m_ObjectHideFlags: 0
@@ -3816,6 +4102,112 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1711451408
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1960312759}
+    m_Modifications:
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: AffectedLillies.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 20.18
+      objectReference: {fileID: 0}
+    - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
+      propertyPath: m_RootOrder
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 114813649196370322, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: useButtons.Array.data[0].interaction
+      value: 
+      objectReference: {fileID: 462679239}
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: nextYellowLily
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: nextPurpleLily
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 114004740561051682, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: constantID
+      value: 17004
+      objectReference: {fileID: 0}
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: IsStartingLily
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1933759488717272, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
+      propertyPath: m_Name
+      value: FloatingPetal5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: AffectedLillies.Array.data[0]
+      value: 
+      objectReference: {fileID: 1425384713}
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: AffectedLillies.Array.data[1]
+      value: 
+      objectReference: {fileID: 206699230}
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: AffectedLillies.Array.data[2]
+      value: 
+      objectReference: {fileID: 1522860852}
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: lilyColor
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: StepsToComplete
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
+  m_IsPrefabParent: 0
+--- !u!4 &1711451409 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+    type: 2}
+  m_PrefabInternal: {fileID: 1711451408}
 --- !u!114 &1757051765
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3869,7 +4261,7 @@ MonoBehaviour:
   tempTexture: {fileID: 0}
   tempTextureParameterID: -1
   forceCompleteTransition: 1
---- !u!114 &1761630474
+--- !u!114 &1757838171
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -3913,15 +4305,15 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 1
-    y: 14
+    x: 14
+    y: 426
     width: 300
     height: 150
   nodeHeight: 0
   chooseSceneBy: 1
   sceneNumber: 0
   sceneNumberParameterID: -1
-  sceneName: Lake
+  sceneName: Entrance
   sceneNameParameterID: -1
   assignScreenOverlay: 0
   onlyPreload: 0
@@ -3969,7 +4361,7 @@ Prefab:
     - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
         type: 2}
       propertyPath: AffectedLillies.Array.size
-      value: 4
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
       propertyPath: m_LocalPosition.x
@@ -4030,7 +4422,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1933759488717272, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
       propertyPath: m_Name
-      value: FloatingPetal (9)
+      value: FloatingPetal10,16
       objectReference: {fileID: 0}
     - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
         type: 2}
@@ -4056,6 +4448,11 @@ Prefab:
         type: 2}
       propertyPath: lilyColor
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: StepsToComplete
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
@@ -4102,6 +4499,112 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1852762614
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1960312759}
+    m_Modifications:
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: AffectedLillies.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 16.63
+      objectReference: {fileID: 0}
+    - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
+      propertyPath: m_RootOrder
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 114813649196370322, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: useButtons.Array.data[0].interaction
+      value: 
+      objectReference: {fileID: 462679239}
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: nextYellowLily
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: nextPurpleLily
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 114004740561051682, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: constantID
+      value: 18006
+      objectReference: {fileID: 0}
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: IsStartingLily
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1933759488717272, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
+      propertyPath: m_Name
+      value: FloatingPetal13
+      objectReference: {fileID: 0}
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: AffectedLillies.Array.data[0]
+      value: 
+      objectReference: {fileID: 206699230}
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: AffectedLillies.Array.data[1]
+      value: 
+      objectReference: {fileID: 1522860852}
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: AffectedLillies.Array.data[2]
+      value: 
+      objectReference: {fileID: 1522860852}
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: lilyColor
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+        type: 2}
+      propertyPath: StepsToComplete
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: e9d73ccd208c23a479faa93ad33cfbbd, type: 2}
+  m_IsPrefabParent: 0
+--- !u!4 &1852762615 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+    type: 2}
+  m_PrefabInternal: {fileID: 1852762614}
 --- !u!1 &1859712859
 GameObject:
   m_ObjectHideFlags: 0
@@ -4130,6 +4633,12 @@ Transform:
   m_Father: {fileID: 752508300}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1896810668 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+    type: 2}
+  m_PrefabInternal: {fileID: 1406886581}
+  m_Script: {fileID: 11500000, guid: 3883b2682c0a41d42aab8fa5e4ea3c93, type: 3}
 --- !u!1 &1912801906
 GameObject:
   m_ObjectHideFlags: 0
@@ -4159,59 +4668,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1918624593
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b04ecc3c200434bdbae730cccfddb10a, type: 3}
-  m_Name: (Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 1
-  title: Fade
-  description: "Fades the camera in or out. The fade speed can be adjusted, as can
-    the overlay texture \u2013 this is black by default."
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 0
-  skipAction: -1
-  skipActionActual: {fileID: 0}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 1
-    y: 14
-    width: 300
-    height: 176
-  nodeHeight: 0
-  fadeType: 1
-  isInstant: 0
-  fadeSpeed: 0.5
-  setTexture: 0
-  tempTexture: {fileID: 0}
-  tempTextureParameterID: -1
-  forceCompleteTransition: 1
 --- !u!1 &1960312758
 GameObject:
   m_ObjectHideFlags: 0
@@ -4251,6 +4707,9 @@ Transform:
   - {fileID: 668837020}
   - {fileID: 343990752}
   - {fileID: 1052131540}
+  - {fileID: 1711451409}
+  - {fileID: 1852762615}
+  - {fileID: 1406886582}
   m_Father: {fileID: 1668773867}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4267,63 +4726,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startingLily: {fileID: 189885937}
   currentlySelectedLily: {fileID: 0}
---- !u!114 &1988682801
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0643024da91f402a9281e781736a4c6, type: 3}
-  m_Name: (Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 2
-  title: Move to point
-  description: Moves a character to a given Marker object. By default, the character
-    will attempt to pathfind their way to the marker, but can optionally just move
-    in a straight line.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 1
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 0
-  skipAction: -1
-  skipActionActual: {fileID: 0}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 14
-    width: 300
-    height: 176
-  nodeHeight: 0
-  charToMoveParameterID: -1
-  markerParameterID: -1
-  charToMoveID: 0
-  markerID: 0
-  marker: {fileID: 0}
-  isPlayer: 1
-  charToMove: {fileID: 0}
-  speed: 0
-  pathFind: 1
-  doFloat: 0
+  AllLilies:
+  - {fileID: 189885937}
+  - {fileID: 1425384713}
+  - {fileID: 815768169}
+  - {fileID: 516307775}
+  - {fileID: 722664459}
+  - {fileID: 601960355}
+  - {fileID: 206699230}
+  - {fileID: 1522860852}
+  - {fileID: 394553058}
+  - {fileID: 1800530942}
+  - {fileID: 668837019}
+  - {fileID: 343990751}
+  - {fileID: 1052131541}
+  - {fileID: 2014628450}
+  - {fileID: 1148536571}
+  - {fileID: 1896810668}
 --- !u!1001 &2008835785
 Prefab:
   m_ObjectHideFlags: 0
@@ -4444,6 +4863,12 @@ SpriteRenderer:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
+--- !u!114 &2014628450 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114361131255048738, guid: e9d73ccd208c23a479faa93ad33cfbbd,
+    type: 2}
+  m_PrefabInternal: {fileID: 1711451408}
+  m_Script: {fileID: 11500000, guid: 3883b2682c0a41d42aab8fa5e4ea3c93, type: 3}
 --- !u!4 &2027827901 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4744554646997876, guid: e9d73ccd208c23a479faa93ad33cfbbd,
