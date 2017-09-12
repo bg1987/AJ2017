@@ -5,11 +5,17 @@ using UnityEngine;
 public class Trip1LampSwitch : MonoBehaviour {
     public GameObject[] objects;
     public int localVariableId;
-
+    public bool isTarget; //to create a mirror image of the target
     public int currentIndex;
 	// Use this for initialization
 	void Start () {
         currentIndex = AC.LocalVariables.GetIntegerValue(localVariableId);
+
+        if(isTarget)
+        {
+            currentIndex = (9 - currentIndex) % 5; //mirror the value.
+        }
+
         SetObjectsToIndex();
 	}
 
