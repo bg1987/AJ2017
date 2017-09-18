@@ -28,12 +28,6 @@ public class MovingSwitch : MonoBehaviour {
         if(flip)
         {
             Flip();
-            if (graphSwitch != null)
-                graphSwitch.Flip();
-
-            Green.draw = true;
-            Blue.draw = true;
-            Red.draw = true;
             flip = false;
         }
     }
@@ -48,5 +42,12 @@ public class MovingSwitch : MonoBehaviour {
         {
             myTransform.rotation = Quaternion.Euler(0, 0, RotationStateA);
         }
+
+        if (graphSwitch != null)
+            graphSwitch.Flip();
+        Green.ClearColors();
+        Green.draw = true;
+        Blue.draw = true;
+        Red.draw = true;
     }
 }

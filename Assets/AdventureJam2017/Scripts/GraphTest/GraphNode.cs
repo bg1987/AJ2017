@@ -10,6 +10,7 @@ public class GraphNode : MonoBehaviour {
     
     public Color color;
 
+    public bool isTarget;
     public bool draw;
     public bool clear;
 
@@ -22,7 +23,6 @@ public class GraphNode : MonoBehaviour {
     }
 
     public static bool showLines = true;
-    public static bool clearColor = false;
 	// Use this for initialization
 	void Start () {
         if (!graph.ContainsKey(this))
@@ -41,8 +41,6 @@ public class GraphNode : MonoBehaviour {
 	void Update () {
         if (draw)
         {
-            clearColor = false;
-
             draw = false;
             ColorConnectedNodes(this.color);
         }
@@ -58,12 +56,7 @@ public class GraphNode : MonoBehaviour {
         if(clear)
         {
             clear = false;
-            clearColor = true;
-        }
-
-        if(clearColor)
-        {
-            MySprite.color = Color.white;
+            ClearColors();
         }
 	}
 
@@ -71,7 +64,8 @@ public class GraphNode : MonoBehaviour {
     {
         foreach(var n in graph.Keys)
         {
-            n.MySprite.color = Color.white;
+            if(!n.isTarget)
+                n.MySprite.color = Color.white;
         }
     }
 
@@ -80,7 +74,6 @@ public class GraphNode : MonoBehaviour {
         //this should protect from infinite loops
         if (MySprite.color == c)
             return;
-        Debug.Log("Coloring " + gameObject.name);
         MySprite.color = c;
         foreach (var n in Neighbors)
         {
