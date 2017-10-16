@@ -16,7 +16,11 @@ public class MovingSwitch : MonoBehaviour {
     private Transform myTransform;
 	// Use this for initialization
 	void Start () {
+        RotationStateA = RotationStateA < 0 ? 360 + RotationStateA : RotationStateA;
+        RotationStateB = RotationStateB < 0 ? 360 + RotationStateB : RotationStateB;
+
         myTransform = transform;
+        myTransform.rotation = Quaternion.Euler(0, 0, RotationStateA);
         graphSwitch = GetComponent<GraphSwitch>();
         Green.draw = true;
         Blue.draw = true;
@@ -34,11 +38,12 @@ public class MovingSwitch : MonoBehaviour {
 
     public void Flip()
     {
-        if (myTransform.rotation.eulerAngles.z == RotationStateA)
+        
+        if (Mathf.Abs(myTransform.rotation.eulerAngles.z - RotationStateA)<1f)
         {
             myTransform.rotation = Quaternion.Euler(0, 0, RotationStateB);
         }
-        else if(myTransform.rotation.eulerAngles.z == RotationStateB)
+        else if(Mathf.Abs(myTransform.rotation.eulerAngles.z - RotationStateB)<1f)
         {
             myTransform.rotation = Quaternion.Euler(0, 0, RotationStateA);
         }

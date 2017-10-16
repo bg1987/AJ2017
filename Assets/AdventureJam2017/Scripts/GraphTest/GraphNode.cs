@@ -25,6 +25,10 @@ public class GraphNode : MonoBehaviour {
     public static bool showLines = true;
 	// Use this for initialization
 	void Start () {
+        if (MySprite == null)
+        {
+            MySprite = this.GetComponent<SpriteRenderer>();
+        }
         if (!graph.ContainsKey(this))
             graph[this] = new HashSet<GraphNode>();
         //build the static graph
@@ -49,7 +53,7 @@ public class GraphNode : MonoBehaviour {
         {
             foreach (var n in Neighbors)
             {
-                Debug.DrawLine(transform.position, n.gameObject.transform.position);
+                Debug.DrawLine(transform.position, n.gameObject.transform.position,Color.green);
             }
         }
         
