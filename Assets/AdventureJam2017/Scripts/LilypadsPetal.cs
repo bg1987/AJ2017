@@ -26,8 +26,15 @@ public class LilypadsPetal : MonoBehaviour {
     [Header("Refs")]
     public GameObject ClosedState;
     public GameObject OpenedState;
-    public GameObject Gem;
+
+    [Space]
+    public GameObject YellowEmitter;
+    public GameObject PurpleEmitter;
+    public GameObject GreenEmitter;
     public GameObject CompleteEmitter;
+
+    [Space]
+    public Animator LilyEffectAnimator;
 
     LilyState currentState;
 
@@ -113,40 +120,42 @@ public class LilypadsPetal : MonoBehaviour {
 		switch (state) {
 		    case LilyState.Closed:
 			    currentState = LilyState.Closed;
-                Gem.SetActive(false);
-			    ClosedState.SetActive(true);
-			    OpenedState.SetActive(false);
+                LilyEffectAnimator.Play("LilyCloseAnim");
                 CompleteEmitter.SetActive(false);
+                GreenEmitter.SetActive(false);
+                PurpleEmitter.SetActive(false);
+                YellowEmitter.SetActive(false);
                 break;
 		    case LilyState.Green:
 			    currentState = LilyState.Green;
-                Gem.SetActive(true);
-                Gem.GetComponent<SpriteRenderer>().color = Color.green;
-                ClosedState.SetActive(false);
-			    OpenedState.SetActive(true);
+                LilyEffectAnimator.Play("LilyOpenAnim");
+                GreenEmitter.SetActive(true);
+                PurpleEmitter.SetActive(false);
+                YellowEmitter.SetActive(false);
                 CompleteEmitter.SetActive(false);
                 break;
 		    case LilyState.Purple:
 			    currentState = LilyState.Purple;
-                Gem.SetActive(true);
-                Gem.GetComponent<SpriteRenderer>().color = new Color(132, 115, 255);
-                ClosedState.SetActive(false);
-			    OpenedState.SetActive(true);
+                LilyEffectAnimator.Play("LilyOpenAnim");
+                GreenEmitter.SetActive(false);
+                PurpleEmitter.SetActive(true);
+                YellowEmitter.SetActive(false);
                 CompleteEmitter.SetActive(false);
                 break;
 		    case LilyState.Yellow:
 			    currentState = LilyState.Yellow;
-                Gem.SetActive(true);
-                Gem.GetComponent<SpriteRenderer>().color = Color.yellow;
-                ClosedState.SetActive(false);
-			    OpenedState.SetActive(true);
+                LilyEffectAnimator.Play("LilyOpenAnim");
+                GreenEmitter.SetActive(false);
+                PurpleEmitter.SetActive(false);
+                YellowEmitter.SetActive(true);
                 CompleteEmitter.SetActive(false);
                 break;
 			case LilyState.Complete:
 				currentState = LilyState.Complete;
-				Gem.SetActive(false);
-				ClosedState.SetActive(true);
-				OpenedState.SetActive(false);
+                LilyEffectAnimator.Play("LilyOpenAnim");
+                GreenEmitter.SetActive(false);
+                PurpleEmitter.SetActive(false);
+                YellowEmitter.SetActive(false);
                 CompleteEmitter.SetActive(true);
                 break;
 		    default:
