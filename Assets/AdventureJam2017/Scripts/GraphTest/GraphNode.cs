@@ -68,8 +68,7 @@ public class GraphNode : MonoBehaviour {
     {
         foreach(var n in graph.Keys)
         {
-            if(!n.isTarget)
-                n.MySprite.color = Color.white;
+            n.MySprite.color = Color.white;
         }
     }
 
@@ -79,6 +78,11 @@ public class GraphNode : MonoBehaviour {
         if (MySprite.color == c)
             return;
         MySprite.color = c;
+
+        
+        if (isTarget)
+            return;
+
         foreach (var n in Neighbors)
         {
             n.ColorConnectedNodes(c);
