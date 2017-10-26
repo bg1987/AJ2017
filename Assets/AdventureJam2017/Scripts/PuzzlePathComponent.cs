@@ -14,6 +14,11 @@ public class PuzzlePathComponent : MonoBehaviour {
     {
         var btn = GetComponent<Button>();
         btn.onClick.AddListener(OnClick);
+
+        ColorBlock cb = new ColorBlock();
+        cb.normalColor = new Color(10, 10, 10, 200);
+
+        btn.colors = cb;
     }
 
     void OnClick()
