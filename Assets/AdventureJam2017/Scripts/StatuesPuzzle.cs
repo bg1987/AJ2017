@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class StatuesPuzzle : MonoBehaviour {
@@ -22,6 +23,22 @@ public class StatuesPuzzle : MonoBehaviour {
     private void MoveLightPoint(PuzzlePathComponent destination)
     {
         LightPoint.transform.position = destination.transform.position;
+
+        if (paths.Contains(destination))
+        {
+            //  Move with animation
+        }
+        else
+        {
+            var path = paths.FirstOrDefault(t => t.xpos == destination.xpos && t.ypos == destination.ypos);
+
+            if (path != null)
+            {
+                //  Teleport
+                LightPoint.transform.position = path.transform.position;
+                currentLocation = path;
+            }
+        }
     }
 
     void TryMoveToPos (PuzzlePathComponent pathPoint)
@@ -62,6 +79,10 @@ public class StatuesPuzzle : MonoBehaviour {
 
     private void MoveLightPointToEnd(PuzzlePathComponent destination, List<PuzzlePathComponent> completePath)
     {
-        LightPoint.transform.position = destination.transform.position;
+        //LightPoint.transform.position = destination.transform.position;
+        //currentLocation = destination;
+        
+        if(OnLightpointMove != null)
+            OnLightpointMove(destination);
     }
 }

@@ -10,6 +10,10 @@ public class PuzzlePathComponent : MonoBehaviour {
 
     public List<PuzzlePathComponent> connectedTo;
 
+    [Header("position in the puzzle")]
+    public int xpos;
+    public int ypos;
+
     private void Awake()
     {
         var btn = GetComponent<Button>();
