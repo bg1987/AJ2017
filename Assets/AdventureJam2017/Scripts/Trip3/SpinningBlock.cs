@@ -12,28 +12,29 @@ public class SpinningBlock : MonoBehaviour {
 
     public bool Rotating;
 
+    private Color tintedColor;
+    public SpriteRenderer tint;
+    public SpriteRenderer mainImage;
+
     private int offset;
     private float initialZ;
     private int initialOffset;
-
-
-    //These are for testing.
-    public bool start;
-    public bool rotate;
-    public bool end;
-	
+        
     // Use this for initialization
 	void Start ()
     {
         SetCurrentPosition();
         StaffHeadColor.OnColorChanged += StaffHeadColor_OnColorChanged;
+        tintedColor = tint.color;
     }
 
     private void StaffHeadColor_OnColorChanged()
     {
-        if (StaffHeadColor.CurrentColorIndex == StaffColor)
+        if (StaffColor != 0 && StaffHeadColor.CurrentColorIndex == StaffColor)
         {
             StartRotate();
+            tint.color = Color.white;
+            mainImage.sortingOrder = 2;
         }
         else
         {
@@ -63,6 +64,7 @@ public class SpinningBlock : MonoBehaviour {
             return;
         gameObject.transform.Rotate(Vector3.forward * 360f / CHUNKS * -1);
         offset = (offset + 1) % CHUNKS;
+        AC.GlobalVariables.SetBooleanValue(4, !IsCurrentPositionValid());
     }
 
     public void EndRotate()
@@ -75,6 +77,8 @@ public class SpinningBlock : MonoBehaviour {
             ReturnToInitialPosition();
         }
         SetCurrentPosition();
+        tint.color = tintedColor;
+        mainImage.sortingOrder = 0;
         Rotating = false;
     }
 
@@ -94,24 +98,4 @@ public class SpinningBlock : MonoBehaviour {
 
         return isValidSpot;
     }
-
-    // Update is called once per frame
-    void Update () {
-        if(start)
-        {
-            start = false;
-            StartRotate();
-        }
-		if (rotate)
-        {
-            rotate = false;
-            Rotate();
-        }
-        if(end)
-        {
-            end = false;
-            start = false;
-            EndRotate();
-        }
-	}
 }
