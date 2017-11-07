@@ -78,9 +78,50 @@ MonoBehaviour:
     link: 0
     pmVar: 
     updateLinkOnStart: 0
+    isEditing: 0
+    canTranslate: 1
+    textValLineID: -1
+    popUpsLineID: -1
+  - label: Trip3 solved
+    id: 5
+    type: 0
+    val: 0
+    floatVal: 0
+    textVal: 
+    popUps: []
+    link: 0
+    pmVar: 
+    updateLinkOnStart: 0
     isEditing: 1
     canTranslate: 1
     textValLineID: -1
     popUpsLineID: -1
-  varPresets: []
-  updateRuntime: 1
+  varPresets:
+  - label: New preset
+    ID: 1
+    presetValues:
+    - id: 0
+      val: 0
+      floatVal: 0
+      textVal: 
+    - id: 1
+      val: 0
+      floatVal: 0
+      textVal: 
+    - id: 2
+      val: 0
+      floatVal: 0
+      textVal: 
+    - id: 3
+      val: 0
+      floatVal: 0
+      textVal: 
+    - id: 4
+      val: 0
+      floatVal: 0
+      textVal: 
+    - id: 5
+      val: 0
+      floatVal: 0
+      textVal: 
+  updateRuntime: 0
