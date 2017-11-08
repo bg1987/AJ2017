@@ -16,24 +16,35 @@ public class SpinningBlock : MonoBehaviour {
     public SpriteRenderer tint;
     public SpriteRenderer mainImage;
 
+    public int GlobalSolvedVarId;
+    public int TargetOffset;
+    public int LocalVarCorrectId;
+    public AC.Interaction CheckWinActionList;
+    
     private int offset;
     private float initialZ;
     private int initialOffset;
+
+
         
     // Use this for initialization
 	void Start ()
     {
         SetCurrentPosition();
-        StaffHeadColor.OnColorChanged += StaffHeadColor_OnColorChanged;
+        StaffHeadColor.OnColorChanged += StaffHeadColor_OnColorChanged; //TODO: This needs to be unassigned on solving the riddle.
         tintedColor = tint.color;
     }
 
     private void StaffHeadColor_OnColorChanged()
     {
+        if (AC.GlobalVariables.GetBooleanValue(GlobalSolvedVarId))
+            return;
+
         if (StaffColor != 0 && StaffHeadColor.CurrentColorIndex == StaffColor)
         {
             StartRotate();
             tint.color = Color.white;
+            //LeanTween.color(tint.gameObject, new Color32(255,255,255,150), 0.5f);
             mainImage.sortingOrder = 2;
         }
         else
@@ -77,9 +88,13 @@ public class SpinningBlock : MonoBehaviour {
             ReturnToInitialPosition();
         }
         SetCurrentPosition();
+        //LeanTween.color(tint.gameObject, tintedColor, 0.5f);
         tint.color = tintedColor;
         mainImage.sortingOrder = 0;
         Rotating = false;
+        AC.LocalVariables.SetBooleanValue(LocalVarCorrectId, offset == TargetOffset);
+
+        CheckWinActionList.Interact();
     }
 
     private void ReturnToInitialPosition()
