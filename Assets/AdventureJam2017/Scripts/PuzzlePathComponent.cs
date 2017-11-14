@@ -20,13 +20,18 @@ public class PuzzlePathComponent : MonoBehaviour {
         btn.onClick.AddListener(OnClick);
 
         ColorBlock cb = new ColorBlock();
-        cb.normalColor = new Color(10, 10, 10, 200);
+		cb.normalColor = new Color(0.9f, 0.9f, 0.9f, 0.5f);
+		cb.pressedColor = cb.normalColor;
+		cb.disabledColor = cb.normalColor;
+		cb.highlightedColor = cb.normalColor;
 
         btn.colors = cb;
     }
 
     void OnClick()
     {
+		Debug.Log(string.Format("Clicked on {0}, pos {1},{2}", gameObject.name, xpos, ypos));
+
         if (OnButtonClick != null)
             OnButtonClick(this);
     }

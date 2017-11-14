@@ -12,7 +12,12 @@ public class StatuesPuzzle : MonoBehaviour {
 	public List<PuzzlePathComponent> paths;
 	public PuzzlePathComponent currentLocation;
 
+	Canvas puzzleCanvas;
+
 	void Start() {
+		puzzleCanvas = GetComponent<Canvas>();
+		puzzleCanvas.enabled = false;
+
 		foreach (var path in paths) {
 			path.OnButtonClick += TryMoveToPos;
 		}
@@ -85,4 +90,12 @@ public class StatuesPuzzle : MonoBehaviour {
         if(OnLightpointMove != null)
             OnLightpointMove(destination);
     }
+
+	void ActivatePuzzle() {
+		puzzleCanvas.enabled = true;
+	}
+
+	void DeactivatePuzzle() {
+		puzzleCanvas.enabled = false;
+	}
 }
