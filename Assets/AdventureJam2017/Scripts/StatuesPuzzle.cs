@@ -27,14 +27,14 @@ public class StatuesPuzzle : MonoBehaviour {
 
     private void MoveLightPoint(PuzzlePathComponent destination)
     {
-        LightPoint.transform.position = destination.transform.position;
-
-        if (paths.Contains(destination))
-        {
-            //  Move with animation
-        }
-        else
-        {
+//        LightPoint.transform.position = destination.transform.position;
+//
+//        if (paths.Contains(destination))
+//        {
+//            //  Move with animation
+//        }
+//        else
+//        {
             var path = paths.FirstOrDefault(t => t.xpos == destination.xpos && t.ypos == destination.ypos);
 
             if (path != null)
@@ -43,7 +43,7 @@ public class StatuesPuzzle : MonoBehaviour {
                 LightPoint.transform.position = path.transform.position;
                 currentLocation = path;
             }
-        }
+//        }
     }
 
     void TryMoveToPos (PuzzlePathComponent pathPoint)
