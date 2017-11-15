@@ -101,7 +101,7 @@ MonoBehaviour:
   landscapeModeOnly: 1
   cameraPerspective: 0
   movingTurning: 3
-  hotspotDetection: 1
+  hotspotDetection: 0
   closeInteractionMenusIfPlayerLeavesVicinity: 0
   placeDistantHotspotsOnSeparateLayer: 0
   hotspotsInVicinity: 2
