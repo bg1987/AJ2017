@@ -2449,6 +2449,10 @@ MonoBehaviour:
   - {fileID: 114790438793771520}
   - {fileID: 114813466716892826}
   currentLocation: {fileID: 114670732201274090}
+  borderLines: {fileID: 0}
+  staffColorIndex: 1
+  winInteraction: {fileID: 0}
+  moveAwayInteraction: {fileID: 0}
 --- !u!114 &114351074697725076
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+
 public class StatuesPuzzle : MonoBehaviour {
 
     public static Action<PuzzlePathComponent> OnLightpointMove;
@@ -11,6 +12,14 @@ public class StatuesPuzzle : MonoBehaviour {
     public GameObject LightPoint;
 	public List<PuzzlePathComponent> paths;
 	public PuzzlePathComponent currentLocation;
+
+    [Header("Staff reaction")]
+    public GameObject borderLines;
+    public int staffColorIndex;
+
+    [Space]
+    public AC.Interaction winInteraction;
+    public AC.Interaction moveAwayInteraction;
 
 	Canvas puzzleCanvas;
 
@@ -23,7 +32,14 @@ public class StatuesPuzzle : MonoBehaviour {
 		}
 
         OnLightpointMove += MoveLightPoint;
+        StaffHeadColor.OnColorChanged += OnStaffColorChange;
+        OnStaffColorChange();
 	}
+
+    private void OnStaffColorChange()
+    {
+        borderLines.SetActive(StaffHeadColor.CurrentColorIndex == staffColorIndex);
+    }
 
     private void MoveLightPoint(PuzzlePathComponent destination)
     {
@@ -48,6 +64,9 @@ public class StatuesPuzzle : MonoBehaviour {
 
     void TryMoveToPos (PuzzlePathComponent pathPoint)
 	{
+        if (StaffHeadColor.CurrentColorIndex != staffColorIndex)
+            return;
+
 		List<PuzzlePathComponent> completePath  = new List<PuzzlePathComponent>();
         List<PuzzlePathComponent> totalScanned = new List<PuzzlePathComponent>();
 
@@ -87,6 +106,13 @@ public class StatuesPuzzle : MonoBehaviour {
         //LightPoint.transform.position = destination.transform.position;
         //currentLocation = destination;
         
+        if(destination.xpos == 1 && destination.ypos == 7)
+        {
+            //  Win scenario
+            moveAwayInteraction.Interact();
+            winInteraction.Interact();
+        }
+
         if(OnLightpointMove != null)
             OnLightpointMove(destination);
     }
