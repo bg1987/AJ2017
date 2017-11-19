@@ -26,3 +26,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/AdventureJam2017/Scenes/Trip3.unity
     guid: d6f8f7a3fbf8eba4abb9261c67c9accd
+  - enabled: 1
+    path: Assets/AdventureJam2017/Scenes/Crossroads.unity
+    guid: 271fce6d6d13bf5449b07d8b5f0742a3
