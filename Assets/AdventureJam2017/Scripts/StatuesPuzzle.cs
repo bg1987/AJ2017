@@ -106,11 +106,13 @@ public class StatuesPuzzle : MonoBehaviour {
         //LightPoint.transform.position = destination.transform.position;
         //currentLocation = destination;
         
+		//	Completed the puzzle
         if(destination.xpos == 1 && destination.ypos == 7)
         {
             //  Win scenario
-            moveAwayInteraction.Interact();
-            winInteraction.Interact();
+            //moveAwayInteraction.Interact();
+			if(winInteraction != null)
+            	winInteraction.Interact();
         }
 
         if(OnLightpointMove != null)
