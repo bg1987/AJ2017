@@ -36,7 +36,7 @@ MonoBehaviour:
     link: 0
     pmVar: 
     updateLinkOnStart: 0
-    isEditing: 1
+    isEditing: 0
     canTranslate: 1
     textValLineID: -1
     popUpsLineID: -1
@@ -110,6 +110,20 @@ MonoBehaviour:
     canTranslate: 1
     textValLineID: -1
     popUpsLineID: -1
+  - label: MushroomSubSolved
+    id: 7
+    type: 0
+    val: 0
+    floatVal: 0
+    textVal: 
+    popUps: []
+    link: 0
+    pmVar: 
+    updateLinkOnStart: 0
+    isEditing: 1
+    canTranslate: 1
+    textValLineID: -1
+    popUpsLineID: -1
   varPresets:
   - label: New preset
     ID: 1
@@ -139,6 +153,10 @@ MonoBehaviour:
       floatVal: 0
       textVal: 
     - id: 6
+      val: 0
+      floatVal: 0
+      textVal: 
+    - id: 7
       val: 0
       floatVal: 0
       textVal: 
