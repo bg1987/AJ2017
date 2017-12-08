@@ -19,7 +19,6 @@ public class StatuesPuzzle : MonoBehaviour {
 
     [Space]
     public AC.Interaction winInteraction;
-    public AC.Interaction moveAwayInteraction;
 
 	Canvas puzzleCanvas;
 
