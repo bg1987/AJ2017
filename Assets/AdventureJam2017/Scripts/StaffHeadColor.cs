@@ -33,6 +33,9 @@ public class StaffHeadColor : MonoBehaviour {
     public void Start()
     {
         me = this;
+        currentColor = AC.GlobalVariables.GetIntegerValue(GlobalVarID);
+        StaffHead.color = CurrentColor;
+        StaffHeadAnimator.SetInteger("ColorNumber", CurrentColorIndex);
     }
 
     public void Switch()
