@@ -25,6 +25,7 @@ public class GraphNode : MonoBehaviour {
     public static bool showLines = true;
 	// Use this for initialization
 	void Start () {
+
         if (MySprite == null)
         {
             MySprite = this.GetComponent<SpriteRenderer>();
@@ -39,6 +40,7 @@ public class GraphNode : MonoBehaviour {
                 graph[item] = new HashSet<GraphNode>();
             graph[item].Add(this);
         }
+
 	}
 	
 	// Update is called once per frame
@@ -68,6 +70,8 @@ public class GraphNode : MonoBehaviour {
     {
         foreach(var n in graph.Keys)
         {
+            if (n.MySprite == null)
+                Debug.LogError(n.gameObject.name);
             n.MySprite.color = Color.white;
         }
     }
@@ -87,5 +91,10 @@ public class GraphNode : MonoBehaviour {
         {
             n.ColorConnectedNodes(c);
         }
+    }
+
+    private void OnDestroy()
+    {
+        graph.Remove(this);
     }
 }
