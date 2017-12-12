@@ -13,6 +13,10 @@ public class StatuesPuzzle : MonoBehaviour {
 	public List<PuzzlePathComponent> paths;
 	public PuzzlePathComponent currentLocation;
 
+	public float framesPerStep = 30f;
+	public float marginOfError = 0.05f;
+	public AudioClip movingSound;
+
     [Header("Staff reaction")]
     public GameObject borderLines;
     public int staffColorIndex;
@@ -33,6 +37,10 @@ public class StatuesPuzzle : MonoBehaviour {
         OnLightpointMove += MoveLightPoint;
         StaffHeadColor.OnColorChanged += OnStaffColorChange;
         OnStaffColorChange();
+	}
+
+	void OnDestroy() {
+		StaffHeadColor.OnColorChanged -= OnStaffColorChange;
 	}
 
     private void OnStaffColorChange()
@@ -104,19 +112,42 @@ public class StatuesPuzzle : MonoBehaviour {
     {
         //LightPoint.transform.position = destination.transform.position;
         //currentLocation = destination;
-        
-		//	Completed the puzzle
-        if(destination.xpos == 1 && destination.ypos == 7)
-        {
-            //  Win scenario
-            //moveAwayInteraction.Interact();
-			if(winInteraction != null)
-            	winInteraction.Interact();
-        }
-
-        if(OnLightpointMove != null)
-            OnLightpointMove(destination);
+		StartCoroutine(MoveToPoint(LightPoint.transform, destination, completePath));
     }
+
+	IEnumerator MoveToPoint(Transform currentPoint, PuzzlePathComponent destination, List<PuzzlePathComponent> completePath)
+	{
+		for (int i = completePath.Count-1; i > -1; i--) {
+			yield return MoveToPoint(currentPoint, completePath[i]);
+		}
+
+		//	Completed the puzzle
+		if(destination.xpos == 1 && destination.ypos == 7)
+		{
+			//  Win scenario
+			//moveAwayInteraction.Interact();
+			if(winInteraction != null)
+				winInteraction.Interact();
+		}
+
+		if(OnLightpointMove != null)
+			OnLightpointMove(destination);
+	}
+
+	IEnumerator MoveToPoint(Transform currentPoint, PuzzlePathComponent endPoint)
+	{
+		Transform dest = endPoint.transform;
+		Vector3 step = (dest.position - currentPoint.position) / framesPerStep;
+
+		while(Vector3.Magnitude(currentPoint.position - dest.position) > marginOfError)
+		{
+			currentPoint.position = currentPoint.position + step;
+			Debug.Log("moved to " + currentPoint.position);
+			yield return new WaitForSeconds(0.02f);
+		}
+
+		currentPoint.position = dest.position;
+	}
 
 	void ActivatePuzzle() {
 		puzzleCanvas.enabled = true;
