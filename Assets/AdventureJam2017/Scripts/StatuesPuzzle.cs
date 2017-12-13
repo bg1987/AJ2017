@@ -26,6 +26,7 @@ public class StatuesPuzzle : MonoBehaviour {
 
 	Canvas puzzleCanvas;
 	AudioSource moveSoundSource;
+	bool isFuckingMoving;
 
 	void Start() {
 		moveSoundSource = GetComponent<AudioSource> ();
@@ -73,7 +74,7 @@ public class StatuesPuzzle : MonoBehaviour {
 
     void TryMoveToPos (PuzzlePathComponent pathPoint)
 	{
-        if (StaffHeadColor.CurrentColorIndex != staffColorIndex)
+		if (StaffHeadColor.CurrentColorIndex != staffColorIndex || isFuckingMoving)
             return;
 
 		List<PuzzlePathComponent> completePath  = new List<PuzzlePathComponent>();
@@ -119,6 +120,7 @@ public class StatuesPuzzle : MonoBehaviour {
 
 	IEnumerator MoveToPoint(Transform currentPoint, PuzzlePathComponent destination, List<PuzzlePathComponent> completePath)
 	{
+		isFuckingMoving = true;
 		for (int i = completePath.Count-1; i > 0; i--) {
 			yield return MoveToPoint(currentPoint, completePath[i]);
 			//Debug.Log("moved to " + completePath[i].transform.position);
@@ -135,6 +137,8 @@ public class StatuesPuzzle : MonoBehaviour {
 
 		if(OnLightpointMove != null)
 			OnLightpointMove(destination);
+
+		isFuckingMoving = false;
 	}
 
 	IEnumerator MoveToPoint(Transform currentPoint, PuzzlePathComponent endPoint)
