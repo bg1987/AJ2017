@@ -20595,6 +20595,21 @@ Prefab:
       propertyPath: showInEditor
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114027176508567914, guid: fc8c417e545d0ae4489fee3355f12179,
+        type: 2}
+      propertyPath: walkSpeedScale
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 114027176508567914, guid: fc8c417e545d0ae4489fee3355f12179,
+        type: 2}
+      propertyPath: runSpeedScale
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 114027176508567914, guid: fc8c417e545d0ae4489fee3355f12179,
+        type: 2}
+      propertyPath: acceleration
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fc8c417e545d0ae4489fee3355f12179, type: 2}
   m_IsPrefabParent: 0
