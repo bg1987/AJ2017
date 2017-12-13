@@ -25,8 +25,10 @@ public class StatuesPuzzle : MonoBehaviour {
     public AC.Interaction winInteraction;
 
 	Canvas puzzleCanvas;
+	AudioSource moveSoundSource;
 
 	void Start() {
+		moveSoundSource = GetComponent<AudioSource> ();
 		puzzleCanvas = GetComponent<Canvas>();
 		puzzleCanvas.enabled = false;
 
@@ -117,8 +119,9 @@ public class StatuesPuzzle : MonoBehaviour {
 
 	IEnumerator MoveToPoint(Transform currentPoint, PuzzlePathComponent destination, List<PuzzlePathComponent> completePath)
 	{
-		for (int i = completePath.Count-1; i > -1; i--) {
+		for (int i = completePath.Count-1; i > 0; i--) {
 			yield return MoveToPoint(currentPoint, completePath[i]);
+			//Debug.Log("moved to " + completePath[i].transform.position);
 		}
 
 		//	Completed the puzzle
@@ -136,13 +139,13 @@ public class StatuesPuzzle : MonoBehaviour {
 
 	IEnumerator MoveToPoint(Transform currentPoint, PuzzlePathComponent endPoint)
 	{
+		moveSoundSource.Play ();
 		Transform dest = endPoint.transform;
 		Vector3 step = (dest.position - currentPoint.position) / framesPerStep;
 
 		while(Vector3.Magnitude(currentPoint.position - dest.position) > marginOfError)
 		{
 			currentPoint.position = currentPoint.position + step;
-			Debug.Log("moved to " + currentPoint.position);
 			yield return new WaitForSeconds(0.02f);
 		}
 
