@@ -41,6 +41,32 @@ public class LilypadsPetal : MonoBehaviour {
 	public int StepsToComplete;
 	int currentSteps;
 
+	void Start() {
+		var rend = GetComponentsInChildren<SpriteRenderer> (true);
+		int order = 20;
+
+		switch (transform.parent.name) {
+		case "Top":
+			order = 5;
+			break;
+		case "CenterTop":
+			order = 10;
+			break;
+		case "CenterBottom":
+			order = 15;
+			break;
+		case "Bottom":
+			order = 20;
+			break;
+		default:
+			break;
+		}
+
+		foreach (var image in rend) {
+			image.sortingOrder = order;
+		}
+	}
+
     internal void UpdateAffectedLilies()
     {
         foreach (var lily in AffectedLillies)
