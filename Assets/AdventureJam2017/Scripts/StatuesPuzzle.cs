@@ -53,6 +53,8 @@ public class StatuesPuzzle : MonoBehaviour {
 
     private void MoveLightPoint(PuzzlePathComponent destination)
     {
+		if(isFuckingMoving)
+			return;
 //        LightPoint.transform.position = destination.transform.position;
 //
 //        if (paths.Contains(destination))
@@ -66,8 +68,10 @@ public class StatuesPuzzle : MonoBehaviour {
             if (path != null)
             {
                 //  Teleport
-                LightPoint.transform.position = path.transform.position;
-                currentLocation = path;
+//                LightPoint.transform.position = path.transform.position;
+//                currentLocation = path;
+				StartCoroutine(MoveToPoint(LightPoint.transform, path));
+				currentLocation = path;
             }
 //        }
     }
@@ -122,7 +126,11 @@ public class StatuesPuzzle : MonoBehaviour {
 	{
 		isFuckingMoving = true;
 		for (int i = completePath.Count-1; i > 0; i--) {
+			if(OnLightpointMove != null)
+				OnLightpointMove(completePath[i]);
+			
 			yield return MoveToPoint(currentPoint, completePath[i]);
+			currentLocation = completePath[i];
 			//Debug.Log("moved to " + completePath[i].transform.position);
 		}
 
@@ -135,8 +143,8 @@ public class StatuesPuzzle : MonoBehaviour {
 				winInteraction.Interact();
 		}
 
-		if(OnLightpointMove != null)
-			OnLightpointMove(destination);
+//		if(OnLightpointMove != null)
+//			OnLightpointMove(destination);
 
 		isFuckingMoving = false;
 	}
