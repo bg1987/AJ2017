@@ -36,6 +36,8 @@ public class LilyPadContainer : MonoBehaviour {
 	public void ResetMaze ()
 	{
 		AC.KickStarter.player.transform.position = (startingLily.transform.position + Vector3.right);
+		//	Resume player movement
+		//AC.KickStarter.playerInput;
 
 		foreach (var l in AllLilies) {
 			l.Reset();
