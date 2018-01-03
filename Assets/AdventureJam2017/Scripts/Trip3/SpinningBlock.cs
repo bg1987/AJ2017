@@ -31,8 +31,9 @@ public class SpinningBlock : MonoBehaviour {
 	void Start ()
     {
         SetCurrentPosition();
-        StaffHeadColor.OnColorChanged += StaffHeadColor_OnColorChanged; //TODO: This needs to be unassigned on solving the riddle.
+        StaffHeadColor.OnColorChanged += StaffHeadColor_OnColorChanged;
         tintedColor = tint.color;
+        StaffHeadColor_OnColorChanged();
     }
 
     private void StaffHeadColor_OnColorChanged()
@@ -112,5 +113,10 @@ public class SpinningBlock : MonoBehaviour {
         }
 
         return isValidSpot;
+    }
+
+    private void OnDestroy()
+    {
+        StaffHeadColor.OnColorChanged -= StaffHeadColor_OnColorChanged; //TODO: This needs to be unassigned on solving the riddle.
     }
 }
