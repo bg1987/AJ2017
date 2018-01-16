@@ -38,17 +38,17 @@ public class StatuesPuzzle : MonoBehaviour {
 		}
 
         OnLightpointMove += MoveLightPoint;
-        StaffHeadColor.OnColorChanged += OnStaffColorChange;
         OnStaffColorChange();
 	}
 
 	void OnDestroy() {
-		StaffHeadColor.OnColorChanged -= OnStaffColorChange;
+		if(puzzleCanvas.enabled)
+			StaffHeadColor.OnColorChanged -= OnStaffColorChange;
 	}
 
     private void OnStaffColorChange()
     {
-        borderLines.SetActive(StaffHeadColor.CurrentColorIndex == staffColorIndex);
+		borderLines.SetActive(StaffHeadColor.CurrentColorIndex == staffColorIndex && puzzleCanvas.enabled);
     }
 
     private void MoveLightPoint(PuzzlePathComponent destination)
@@ -165,10 +165,23 @@ public class StatuesPuzzle : MonoBehaviour {
 	}
 
 	void ActivatePuzzle() {
-		puzzleCanvas.enabled = true;
+
+		Debug.Log("Entered puzzle " + name);
+		if(!puzzleCanvas.enabled)
+		{
+			puzzleCanvas.enabled = true;
+			StaffHeadColor.OnColorChanged += OnStaffColorChange;
+			OnStaffColorChange();
+		}
 	}
 
 	void DeactivatePuzzle() {
-		puzzleCanvas.enabled = false;
+		Debug.Log("Out of puzzle " + name);
+		if(puzzleCanvas.enabled)
+		{
+			puzzleCanvas.enabled = false;
+			StaffHeadColor.OnColorChanged -= OnStaffColorChange;
+			OnStaffColorChange();
+		}
 	}
 }
