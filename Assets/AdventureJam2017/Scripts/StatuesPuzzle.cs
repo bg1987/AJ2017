@@ -20,6 +20,8 @@ public class StatuesPuzzle : MonoBehaviour {
     [Header("Staff reaction")]
     public GameObject borderLines;
     public int staffColorIndex;
+	public float magnituteFromStatue = 5f;
+	public Animator pathAnimator;
 
     [Space]
     public AC.Interaction winInteraction;
@@ -28,10 +30,19 @@ public class StatuesPuzzle : MonoBehaviour {
 	AudioSource moveSoundSource;
 	bool isFuckingMoving;
 
+	bool midAnimationTransition;
+	bool lastState;
+	float lastUpdate;
+	Transform currentPlayer;
+	Transform currPos;
+
+
 	void Start() {
 		moveSoundSource = GetComponent<AudioSource> ();
 		puzzleCanvas = GetComponent<Canvas>();
 		puzzleCanvas.enabled = false;
+		currentPlayer = AC.KickStarter.player.transform;
+		currPos = transform.parent;
 
 		foreach (var path in paths) {
 			path.OnButtonClick += TryMoveToPos;
@@ -46,9 +57,42 @@ public class StatuesPuzzle : MonoBehaviour {
 			StaffHeadColor.OnColorChanged -= OnStaffColorChange;
 	}
 
+	void Update() {
+
+		if (!lastState) {
+			if ((currentPlayer.position - currPos.position).magnitude < magnituteFromStatue) {
+				ActivatePuzzle ();
+				lastState = true;
+			}
+		} else {
+			if ((currentPlayer.position - currPos.position).magnitude > magnituteFromStatue) {
+				DeactivatePuzzle ();
+				lastState = false;
+			}
+		}
+
+		if (lastUpdate > 1f) {
+			lastUpdate = 0f;
+			//Debug.Log (name + " [" + (currentPlayer.position - currPos.position).magnitude.ToString () + "]");
+		}
+
+		lastUpdate += Time.deltaTime;
+	}
+
+	void PlayerInActiveArea() {
+	}
+
     private void OnStaffColorChange()
     {
-		borderLines.SetActive(StaffHeadColor.CurrentColorIndex == staffColorIndex && puzzleCanvas.enabled);
+		if (StaffHeadColor.CurrentColorIndex == staffColorIndex && (currentPlayer.position - currPos.position).magnitude < magnituteFromStatue) {
+			borderLines.SetActive (true);
+			pathAnimator.Play ("PathFadeIn");
+		} else {
+			if (borderLines.activeSelf) {
+				pathAnimator.Play ("PathFadeOut");
+				StartCoroutine (DisablePathDelayed ());
+			}
+		}
     }
 
     private void MoveLightPoint(PuzzlePathComponent destination)
@@ -169,9 +213,9 @@ public class StatuesPuzzle : MonoBehaviour {
 		Debug.Log("Entered puzzle " + name);
 		if(!puzzleCanvas.enabled)
 		{
+			OnStaffColorChange();
 			puzzleCanvas.enabled = true;
 			StaffHeadColor.OnColorChanged += OnStaffColorChange;
-			OnStaffColorChange();
 		}
 	}
 
@@ -179,9 +223,17 @@ public class StatuesPuzzle : MonoBehaviour {
 		Debug.Log("Out of puzzle " + name);
 		if(puzzleCanvas.enabled)
 		{
+			OnStaffColorChange();
 			puzzleCanvas.enabled = false;
 			StaffHeadColor.OnColorChanged -= OnStaffColorChange;
-			OnStaffColorChange();
+		}
+	}
+		
+	IEnumerator DisablePathDelayed ()
+	{
+		yield return new WaitForSeconds (0.5f);
+		if (StaffHeadColor.CurrentColorIndex != staffColorIndex && puzzleCanvas.enabled) {
+			borderLines.SetActive(false);
 		}
 	}
 }
