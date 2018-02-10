@@ -95,29 +95,19 @@ public class StatuesPuzzle : MonoBehaviour {
 		}
     }
 
+	//	Called by an event. When one moves, all of them move.
     private void MoveLightPoint(PuzzlePathComponent destination)
     {
 		if(isFuckingMoving)
 			return;
-//        LightPoint.transform.position = destination.transform.position;
-//
-//        if (paths.Contains(destination))
-//        {
-//            //  Move with animation
-//        }
-//        else
-//        {
+
             var path = paths.FirstOrDefault(t => t.xpos == destination.xpos && t.ypos == destination.ypos);
 
             if (path != null)
             {
-                //  Teleport
-//                LightPoint.transform.position = path.transform.position;
-//                currentLocation = path;
 				StartCoroutine(MoveToPoint(LightPoint.transform, path));
 				currentLocation = path;
             }
-//        }
     }
 
     void TryMoveToPos (PuzzlePathComponent pathPoint)
@@ -161,13 +151,12 @@ public class StatuesPuzzle : MonoBehaviour {
 
     private void MoveLightPointToEnd(PuzzlePathComponent destination, List<PuzzlePathComponent> completePath)
     {
-        //LightPoint.transform.position = destination.transform.position;
-        //currentLocation = destination;
 		StartCoroutine(MoveToPoint(LightPoint.transform, destination, completePath));
     }
 
 	IEnumerator MoveToPoint(Transform currentPoint, PuzzlePathComponent destination, List<PuzzlePathComponent> completePath)
 	{
+		AC.KickStarter.player.Halt ();
 		isFuckingMoving = true;
 		for (int i = completePath.Count-1; i > 0; i--) {
 			if(OnLightpointMove != null)
