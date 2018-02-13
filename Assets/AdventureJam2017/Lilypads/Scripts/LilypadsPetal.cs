@@ -23,17 +23,6 @@ public class LilypadsPetal : MonoBehaviour {
     public LilypadsPetal[] AffectedLillies;
 
     [Space]
-    [Header("Refs")]
-    public GameObject ClosedState;
-    public GameObject OpenedState;
-
-    [Space]
-    public GameObject YellowEmitter;
-    public GameObject PurpleEmitter;
-    public GameObject GreenEmitter;
-    public GameObject CompleteEmitter;
-
-    [Space]
     public Animator LilyEffectAnimator;
 
     LilyState currentState;
@@ -146,43 +135,23 @@ public class LilypadsPetal : MonoBehaviour {
 		switch (state) {
 		    case LilyState.Closed:
 			    currentState = LilyState.Closed;
-                LilyEffectAnimator.Play("LilyCloseAnim");
-                CompleteEmitter.SetActive(false);
-                GreenEmitter.SetActive(false);
-                PurpleEmitter.SetActive(false);
-                YellowEmitter.SetActive(false);
+                LilyEffectAnimator.Play("None");
                 break;
 		    case LilyState.Green:
 			    currentState = LilyState.Green;
-                LilyEffectAnimator.Play("LilyOpenAnim");
-                GreenEmitter.SetActive(true);
-                PurpleEmitter.SetActive(false);
-                YellowEmitter.SetActive(false);
-                CompleteEmitter.SetActive(false);
+                LilyEffectAnimator.Play("LilyOpen3");
                 break;
 		    case LilyState.Purple:
 			    currentState = LilyState.Purple;
-                LilyEffectAnimator.Play("LilyOpenAnim");
-                GreenEmitter.SetActive(false);
-                PurpleEmitter.SetActive(true);
-                YellowEmitter.SetActive(false);
-                CompleteEmitter.SetActive(false);
+				LilyEffectAnimator.Play("LilyOpen2");
                 break;
 		    case LilyState.Yellow:
 			    currentState = LilyState.Yellow;
-                LilyEffectAnimator.Play("LilyOpenAnim");
-                GreenEmitter.SetActive(false);
-                PurpleEmitter.SetActive(false);
-                YellowEmitter.SetActive(true);
-                CompleteEmitter.SetActive(false);
+				LilyEffectAnimator.Play("LilyOpen1");
                 break;
 			case LilyState.Complete:
 				currentState = LilyState.Complete;
-                LilyEffectAnimator.Play("LilyOpenAnim");
-                GreenEmitter.SetActive(false);
-                PurpleEmitter.SetActive(false);
-                YellowEmitter.SetActive(false);
-                CompleteEmitter.SetActive(true);
+                LilyEffectAnimator.Play("LilyComplete");
                 break;
 		    default:
 			    break;
