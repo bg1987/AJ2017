@@ -108,241 +108,6 @@ NavMeshSettings:
     tileSize: 256
     accuratePlacement: 0
   m_NavMeshData: {fileID: 0}
---- !u!114 &1205594
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9289eb0ca58ef471f9062a5f77161403, type: 3}
-  m_Name: (Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 5
-  title: Wait
-  description: Waits a set time before continuing.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 0
-  skipAction: -1
-  skipActionActual: {fileID: 0}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 14
-    width: 300
-    height: 86
-  nodeHeight: 0
-  parameterID: -1
-  timeToPause: 0
---- !u!114 &1762254
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fee606cf6f21b4a7f98958d38261139e, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 11
-  title: Call event
-  description: Sends a given message to a GameObject. Can be either a message commonly-used
-    by Adventure Creator (Interact, TurnOn, etc) or a custom one, with an integer
-    argument.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 2
-  skipAction: 3
-  skipActionActual: {fileID: 1752905006}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 130
-    width: 300
-    height: 187
-  nodeHeight: 0
-  unityEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 138098990}
-        m_MethodName: Switch
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  skipEvent:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  ignoreWhenSkipping: 0
---- !u!114 &21291425
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9289eb0ca58ef471f9062a5f77161403, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 5
-  title: Wait
-  description: Waits a set time before continuing.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 0
-  skipAction: 1
-  skipActionActual: {fileID: 2010439595}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 14
-    width: 300
-    height: 86
-  nodeHeight: 0
-  parameterID: -1
-  timeToPause: 0
---- !u!114 &22174167
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bdaacaae7eb224bd2b2b6d336bb7b1a8, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 17
-  title: Check
-  description: Queries the value of both Global and Local Variables declared in the
-    Variables Manager. Variables can be compared with a fixed value, or with the values
-    of other Variables.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 2
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 1
-  skipAction: -1
-  skipActionActual: {fileID: 0}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 542
-    width: 300
-    height: 176
-  nodeHeight: 0
-  resultActionTrue: 2
-  skipActionTrue: 7
-  skipActionTrueActual: {fileID: 256841891}
-  linkedCutsceneTrue: {fileID: 0}
-  linkedAssetTrue: {fileID: 0}
-  resultActionFail: 1
-  skipActionFail: 2
-  skipActionFailActual: {fileID: 0}
-  linkedCutsceneFail: {fileID: 0}
-  linkedAssetFail: {fileID: 0}
-  parameterID: -1
-  variableID: 2
-  variableNumber: 5
-  checkParameterID: -1
-  getVarMethod: 2
-  compareVariableID: 5
-  intValue: 0
-  floatValue: 0
-  intCondition: 0
-  isAdditive: 0
-  boolValue: 1
-  boolCondition: 0
-  stringValue: 
-  checkCase: 1
-  location: 1
 --- !u!1 &43953010
 GameObject:
   m_ObjectHideFlags: 0
@@ -460,7 +225,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: 91d6ab39027244ea689b8f0ec9b5b548, type: 2}
       propertyPath: showInEditor
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 91d6ab39027244ea689b8f0ec9b5b548, type: 2}
       propertyPath: m_IsActive
@@ -543,6 +308,68 @@ Prefab:
 Transform:
   m_PrefabParentObject: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
   m_PrefabInternal: {fileID: 72280481}
+--- !u!114 &77463105
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1532532f8c184eb78970e085394e564, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 14
+  title: Change setting
+  description: 'Changes any of the following scene parameters: NavMesh, Default PlayerStart,
+    Sorting Map, Tint Map, Cutscene On Load, and Cutscene On Start. When the NavMesh
+    is a Polygon Collider, this Action can also be used to add or remove holes from
+    it.'
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 2
+  skipAction: 6
+  skipActionActual: {fileID: 1280745725}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 1482
+    width: 300
+    height: 140
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  replaceConstantID: 0
+  replaceParameterID: -1
+  newNavMesh: {fileID: 1672770528}
+  sortingMap: {fileID: 0}
+  playerStart: {fileID: 0}
+  cutscene: {fileID: 0}
+  tintMap: {fileID: 0}
+  sceneSetting: 0
+  changeNavMeshMethod: 0
+  holeAction: 0
+  hole: {fileID: 0}
+  replaceHole: {fileID: 0}
 --- !u!1 &84794955
 GameObject:
   m_ObjectHideFlags: 0
@@ -612,6 +439,78 @@ SpriteRenderer:
   m_Size: {x: 0.2777778, y: 0.5}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+--- !u!114 &109241278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdaacaae7eb224bd2b2b6d336bb7b1a8, type: 3}
+  m_Name: (Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 17
+  title: Check
+  description: Queries the value of both Global and Local Variables declared in the
+    Variables Manager. Variables can be compared with a fixed value, or with the values
+    of other Variables.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 2
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 130
+    width: 300
+    height: 176
+  nodeHeight: 0
+  resultActionTrue: 0
+  skipActionTrue: -1
+  skipActionTrueActual: {fileID: 0}
+  linkedCutsceneTrue: {fileID: 0}
+  linkedAssetTrue: {fileID: 0}
+  resultActionFail: 2
+  skipActionFail: 3
+  skipActionFailActual: {fileID: 1397272520}
+  linkedCutsceneFail: {fileID: 0}
+  linkedAssetFail: {fileID: 0}
+  parameterID: -1
+  variableID: 0
+  variableNumber: 0
+  checkParameterID: -1
+  getVarMethod: 0
+  compareVariableID: 0
+  intValue: 3
+  floatValue: 0
+  intCondition: 0
+  isAdditive: 0
+  boolValue: 1
+  boolCondition: 0
+  stringValue: 
+  checkCase: 1
+  location: 0
 --- !u!1 &118041039
 GameObject:
   m_ObjectHideFlags: 0
@@ -686,6 +585,16 @@ SpriteRenderer:
   m_Size: {x: 1.5, y: 3.5185184}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+--- !u!4 &129040050 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+  m_PrefabInternal: {fileID: 224607686}
+--- !u!114 &129040051 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 11400000, guid: a9d4e17cb5a8745ccad47e11f075de33,
+    type: 2}
+  m_PrefabInternal: {fileID: 224607686}
+  m_Script: {fileID: 11500000, guid: 6a1e6413216104fd580c7ce85907039c, type: 3}
 --- !u!1 &138098988
 GameObject:
   m_ObjectHideFlags: 0
@@ -741,6 +650,78 @@ MonoBehaviour:
   localVariableId: 2
   isTarget: 0
   currentIndex: 0
+--- !u!114 &154327454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdaacaae7eb224bd2b2b6d336bb7b1a8, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 17
+  title: Check
+  description: Queries the value of both Global and Local Variables declared in the
+    Variables Manager. Variables can be compared with a fixed value, or with the values
+    of other Variables.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 2
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 56
+    y: 553
+    width: 300
+    height: 176
+  nodeHeight: 0
+  resultActionTrue: 2
+  skipActionTrue: 6
+  skipActionTrueActual: {fileID: 819554320}
+  linkedCutsceneTrue: {fileID: 0}
+  linkedAssetTrue: {fileID: 0}
+  resultActionFail: 1
+  skipActionFail: 3
+  skipActionFailActual: {fileID: 0}
+  linkedCutsceneFail: {fileID: 0}
+  linkedAssetFail: {fileID: 0}
+  parameterID: -1
+  variableID: 0
+  variableNumber: 0
+  checkParameterID: -1
+  getVarMethod: 0
+  compareVariableID: 0
+  intValue: 3
+  floatValue: 0
+  intCondition: 0
+  isAdditive: 0
+  boolValue: 1
+  boolCondition: 0
+  stringValue: 
+  checkCase: 1
+  location: 0
 --- !u!114 &160215997
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -841,6 +822,115 @@ Transform:
   m_Father: {fileID: 746584409}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &169692625
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea4c3ba658ee84d51a7ccd6f9fc22176, type: 3}
+  m_Name: (Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 0
+  title: Run
+  description: Runs any ActionList (either scene-based like Cutscenes, Triggers and
+    Interactions, or ActionList assets). If the new ActionList takes parameters, this
+    Action can be used to set them.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: 5
+  skipActionActual: {fileID: 169692625}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 437
+    y: 367
+    width: 300
+    height: 140
+  nodeHeight: 0
+  listSource: 0
+  actionList: {fileID: 1600934077}
+  constantID: 0
+  parameterID: -1
+  invActionList: {fileID: 0}
+  assetParameterID: -1
+  runFromStart: 1
+  jumpToAction: 0
+  jumpToActionParameterID: -1
+  jumpToActionActual: {fileID: 0}
+  runInParallel: 1
+  isSkippable: 0
+  localParameters: []
+  parameterIDs: 
+  setParameters: 1
+--- !u!114 &172620205
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9289eb0ca58ef471f9062a5f77161403, type: 3}
+  m_Name: (Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 5
+  title: Wait
+  description: Waits a set time before continuing.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 14
+    width: 300
+    height: 86
+  nodeHeight: 0
+  parameterID: -1
+  timeToPause: 0
 --- !u!114 &181551155
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -921,6 +1011,128 @@ Transform:
   m_Father: {fileID: 746584409}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &198418148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
+  m_Name: (Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 11
+  title: Fade sprite
+  description: Fades a sprite in or out.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 336
+    width: 300
+    height: 140
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  spriteFader: {fileID: 1510127373}
+  fadeType: 1
+  fadeSpeed: 0.3
+--- !u!114 &202139961
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdaacaae7eb224bd2b2b6d336bb7b1a8, type: 3}
+  m_Name: (Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 17
+  title: Check
+  description: Queries the value of both Global and Local Variables declared in the
+    Variables Manager. Variables can be compared with a fixed value, or with the values
+    of other Variables.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 2
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 130
+    width: 300
+    height: 176
+  nodeHeight: 0
+  resultActionTrue: 0
+  skipActionTrue: -1
+  skipActionTrueActual: {fileID: 0}
+  linkedCutsceneTrue: {fileID: 0}
+  linkedAssetTrue: {fileID: 0}
+  resultActionFail: 2
+  skipActionFail: 3
+  skipActionFailActual: {fileID: 222272513}
+  linkedCutsceneFail: {fileID: 0}
+  linkedAssetFail: {fileID: 0}
+  parameterID: -1
+  variableID: 0
+  variableNumber: 0
+  checkParameterID: -1
+  getVarMethod: 0
+  compareVariableID: 0
+  intValue: 2
+  floatValue: 0
+  intCondition: 0
+  isAdditive: 0
+  boolValue: 1
+  boolCondition: 0
+  stringValue: 
+  checkCase: 1
+  location: 0
 --- !u!1 &209099040
 GameObject:
   m_ObjectHideFlags: 0
@@ -949,6 +1161,122 @@ Transform:
   m_Father: {fileID: 1594891940}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &222272513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
+  m_Name: (Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 11
+  title: Fade sprite
+  description: Fades a sprite in or out.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 336
+    width: 300
+    height: 140
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  spriteFader: {fileID: 759503302}
+  fadeType: 1
+  fadeSpeed: 0.3
+--- !u!1001 &224607686
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1546463786}
+    m_Modifications:
+    - target: {fileID: 11400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: actions.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: m_RootOrder
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: m_Name
+      value: Base3Light
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: actions.Array.data[0]
+      value: 
+      objectReference: {fileID: 463423061}
+    - target: {fileID: 11400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: actions.Array.data[1]
+      value: 
+      objectReference: {fileID: 109241278}
+    - target: {fileID: 11400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: actions.Array.data[2]
+      value: 
+      objectReference: {fileID: 1260086980}
+    - target: {fileID: 11400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: actions.Array.data[3]
+      value: 
+      objectReference: {fileID: 1397272520}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1 &237890048
 GameObject:
   m_ObjectHideFlags: 0
@@ -1084,6 +1412,53 @@ MonoBehaviour:
   origin: {fileID: 0}
   audioClip: {fileID: 8300000, guid: 1a63fffe3e05af84bb9b459742460738, type: 3}
   audioClipParameterID: -1
+--- !u!114 &257319081
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9289eb0ca58ef471f9062a5f77161403, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 5
+  title: Wait
+  description: Waits a set time before continuing.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 0
+  skipAction: 1
+  skipActionActual: {fileID: 289909095}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 14
+    width: 300
+    height: 86
+  nodeHeight: 0
+  parameterID: -1
+  timeToPause: 0
 --- !u!1 &284159270
 GameObject:
   m_ObjectHideFlags: 0
@@ -1292,6 +1667,7 @@ GameObject:
   m_Component:
   - component: {fileID: 319800440}
   - component: {fileID: 319800441}
+  - component: {fileID: 319800442}
   m_Layer: 0
   m_Name: trip1_hands
   m_TagString: Untagged
@@ -1353,6 +1729,28 @@ SpriteRenderer:
   m_Size: {x: 4.490741, y: 3.6203704}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+--- !u!114 &319800442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 319800439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0f37b80b5a24452ba3a081c115f77bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  depth: 0.1
+  xScroll: 1
+  yScroll: 0
+  xOffset: 0
+  yOffset: 0
+  limitX: 0
+  minX: 0
+  maxX: 0
+  limitY: 0
+  minY: 0
+  maxY: 0
 --- !u!114 &326772643
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1415,7 +1813,7 @@ MonoBehaviour:
   localParameters: []
   parameterIDs: 
   setParameters: 1
---- !u!114 &329537643
+--- !u!114 &361355532
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -1423,15 +1821,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fee606cf6f21b4a7f98958d38261139e, type: 3}
-  m_Name: (Clone)(Clone)(Clone)
+  m_Script: {fileID: 11500000, guid: 9289eb0ca58ef471f9062a5f77161403, type: 3}
+  m_Name: (Clone)
   m_EditorClassIdentifier: 
   id: 0
-  category: 11
-  title: Call event
-  description: Sends a given message to a GameObject. Can be either a message commonly-used
-    by Adventure Creator (Interact, TurnOn, etc) or a custom one, with an integer
-    argument.
+  category: 5
+  title: Wait
+  description: Waits a set time before continuing.
   isDisplayed: 1
   showComment: 0
   comment: 
@@ -1446,9 +1842,9 @@ MonoBehaviour:
     skipActionActual: {fileID: 0}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
-  endAction: 2
-  skipAction: 3
-  skipActionActual: {fileID: 1539263854}
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -1458,32 +1854,62 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 130
+    y: 14
     width: 300
-    height: 187
+    height: 86
   nodeHeight: 0
-  unityEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1617687460}
-        m_MethodName: Switch
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  skipEvent:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  ignoreWhenSkipping: 0
+  parameterID: -1
+  timeToPause: 0
+--- !u!114 &374807361
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 11
+  title: Fade sprite
+  description: Fades a sprite in or out.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 364
+    y: 336
+    width: 300
+    height: 140
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  spriteFader: {fileID: 685293794}
+  fadeType: 0
+  fadeSpeed: 0.6
 --- !u!1 &380464184
 GameObject:
   m_ObjectHideFlags: 0
@@ -1692,79 +2118,7 @@ SpriteRenderer:
   m_Size: {x: 0.8240741, y: 2.9444444}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
---- !u!114 &401786273
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bdaacaae7eb224bd2b2b6d336bb7b1a8, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 17
-  title: Check
-  description: Queries the value of both Global and Local Variables declared in the
-    Variables Manager. Variables can be compared with a fixed value, or with the values
-    of other Variables.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 2
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 1
-  skipAction: -1
-  skipActionActual: {fileID: 0}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 130
-    width: 300
-    height: 176
-  nodeHeight: 0
-  resultActionTrue: 2
-  skipActionTrue: 2
-  skipActionTrueActual: {fileID: 160215997}
-  linkedCutsceneTrue: {fileID: 0}
-  linkedAssetTrue: {fileID: 0}
-  resultActionFail: 1
-  skipActionFail: -1
-  skipActionFailActual: {fileID: 0}
-  linkedCutsceneFail: {fileID: 0}
-  linkedAssetFail: {fileID: 0}
-  parameterID: -1
-  variableID: 0
-  variableNumber: 3
-  checkParameterID: -1
-  getVarMethod: 2
-  compareVariableID: 3
-  intValue: 0
-  floatValue: 0
-  intCondition: 0
-  isAdditive: 0
-  boolValue: 1
-  boolCondition: 0
-  stringValue: 
-  checkCase: 1
-  location: 1
---- !u!114 &416387186
+--- !u!114 &398331784
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -1797,7 +2151,7 @@ MonoBehaviour:
     linkedAsset: {fileID: 0}
   endAction: 1
   skipAction: 2
-  skipActionActual: {fileID: 416387186}
+  skipActionActual: {fileID: 398331784}
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -1994,6 +2348,153 @@ Transform:
   m_Father: {fileID: 746584409}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &463423061
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9289eb0ca58ef471f9062a5f77161403, type: 3}
+  m_Name: (Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 5
+  title: Wait
+  description: Waits a set time before continuing.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 14
+    width: 300
+    height: 86
+  nodeHeight: 0
+  parameterID: -1
+  timeToPause: 0
+--- !u!114 &485391678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 11
+  title: Fade sprite
+  description: Fades a sprite in or out.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 336
+    width: 300
+    height: 140
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  spriteFader: {fileID: 685293794}
+  fadeType: 1
+  fadeSpeed: 0.3
+--- !u!114 &495117860
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
+  m_Name: (Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 11
+  title: Fade sprite
+  description: Fades a sprite in or out.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 364
+    y: 336
+    width: 300
+    height: 140
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  spriteFader: {fileID: 759503302}
+  fadeType: 0
+  fadeSpeed: 0.6
 --- !u!1 &514217888
 GameObject:
   m_ObjectHideFlags: 0
@@ -2091,6 +2592,78 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &533061662
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdaacaae7eb224bd2b2b6d336bb7b1a8, type: 3}
+  m_Name: (Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 17
+  title: Check
+  description: Queries the value of both Global and Local Variables declared in the
+    Variables Manager. Variables can be compared with a fixed value, or with the values
+    of other Variables.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 2
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 130
+    width: 300
+    height: 176
+  nodeHeight: 0
+  resultActionTrue: 0
+  skipActionTrue: -1
+  skipActionTrueActual: {fileID: 0}
+  linkedCutsceneTrue: {fileID: 0}
+  linkedAssetTrue: {fileID: 0}
+  resultActionFail: 2
+  skipActionFail: 3
+  skipActionFailActual: {fileID: 1397272520}
+  linkedCutsceneFail: {fileID: 0}
+  linkedAssetFail: {fileID: 0}
+  parameterID: -1
+  variableID: 0
+  variableNumber: 0
+  checkParameterID: -1
+  getVarMethod: 0
+  compareVariableID: 0
+  intValue: 3
+  floatValue: 0
+  intCondition: 0
+  isAdditive: 0
+  boolValue: 1
+  boolCondition: 0
+  stringValue: 
+  checkCase: 1
+  location: 0
 --- !u!1001 &548943578
 Prefab:
   m_ObjectHideFlags: 0
@@ -2161,7 +2734,7 @@ Prefab:
 Transform:
   m_PrefabParentObject: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
   m_PrefabInternal: {fileID: 548943578}
---- !u!114 &566372877
+--- !u!114 &554558240
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -2169,16 +2742,63 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1532532f8c184eb78970e085394e564, type: 3}
+  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
   m_Name: (Clone)(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
   id: 0
-  category: 14
-  title: Change setting
-  description: 'Changes any of the following scene parameters: NavMesh, Default PlayerStart,
-    Sorting Map, Tint Map, Cutscene On Load, and Cutscene On Start. When the NavMesh
-    is a Polygon Collider, this Action can also be used to add or remove holes from
-    it.'
+  category: 11
+  title: Fade sprite
+  description: Fades a sprite in or out.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 1
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 2
+  skipAction: 4
+  skipActionActual: {fileID: 850308248}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 1294
+    width: 300
+    height: 158
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  spriteFader: {fileID: 1593886055}
+  fadeType: 0
+  fadeSpeed: 1
+--- !u!114 &555251771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9289eb0ca58ef471f9062a5f77161403, type: 3}
+  m_Name: (Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 5
+  title: Wait
+  description: Waits a set time before continuing.
   isDisplayed: 1
   showComment: 0
   comment: 
@@ -2193,9 +2813,9 @@ MonoBehaviour:
     skipActionActual: {fileID: 0}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
-  endAction: 2
-  skipAction: 6
-  skipActionActual: {fileID: 1280745725}
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -2205,24 +2825,12 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 1482
+    y: 14
     width: 300
-    height: 140
+    height: 86
   nodeHeight: 0
-  constantID: 0
   parameterID: -1
-  replaceConstantID: 0
-  replaceParameterID: -1
-  newNavMesh: {fileID: 1672770528}
-  sortingMap: {fileID: 0}
-  playerStart: {fileID: 0}
-  cutscene: {fileID: 0}
-  tintMap: {fileID: 0}
-  sceneSetting: 0
-  changeNavMeshMethod: 0
-  holeAction: 0
-  hole: {fileID: 0}
-  replaceHole: {fileID: 0}
+  timeToPause: 0
 --- !u!1 &567860131
 GameObject:
   m_ObjectHideFlags: 0
@@ -2364,78 +2972,6 @@ MonoBehaviour:
 Transform:
   m_PrefabParentObject: {fileID: 400000, guid: 6ea1e18e6eb914b02a9ad3f5f366edc5, type: 2}
   m_PrefabInternal: {fileID: 579551709}
---- !u!114 &602075747
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bdaacaae7eb224bd2b2b6d336bb7b1a8, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 17
-  title: Check
-  description: Queries the value of both Global and Local Variables declared in the
-    Variables Manager. Variables can be compared with a fixed value, or with the values
-    of other Variables.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 2
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 1
-  skipAction: -1
-  skipActionActual: {fileID: 0}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 336
-    width: 300
-    height: 176
-  nodeHeight: 0
-  resultActionTrue: 2
-  skipActionTrue: 3
-  skipActionTrueActual: {fileID: 2102334351}
-  linkedCutsceneTrue: {fileID: 0}
-  linkedAssetTrue: {fileID: 0}
-  resultActionFail: 1
-  skipActionFail: 1
-  skipActionFailActual: {fileID: 0}
-  linkedCutsceneFail: {fileID: 0}
-  linkedAssetFail: {fileID: 0}
-  parameterID: -1
-  variableID: 1
-  variableNumber: 4
-  checkParameterID: -1
-  getVarMethod: 2
-  compareVariableID: 4
-  intValue: 0
-  floatValue: 0
-  intCondition: 0
-  isAdditive: 0
-  boolValue: 1
-  boolCondition: 0
-  stringValue: 
-  checkCase: 1
-  location: 1
 --- !u!1 &602790508
 GameObject:
   m_ObjectHideFlags: 0
@@ -2464,63 +3000,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &607510464
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0643024da91f402a9281e781736a4c6, type: 3}
-  m_Name: (Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 2
-  title: Move to point
-  description: Moves a character to a given Marker object. By default, the character
-    will attempt to pathfind their way to the marker, but can optionally just move
-    in a straight line.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 1
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 0
-  skipAction: -1
-  skipActionActual: {fileID: 0}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 10
-    y: 164
-    width: 300
-    height: 176
-  nodeHeight: 0
-  charToMoveParameterID: -1
-  markerParameterID: -1
-  charToMoveID: 0
-  markerID: 0
-  marker: {fileID: 1254035989}
-  isPlayer: 1
-  charToMove: {fileID: 0}
-  speed: 0
-  pathFind: 1
-  doFloat: 0
 --- !u!114 &622065763 stripped
 MonoBehaviour:
   m_PrefabParentObject: {fileID: 11400000, guid: a9d4e17cb5a8745ccad47e11f075de33,
@@ -2539,7 +3018,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   is2D: 1
---- !u!114 &638262798
+--- !u!114 &632587757
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -2547,15 +3026,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea4c3ba658ee84d51a7ccd6f9fc22176, type: 3}
-  m_Name: (Clone)(Clone)(Clone)
+  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
   id: 0
-  category: 0
-  title: Run
-  description: Runs any ActionList (either scene-based like Cutscenes, Triggers and
-    Interactions, or ActionList assets). If the new ActionList takes parameters, this
-    Action can be used to set them.
+  category: 11
+  title: Fade sprite
+  description: Fades a sprite in or out.
   isDisplayed: 1
   showComment: 0
   comment: 
@@ -2570,9 +3047,9 @@ MonoBehaviour:
     skipActionActual: {fileID: 0}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
-  endAction: 1
+  endAction: 2
   skipAction: 5
-  skipActionActual: {fileID: 638262798}
+  skipActionActual: {fileID: 181551155}
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -2581,26 +3058,16 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 437
-    y: 367
+    x: 14
+    y: 1106
     width: 300
-    height: 140
+    height: 158
   nodeHeight: 0
-  listSource: 0
-  actionList: {fileID: 1600934077}
   constantID: 0
   parameterID: -1
-  invActionList: {fileID: 0}
-  assetParameterID: -1
-  runFromStart: 1
-  jumpToAction: 0
-  jumpToActionParameterID: -1
-  jumpToActionActual: {fileID: 0}
-  runInParallel: 1
-  isSkippable: 0
-  localParameters: []
-  parameterIDs: 
-  setParameters: 1
+  spriteFader: {fileID: 1518411135}
+  fadeType: 0
+  fadeSpeed: 1
 --- !u!1 &651850983
 GameObject:
   m_ObjectHideFlags: 0
@@ -2629,53 +3096,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &667948816
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9289eb0ca58ef471f9062a5f77161403, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 5
-  title: Wait
-  description: Waits a set time before continuing.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 0
-  skipAction: 1
-  skipActionActual: {fileID: 289909095}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 14
-    width: 300
-    height: 86
-  nodeHeight: 0
-  parameterID: -1
-  timeToPause: 0
 --- !u!1 &674097878
 GameObject:
   m_ObjectHideFlags: 0
@@ -2870,7 +3290,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1984329013
   m_SortingLayer: -1
-  m_SortingOrder: 2
+  m_SortingOrder: 3
   m_Sprite: {fileID: 21300000, guid: 791095d4dc7de274ba12c2a3a708c81f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_FlipX: 0
@@ -2991,6 +3411,178 @@ SpriteRenderer:
   m_Size: {x: 0.2777778, y: 0.5}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+--- !u!114 &709247891
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
+  m_Name: (Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 11
+  title: Fade sprite
+  description: Fades a sprite in or out.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 364
+    y: 336
+    width: 300
+    height: 140
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  spriteFader: {fileID: 685293794}
+  fadeType: 0
+  fadeSpeed: 0.6
+--- !u!114 &710581069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98cbf837c7ba24dda959b0c08f753c33, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 15
+  title: Play one-shot
+  description: Plays an AudioClip once without the need for a Sound object.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 2
+  skipAction: 2
+  skipActionActual: {fileID: 326772643}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 347
+    width: 300
+    height: 140
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  origin: {fileID: 0}
+  audioClip: {fileID: 8300000, guid: 3b3dfd558ead65d429bcd6a82f18beee, type: 3}
+  audioClipParameterID: -1
+--- !u!114 &713557782
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdaacaae7eb224bd2b2b6d336bb7b1a8, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 17
+  title: Check
+  description: Queries the value of both Global and Local Variables declared in the
+    Variables Manager. Variables can be compared with a fixed value, or with the values
+    of other Variables.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 2
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 336
+    width: 300
+    height: 176
+  nodeHeight: 0
+  resultActionTrue: 2
+  skipActionTrue: 3
+  skipActionTrueActual: {fileID: 2102334351}
+  linkedCutsceneTrue: {fileID: 0}
+  linkedAssetTrue: {fileID: 0}
+  resultActionFail: 1
+  skipActionFail: 1
+  skipActionFailActual: {fileID: 0}
+  linkedCutsceneFail: {fileID: 0}
+  linkedAssetFail: {fileID: 0}
+  parameterID: -1
+  variableID: 1
+  variableNumber: 4
+  checkParameterID: -1
+  getVarMethod: 2
+  compareVariableID: 4
+  intValue: 0
+  floatValue: 0
+  intCondition: 0
+  isAdditive: 0
+  boolValue: 1
+  boolCondition: 0
+  stringValue: 
+  checkCase: 1
+  location: 1
 --- !u!1 &714619483
 GameObject:
   m_ObjectHideFlags: 0
@@ -3116,6 +3708,53 @@ SpriteRenderer:
   m_Size: {x: 0.42592594, y: 0.5555556}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+--- !u!114 &737399979
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9289eb0ca58ef471f9062a5f77161403, type: 3}
+  m_Name: (Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 5
+  title: Wait
+  description: Waits a set time before continuing.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 14
+    width: 300
+    height: 86
+  nodeHeight: 0
+  parameterID: -1
+  timeToPause: 0
 --- !u!114 &744474035
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3202,6 +3841,72 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &747441716
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1546463786}
+    m_Modifications:
+    - target: {fileID: 11400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: actions.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: m_RootOrder
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: m_Name
+      value: Base1Light
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: actions.Array.data[0]
+      value: 
+      objectReference: {fileID: 361355532}
+    - target: {fileID: 11400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: actions.Array.data[1]
+      value: 
+      objectReference: {fileID: 2038295827}
+    - target: {fileID: 11400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: actions.Array.data[2]
+      value: 
+      objectReference: {fileID: 374807361}
+    - target: {fileID: 11400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: actions.Array.data[3]
+      value: 
+      objectReference: {fileID: 485391678}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+  m_IsPrefabParent: 0
 --- !u!114 &757793123
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3325,7 +4030,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1984329013
   m_SortingLayer: -1
-  m_SortingOrder: 2
+  m_SortingOrder: 3
   m_Sprite: {fileID: 21300000, guid: e46c983016b4d664994ba202a428d7fb, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_FlipX: 0
@@ -3418,7 +4123,7 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   ignoreWhenSkipping: 0
---- !u!114 &772485860
+--- !u!114 &776616685
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -3426,21 +4131,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea4c3ba658ee84d51a7ccd6f9fc22176, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)
+  m_Script: {fileID: 11500000, guid: a0643024da91f402a9281e781736a4c6, type: 3}
+  m_Name: (Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
   id: 0
-  category: 0
-  title: Run
-  description: Runs any ActionList (either scene-based like Cutscenes, Triggers and
-    Interactions, or ActionList assets). If the new ActionList takes parameters, this
-    Action can be used to set them.
+  category: 2
+  title: Move to point
+  description: Moves a character to a given Marker object. By default, the character
+    will attempt to pathfind their way to the marker, but can optionally just move
+    in a straight line.
   isDisplayed: 1
   showComment: 0
   comment: 
   showOutputSockets: 1
   numSockets: 1
-  willWait: 0
+  willWait: 1
   defaultPauseTime: 0.1
   isRunning: 0
   lastResult:
@@ -3449,9 +4154,9 @@ MonoBehaviour:
     skipActionActual: {fileID: 0}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
-  endAction: 1
-  skipAction: 6
-  skipActionActual: {fileID: 772485860}
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -3460,26 +4165,21 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 451
-    y: 570
+    x: 14
+    y: 130
     width: 300
-    height: 140
+    height: 176
   nodeHeight: 0
-  listSource: 0
-  actionList: {fileID: 1122341879}
-  constantID: 0
-  parameterID: -1
-  invActionList: {fileID: 0}
-  assetParameterID: -1
-  runFromStart: 1
-  jumpToAction: 0
-  jumpToActionParameterID: -1
-  jumpToActionActual: {fileID: 0}
-  runInParallel: 1
-  isSkippable: 0
-  localParameters: []
-  parameterIDs: 
-  setParameters: 1
+  charToMoveParameterID: -1
+  markerParameterID: -1
+  charToMoveID: 0
+  markerID: 0
+  marker: {fileID: 1624733478}
+  isPlayer: 1
+  charToMove: {fileID: 0}
+  speed: 0
+  pathFind: 1
+  doFloat: 0
 --- !u!114 &783741646
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3514,6 +4214,68 @@ MonoBehaviour:
   endAction: 1
   skipAction: 2
   skipActionActual: {fileID: 783741646}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 517
+    width: 300
+    height: 140
+  nodeHeight: 0
+  listSource: 0
+  actionList: {fileID: 1602479651}
+  constantID: 0
+  parameterID: -1
+  invActionList: {fileID: 0}
+  assetParameterID: -1
+  runFromStart: 1
+  jumpToAction: 0
+  jumpToActionParameterID: -1
+  jumpToActionActual: {fileID: 0}
+  runInParallel: 1
+  isSkippable: 0
+  localParameters: []
+  parameterIDs: 
+  setParameters: 1
+--- !u!114 &790991157
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea4c3ba658ee84d51a7ccd6f9fc22176, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 0
+  title: Run
+  description: Runs any ActionList (either scene-based like Cutscenes, Triggers and
+    Interactions, or ActionList assets). If the new ActionList takes parameters, this
+    Action can be used to set them.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: 2
+  skipActionActual: {fileID: 790991157}
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -3799,15 +4561,19 @@ Prefab:
     - target: {fileID: 11400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
       propertyPath: actions.Array.data[0]
       value: 
-      objectReference: {fileID: 824550282}
+      objectReference: {fileID: 1643088862}
     - target: {fileID: 11400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
       propertyPath: actions.Array.data[1]
       value: 
-      objectReference: {fileID: 1059288193}
+      objectReference: {fileID: 776616685}
     - target: {fileID: 11400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
       propertyPath: actions.Array.data[2]
       value: 
-      objectReference: {fileID: 1491122742}
+      objectReference: {fileID: 2132657932}
+    - target: {fileID: 11400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: actionListType
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
   m_IsPrefabParent: 0
@@ -3873,7 +4639,7 @@ MonoBehaviour:
   localParameters: []
   parameterIDs: 
   setParameters: 1
---- !u!114 &824550282
+--- !u!114 &820981707
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -3881,18 +4647,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9289eb0ca58ef471f9062a5f77161403, type: 3}
-  m_Name: 
+  m_Script: {fileID: 11500000, guid: bdaacaae7eb224bd2b2b6d336bb7b1a8, type: 3}
+  m_Name: (Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
   id: 0
-  category: 5
-  title: Wait
-  description: Waits a set time before continuing.
+  category: 17
+  title: Check
+  description: Queries the value of both Global and Local Variables declared in the
+    Variables Manager. Variables can be compared with a fixed value, or with the values
+    of other Variables.
   isDisplayed: 1
   showComment: 0
   comment: 
   showOutputSockets: 1
-  numSockets: 1
+  numSockets: 2
   willWait: 0
   defaultPauseTime: 0.1
   isRunning: 0
@@ -3902,7 +4670,7 @@ MonoBehaviour:
     skipActionActual: {fileID: 0}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
-  endAction: 0
+  endAction: 1
   skipAction: -1
   skipActionActual: {fileID: 0}
   linkedCutscene: {fileID: 0}
@@ -3913,13 +4681,36 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 14
-    y: 14
+    x: 55
+    y: 345
     width: 300
-    height: 86
+    height: 194
   nodeHeight: 0
+  resultActionTrue: 2
+  skipActionTrue: 5
+  skipActionTrueActual: {fileID: 757793123}
+  linkedCutsceneTrue: {fileID: 0}
+  linkedAssetTrue: {fileID: 0}
+  resultActionFail: 2
+  skipActionFail: 4
+  skipActionFailActual: {fileID: 1532957527}
+  linkedCutsceneFail: {fileID: 0}
+  linkedAssetFail: {fileID: 0}
   parameterID: -1
-  timeToPause: 0
+  variableID: 0
+  variableNumber: 0
+  checkParameterID: -1
+  getVarMethod: 0
+  compareVariableID: 0
+  intValue: 2
+  floatValue: 0
+  intCondition: 0
+  isAdditive: 0
+  boolValue: 1
+  boolCondition: 0
+  stringValue: 
+  checkCase: 1
+  location: 0
 --- !u!1 &839222351
 GameObject:
   m_ObjectHideFlags: 0
@@ -3974,6 +4765,67 @@ MonoBehaviour:
   localVariableId: 3
   isTarget: 1
   currentIndex: 0
+--- !u!114 &839762833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1d11677f69f745f88dbe9922511d53f, type: 3}
+  m_Name: (Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 14
+  title: Switch
+  description: 'Moves the Player to a new scene. The scene must be listed in Unity''s
+    Build Settings. By default, the screen will cut to black during the transition,
+    but the last frame of the current scene can instead be overlayed. This allows
+    for cinematic effects: if the next scene fades in, it will cause a crossfade effect;
+    if the next scene doesn''t fade, it will cause a straight cut.'
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 0
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 8
+    y: 408
+    width: 300
+    height: 150
+  nodeHeight: 0
+  chooseSceneBy: 1
+  sceneNumber: 0
+  sceneNumberParameterID: -1
+  sceneName: Trip2
+  sceneNameParameterID: -1
+  assignScreenOverlay: 0
+  onlyPreload: 0
+  relativePosition: 0
+  relativeMarker: {fileID: 0}
+  relativeMarkerID: 0
+  relativeMarkerParameterID: -1
+  forceReload: 0
 --- !u!114 &843561038 stripped
 MonoBehaviour:
   m_PrefabParentObject: {fileID: 11400000, guid: a9d4e17cb5a8745ccad47e11f075de33,
@@ -4100,7 +4952,7 @@ MonoBehaviour:
   localVariableId: 5
   isTarget: 1
   currentIndex: 0
---- !u!114 &887062236
+--- !u!114 &869453036
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -4108,15 +4960,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea4c3ba658ee84d51a7ccd6f9fc22176, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)
+  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
   id: 0
-  category: 0
-  title: Run
-  description: Runs any ActionList (either scene-based like Cutscenes, Triggers and
-    Interactions, or ActionList assets). If the new ActionList takes parameters, this
-    Action can be used to set them.
+  category: 11
+  title: Fade sprite
+  description: Fades a sprite in or out.
   isDisplayed: 1
   showComment: 0
   comment: 
@@ -4131,9 +4981,9 @@ MonoBehaviour:
     skipActionActual: {fileID: 0}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
-  endAction: 1
-  skipAction: 2
-  skipActionActual: {fileID: 887062236}
+  endAction: 2
+  skipAction: 9
+  skipActionActual: {fileID: 1132885668}
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -4143,26 +4993,16 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 517
+    y: 918
     width: 300
-    height: 140
+    height: 158
   nodeHeight: 0
-  listSource: 0
-  actionList: {fileID: 1602479651}
   constantID: 0
   parameterID: -1
-  invActionList: {fileID: 0}
-  assetParameterID: -1
-  runFromStart: 1
-  jumpToAction: 0
-  jumpToActionParameterID: -1
-  jumpToActionActual: {fileID: 0}
-  runInParallel: 1
-  isSkippable: 0
-  localParameters: []
-  parameterIDs: 
-  setParameters: 1
---- !u!114 &893795656
+  spriteFader: {fileID: 237890051}
+  fadeType: 0
+  fadeSpeed: 1
+--- !u!114 &913453214
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -4170,22 +5010,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f1d11677f69f745f88dbe9922511d53f, type: 3}
-  m_Name: (Clone)
+  m_Script: {fileID: 11500000, guid: 9289eb0ca58ef471f9062a5f77161403, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
   id: 0
-  category: 14
-  title: Switch
-  description: 'Moves the Player to a new scene. The scene must be listed in Unity''s
-    Build Settings. By default, the screen will cut to black during the transition,
-    but the last frame of the current scene can instead be overlayed. This allows
-    for cinematic effects: if the next scene fades in, it will cause a crossfade effect;
-    if the next scene doesn''t fade, it will cause a straight cut.'
+  category: 5
+  title: Wait
+  description: Waits a set time before continuing.
   isDisplayed: 1
   showComment: 0
   comment: 
   showOutputSockets: 1
-  numSockets: 0
+  numSockets: 1
   willWait: 0
   defaultPauseTime: 0.1
   isRunning: 0
@@ -4195,9 +5031,9 @@ MonoBehaviour:
     skipActionActual: {fileID: 0}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
-  endAction: 1
-  skipAction: -1
-  skipActionActual: {fileID: 0}
+  endAction: 0
+  skipAction: 1
+  skipActionActual: {fileID: 2010439595}
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -4206,23 +5042,13 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 8
-    y: 408
+    x: 14
+    y: 14
     width: 300
-    height: 150
+    height: 86
   nodeHeight: 0
-  chooseSceneBy: 1
-  sceneNumber: 0
-  sceneNumberParameterID: -1
-  sceneName: Trip2
-  sceneNameParameterID: -1
-  assignScreenOverlay: 0
-  onlyPreload: 0
-  relativePosition: 0
-  relativeMarker: {fileID: 0}
-  relativeMarkerID: 0
-  relativeMarkerParameterID: -1
-  forceReload: 0
+  parameterID: -1
+  timeToPause: 0
 --- !u!1 &914140446
 GameObject:
   m_ObjectHideFlags: 0
@@ -4314,7 +5140,7 @@ ParticleSystem:
   lengthInSec: 5
   simulationSpeed: 1
   looping: 1
-  prewarm: 0
+  prewarm: 1
   playOnAwake: 1
   autoRandomSeed: 1
   startDelay:
@@ -4359,7 +5185,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: -1128815512
+  randomSeed: 1906671607
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -4503,7 +5329,7 @@ ParticleSystem:
         m_NumColorKeys: 2
         m_NumAlphaKeys: 2
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 1, b: 1, a: 1}
+      maxColor: {r: 0.24264705, g: 0.24264705, b: 0.24264705, a: 1}
     startSize:
       minMaxState: 0
       scalar: 2.82
@@ -7548,56 +8374,6 @@ Transform:
   m_Father: {fileID: 746584409}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &970373658
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 98cbf837c7ba24dda959b0c08f753c33, type: 3}
-  m_Name: (Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 15
-  title: Play one-shot
-  description: Plays an AudioClip once without the need for a Sound object.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 2
-  skipAction: 2
-  skipActionActual: {fileID: 1116140629}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 347
-    width: 300
-    height: 140
-  nodeHeight: 0
-  constantID: 0
-  parameterID: -1
-  origin: {fileID: 0}
-  audioClip: {fileID: 8300000, guid: 61de078ca2d23b549892b25c1d527293, type: 3}
-  audioClipParameterID: -1
 --- !u!1 &974757272
 GameObject:
   m_ObjectHideFlags: 0
@@ -7775,6 +8551,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1002134545}
   - component: {fileID: 1002134546}
+  - component: {fileID: 1002134547}
   m_Layer: 0
   m_Name: trip_base1
   m_TagString: Untagged
@@ -7836,6 +8613,18 @@ SpriteRenderer:
   m_Size: {x: 1.3703704, y: 0.7592593}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+--- !u!114 &1002134547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1002134544}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 746173d260200ab4d9b0d281946ef7fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ToRun: {fileID: 2088735663}
 --- !u!1 &1037161469
 GameObject:
   m_ObjectHideFlags: 0
@@ -7865,185 +8654,6 @@ Transform:
   m_Father: {fileID: 284159271}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1050610837
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 11
-  title: Fade sprite
-  description: Fades a sprite in or out.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 2
-  skipAction: 5
-  skipActionActual: {fileID: 181551155}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 1106
-    width: 300
-    height: 158
-  nodeHeight: 0
-  constantID: 0
-  parameterID: -1
-  spriteFader: {fileID: 1518411135}
-  fadeType: 0
-  fadeSpeed: 1
---- !u!114 &1052649453
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bdaacaae7eb224bd2b2b6d336bb7b1a8, type: 3}
-  m_Name: (Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 17
-  title: Check
-  description: Queries the value of both Global and Local Variables declared in the
-    Variables Manager. Variables can be compared with a fixed value, or with the values
-    of other Variables.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 2
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 1
-  skipAction: -1
-  skipActionActual: {fileID: 0}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 55
-    y: 345
-    width: 300
-    height: 194
-  nodeHeight: 0
-  resultActionTrue: 2
-  skipActionTrue: 5
-  skipActionTrueActual: {fileID: 757793123}
-  linkedCutsceneTrue: {fileID: 0}
-  linkedAssetTrue: {fileID: 0}
-  resultActionFail: 2
-  skipActionFail: 4
-  skipActionFailActual: {fileID: 1532957527}
-  linkedCutsceneFail: {fileID: 0}
-  linkedAssetFail: {fileID: 0}
-  parameterID: -1
-  variableID: 0
-  variableNumber: 0
-  checkParameterID: -1
-  getVarMethod: 0
-  compareVariableID: 0
-  intValue: 2
-  floatValue: 0
-  intCondition: 0
-  isAdditive: 0
-  boolValue: 1
-  boolCondition: 0
-  stringValue: 
-  checkCase: 1
-  location: 0
---- !u!114 &1059288193
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0643024da91f402a9281e781736a4c6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 2
-  title: Move to point
-  description: Moves a character to a given Marker object. By default, the character
-    will attempt to pathfind their way to the marker, but can optionally just move
-    in a straight line.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 0
-  skipAction: -1
-  skipActionActual: {fileID: 0}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 13
-    y: 149
-    width: 300
-    height: 176
-  nodeHeight: 0
-  charToMoveParameterID: -1
-  markerParameterID: -1
-  charToMoveID: 0
-  markerID: 0
-  marker: {fileID: 1624733478}
-  isPlayer: 1
-  charToMove: {fileID: 0}
-  speed: 0
-  pathFind: 1
-  doFloat: 0
 --- !u!1001 &1066964328
 Prefab:
   m_ObjectHideFlags: 0
@@ -8089,7 +8699,23 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 2000000, guid: 08565f0c245ea4cb493de486dfcfe4e9, type: 2}
       propertyPath: orthographic size
-      value: 5
+      value: 4.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: 08565f0c245ea4cb493de486dfcfe4e9, type: 2}
+      propertyPath: lockHorizontal
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: 08565f0c245ea4cb493de486dfcfe4e9, type: 2}
+      propertyPath: limitHorizontal
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: 08565f0c245ea4cb493de486dfcfe4e9, type: 2}
+      propertyPath: constrainHorizontal.x
+      value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: 08565f0c245ea4cb493de486dfcfe4e9, type: 2}
+      propertyPath: constrainHorizontal.y
+      value: -0.9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 08565f0c245ea4cb493de486dfcfe4e9, type: 2}
@@ -8290,7 +8916,7 @@ MonoBehaviour:
     type: 2}
   m_PrefabInternal: {fileID: 1084341434}
   m_Script: {fileID: 11500000, guid: ea52220853ef74eb1b84cc002ce3d474, type: 3}
---- !u!114 &1092820157
+--- !u!114 &1089363344
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -8298,20 +8924,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea4c3ba658ee84d51a7ccd6f9fc22176, type: 3}
+  m_Script: {fileID: 11500000, guid: f1d11677f69f745f88dbe9922511d53f, type: 3}
   m_Name: (Clone)(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
   id: 0
-  category: 0
-  title: Run
-  description: Runs any ActionList (either scene-based like Cutscenes, Triggers and
-    Interactions, or ActionList assets). If the new ActionList takes parameters, this
-    Action can be used to set them.
+  category: 14
+  title: Switch
+  description: 'Moves the Player to a new scene. The scene must be listed in Unity''s
+    Build Settings. By default, the screen will cut to black during the transition,
+    but the last frame of the current scene can instead be overlayed. This allows
+    for cinematic effects: if the next scene fades in, it will cause a crossfade effect;
+    if the next scene doesn''t fade, it will cause a straight cut.'
   isDisplayed: 1
   showComment: 0
   comment: 
   showOutputSockets: 1
-  numSockets: 1
+  numSockets: 0
   willWait: 0
   defaultPauseTime: 0.1
   isRunning: 0
@@ -8322,8 +8950,8 @@ MonoBehaviour:
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
   endAction: 1
-  skipAction: 2
-  skipActionActual: {fileID: 1092820157}
+  skipAction: -1
+  skipActionActual: {fileID: 0}
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -8333,94 +8961,22 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 517
+    y: 336
     width: 300
-    height: 140
+    height: 150
   nodeHeight: 0
-  listSource: 0
-  actionList: {fileID: 1602479651}
-  constantID: 0
-  parameterID: -1
-  invActionList: {fileID: 0}
-  assetParameterID: -1
-  runFromStart: 1
-  jumpToAction: 0
-  jumpToActionParameterID: -1
-  jumpToActionActual: {fileID: 0}
-  runInParallel: 1
-  isSkippable: 0
-  localParameters: []
-  parameterIDs: 
-  setParameters: 1
---- !u!1 &1108716015
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 1108716017}
-  - component: {fileID: 1108716016}
-  m_Layer: 0
-  m_Name: trip1_ref
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!212 &1108716016
-SpriteRenderer:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1108716015}
-  m_Enabled: 1
-  m_CastShadows: 0
-  m_ReceiveShadows: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_SelectedEditorRenderState: 0
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 1984329013
-  m_SortingLayer: -1
-  m_SortingOrder: -9
-  m_Sprite: {fileID: 21300000, guid: 806393dc84b507a4a8bd826989d52900, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
-  m_FlipY: 0
-  m_DrawMode: 0
-  m_Size: {x: 17.777779, y: 9.990741}
-  m_AdaptiveModeThreshold: 0.5
-  m_SpriteTileMode: 0
---- !u!4 &1108716017
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1108716015}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 10.25, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 13
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  chooseSceneBy: 1
+  sceneNumber: 0
+  sceneNumberParameterID: -1
+  sceneName: Statue
+  sceneNameParameterID: -1
+  assignScreenOverlay: 0
+  onlyPreload: 0
+  relativePosition: 0
+  relativeMarker: {fileID: 0}
+  relativeMarkerID: 0
+  relativeMarkerParameterID: -1
+  forceReload: 0
 --- !u!114 &1116140629
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8551,7 +9107,7 @@ MonoBehaviour:
     type: 2}
   m_PrefabInternal: {fileID: 72280481}
   m_Script: {fileID: 11500000, guid: 6a1e6413216104fd580c7ce85907039c, type: 3}
---- !u!114 &1126692057
+--- !u!114 &1127312682
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -8559,13 +9115,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9289eb0ca58ef471f9062a5f77161403, type: 3}
+  m_Script: {fileID: 11500000, guid: 98cbf837c7ba24dda959b0c08f753c33, type: 3}
   m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
   id: 0
-  category: 5
-  title: Wait
-  description: Waits a set time before continuing.
+  category: 15
+  title: Play one-shot
+  description: Plays an AudioClip once without the need for a Sound object.
   isDisplayed: 1
   showComment: 0
   comment: 
@@ -8580,9 +9136,9 @@ MonoBehaviour:
     skipActionActual: {fileID: 0}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
-  endAction: 0
-  skipAction: 1
-  skipActionActual: {fileID: 764464778}
+  endAction: 2
+  skipAction: 8
+  skipActionActual: {fileID: 744474035}
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -8592,12 +9148,15 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 14
+    y: 748
     width: 300
-    height: 86
+    height: 140
   nodeHeight: 0
+  constantID: 0
   parameterID: -1
-  timeToPause: 0
+  origin: {fileID: 0}
+  audioClip: {fileID: 8300000, guid: 1a63fffe3e05af84bb9b459742460738, type: 3}
+  audioClipParameterID: -1
 --- !u!1 &1130767200
 GameObject:
   m_ObjectHideFlags: 0
@@ -8814,7 +9373,7 @@ SpriteRenderer:
   m_Size: {x: 0.2777778, y: 0.5}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
---- !u!114 &1177500265
+--- !u!114 &1174373232
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -8822,22 +9381,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f1d11677f69f745f88dbe9922511d53f, type: 3}
-  m_Name: (Clone)
+  m_Script: {fileID: 11500000, guid: fee606cf6f21b4a7f98958d38261139e, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
   id: 0
-  category: 14
-  title: Switch
-  description: 'Moves the Player to a new scene. The scene must be listed in Unity''s
-    Build Settings. By default, the screen will cut to black during the transition,
-    but the last frame of the current scene can instead be overlayed. This allows
-    for cinematic effects: if the next scene fades in, it will cause a crossfade effect;
-    if the next scene doesn''t fade, it will cause a straight cut.'
+  category: 11
+  title: Call event
+  description: Sends a given message to a GameObject. Can be either a message commonly-used
+    by Adventure Creator (Interact, TurnOn, etc) or a custom one, with an integer
+    argument.
   isDisplayed: 1
   showComment: 0
   comment: 
   showOutputSockets: 1
-  numSockets: 0
+  numSockets: 1
   willWait: 0
   defaultPauseTime: 0.1
   isRunning: 0
@@ -8847,9 +9404,9 @@ MonoBehaviour:
     skipActionActual: {fileID: 0}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
-  endAction: 1
-  skipAction: -1
-  skipActionActual: {fileID: 0}
+  endAction: 2
+  skipAction: 3
+  skipActionActual: {fileID: 1752905006}
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -8858,23 +9415,33 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 22
-    y: 377
+    x: 14
+    y: 130
     width: 300
-    height: 150
+    height: 187
   nodeHeight: 0
-  chooseSceneBy: 1
-  sceneNumber: 0
-  sceneNumberParameterID: -1
-  sceneName: Statue
-  sceneNameParameterID: -1
-  assignScreenOverlay: 0
-  onlyPreload: 0
-  relativePosition: 0
-  relativeMarker: {fileID: 0}
-  relativeMarkerID: 0
-  relativeMarkerParameterID: -1
-  forceReload: 0
+  unityEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 138098990}
+        m_MethodName: Switch
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  skipEvent:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  ignoreWhenSkipping: 0
 --- !u!1 &1188343431
 GameObject:
   m_ObjectHideFlags: 0
@@ -8944,6 +9511,56 @@ SpriteRenderer:
   m_Size: {x: 0.42592594, y: 0.5555556}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+--- !u!114 &1189277815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98cbf837c7ba24dda959b0c08f753c33, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 15
+  title: Play one-shot
+  description: Plays an AudioClip once without the need for a Sound object.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 2
+  skipAction: 2
+  skipActionActual: {fileID: 1116140629}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 347
+    width: 300
+    height: 140
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  origin: {fileID: 0}
+  audioClip: {fileID: 8300000, guid: 61de078ca2d23b549892b25c1d527293, type: 3}
+  audioClipParameterID: -1
 --- !u!1 &1201128800
 GameObject:
   m_ObjectHideFlags: 0
@@ -9151,6 +9768,78 @@ SpriteRenderer:
   m_Size: {x: 0.42592594, y: 0.5555556}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+--- !u!114 &1237890057
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdaacaae7eb224bd2b2b6d336bb7b1a8, type: 3}
+  m_Name: (Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 17
+  title: Check
+  description: Queries the value of both Global and Local Variables declared in the
+    Variables Manager. Variables can be compared with a fixed value, or with the values
+    of other Variables.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 2
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 130
+    width: 300
+    height: 176
+  nodeHeight: 0
+  resultActionTrue: 0
+  skipActionTrue: -1
+  skipActionTrueActual: {fileID: 0}
+  linkedCutsceneTrue: {fileID: 0}
+  linkedAssetTrue: {fileID: 0}
+  resultActionFail: 2
+  skipActionFail: 3
+  skipActionFailActual: {fileID: 485391678}
+  linkedCutsceneFail: {fileID: 0}
+  linkedAssetFail: {fileID: 0}
+  parameterID: -1
+  variableID: 0
+  variableNumber: 0
+  checkParameterID: -1
+  getVarMethod: 0
+  compareVariableID: 0
+  intValue: 1
+  floatValue: 0
+  intCondition: 0
+  isAdditive: 0
+  boolValue: 1
+  boolCondition: 0
+  stringValue: 
+  checkCase: 1
+  location: 0
 --- !u!4 &1252369255 stripped
 Transform:
   m_PrefabParentObject: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
@@ -9171,6 +9860,56 @@ MonoBehaviour:
     type: 2}
   m_PrefabInternal: {fileID: 2091735490}
   m_Script: {fileID: 11500000, guid: 3ffb48ecf9de44666b3779fe84044e36, type: 3}
+--- !u!114 &1260086980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
+  m_Name: (Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 11
+  title: Fade sprite
+  description: Fades a sprite in or out.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 364
+    y: 336
+    width: 300
+    height: 140
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  spriteFader: {fileID: 1510127373}
+  fadeType: 0
+  fadeSpeed: 0.6
 --- !u!114 &1272817129
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9272,6 +10011,128 @@ MonoBehaviour:
   interactionType: 0
   changeType: 0
   number: 0
+--- !u!114 &1284348869
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdaacaae7eb224bd2b2b6d336bb7b1a8, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 17
+  title: Check
+  description: Queries the value of both Global and Local Variables declared in the
+    Variables Manager. Variables can be compared with a fixed value, or with the values
+    of other Variables.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 2
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 542
+    width: 300
+    height: 176
+  nodeHeight: 0
+  resultActionTrue: 2
+  skipActionTrue: 7
+  skipActionTrueActual: {fileID: 256841891}
+  linkedCutsceneTrue: {fileID: 0}
+  linkedAssetTrue: {fileID: 0}
+  resultActionFail: 1
+  skipActionFail: 2
+  skipActionFailActual: {fileID: 0}
+  linkedCutsceneFail: {fileID: 0}
+  linkedAssetFail: {fileID: 0}
+  parameterID: -1
+  variableID: 2
+  variableNumber: 5
+  checkParameterID: -1
+  getVarMethod: 2
+  compareVariableID: 5
+  intValue: 0
+  floatValue: 0
+  intCondition: 0
+  isAdditive: 0
+  boolValue: 1
+  boolCondition: 0
+  stringValue: 
+  checkCase: 1
+  location: 1
+--- !u!114 &1303869392
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
+  m_Name: (Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 11
+  title: Fade sprite
+  description: Fades a sprite in or out.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 336
+    width: 300
+    height: 140
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  spriteFader: {fileID: 759503302}
+  fadeType: 1
+  fadeSpeed: 0.3
 --- !u!114 &1324055322
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9424,7 +10285,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: 91d6ab39027244ea689b8f0ec9b5b548, type: 2}
       propertyPath: showInEditor
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 91d6ab39027244ea689b8f0ec9b5b548, type: 2}
@@ -9567,7 +10428,7 @@ SpriteRenderer:
   m_Size: {x: 0.2777778, y: 0.5}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
---- !u!114 &1338900405
+--- !u!114 &1337451672
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -9575,13 +10436,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 98cbf837c7ba24dda959b0c08f753c33, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_Script: {fileID: 11500000, guid: ea4c3ba658ee84d51a7ccd6f9fc22176, type: 3}
+  m_Name: (Clone)(Clone)
   m_EditorClassIdentifier: 
   id: 0
-  category: 15
-  title: Play one-shot
-  description: Plays an AudioClip once without the need for a Sound object.
+  category: 0
+  title: Run
+  description: Runs any ActionList (either scene-based like Cutscenes, Triggers and
+    Interactions, or ActionList assets). If the new ActionList takes parameters, this
+    Action can be used to set them.
   isDisplayed: 1
   showComment: 0
   comment: 
@@ -9596,9 +10459,9 @@ MonoBehaviour:
     skipActionActual: {fileID: 0}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
-  endAction: 2
-  skipAction: 8
-  skipActionActual: {fileID: 744474035}
+  endAction: 1
+  skipAction: 2
+  skipActionActual: {fileID: 1337451672}
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -9608,15 +10471,25 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 748
+    y: 517
     width: 300
     height: 140
   nodeHeight: 0
+  listSource: 0
+  actionList: {fileID: 1602479651}
   constantID: 0
   parameterID: -1
-  origin: {fileID: 0}
-  audioClip: {fileID: 8300000, guid: 1a63fffe3e05af84bb9b459742460738, type: 3}
-  audioClipParameterID: -1
+  invActionList: {fileID: 0}
+  assetParameterID: -1
+  runFromStart: 1
+  jumpToAction: 0
+  jumpToActionParameterID: -1
+  jumpToActionActual: {fileID: 0}
+  runInParallel: 1
+  isSkippable: 0
+  localParameters: []
+  parameterIDs: 
+  setParameters: 1
 --- !u!1 &1342156269
 GameObject:
   m_ObjectHideFlags: 0
@@ -9743,56 +10616,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1370404257
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 98cbf837c7ba24dda959b0c08f753c33, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 15
-  title: Play one-shot
-  description: Plays an AudioClip once without the need for a Sound object.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 2
-  skipAction: 2
-  skipActionActual: {fileID: 326772643}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 347
-    width: 300
-    height: 140
-  nodeHeight: 0
-  constantID: 0
-  parameterID: -1
-  origin: {fileID: 0}
-  audioClip: {fileID: 8300000, guid: 3b3dfd558ead65d429bcd6a82f18beee, type: 3}
-  audioClipParameterID: -1
 --- !u!1 &1370894816
 GameObject:
   m_ObjectHideFlags: 0
@@ -9960,6 +10783,118 @@ SpriteRenderer:
   m_Size: {x: 0.2777778, y: 0.5}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+--- !u!114 &1394301171
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea4c3ba658ee84d51a7ccd6f9fc22176, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 0
+  title: Run
+  description: Runs any ActionList (either scene-based like Cutscenes, Triggers and
+    Interactions, or ActionList assets). If the new ActionList takes parameters, this
+    Action can be used to set them.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: 2
+  skipActionActual: {fileID: 1394301171}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 517
+    width: 300
+    height: 140
+  nodeHeight: 0
+  listSource: 0
+  actionList: {fileID: 1602479651}
+  constantID: 0
+  parameterID: -1
+  invActionList: {fileID: 0}
+  assetParameterID: -1
+  runFromStart: 1
+  jumpToAction: 0
+  jumpToActionParameterID: -1
+  jumpToActionActual: {fileID: 0}
+  runInParallel: 1
+  isSkippable: 0
+  localParameters: []
+  parameterIDs: 
+  setParameters: 1
+--- !u!114 &1397272520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
+  m_Name: (Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 11
+  title: Fade sprite
+  description: Fades a sprite in or out.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 336
+    width: 300
+    height: 140
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  spriteFader: {fileID: 1510127373}
+  fadeType: 1
+  fadeSpeed: 0.3
 --- !u!1 &1404342494
 GameObject:
   m_ObjectHideFlags: 0
@@ -10029,7 +10964,7 @@ SpriteRenderer:
   m_Size: {x: 0.42592594, y: 0.5555556}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
---- !u!114 &1407081293
+--- !u!114 &1414023973
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -10037,22 +10972,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f1d11677f69f745f88dbe9922511d53f, type: 3}
-  m_Name: (Clone)(Clone)
+  m_Script: {fileID: 11500000, guid: 9289eb0ca58ef471f9062a5f77161403, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
   id: 0
-  category: 14
-  title: Switch
-  description: 'Moves the Player to a new scene. The scene must be listed in Unity''s
-    Build Settings. By default, the screen will cut to black during the transition,
-    but the last frame of the current scene can instead be overlayed. This allows
-    for cinematic effects: if the next scene fades in, it will cause a crossfade effect;
-    if the next scene doesn''t fade, it will cause a straight cut.'
+  category: 5
+  title: Wait
+  description: Waits a set time before continuing.
   isDisplayed: 1
   showComment: 0
   comment: 
   showOutputSockets: 1
-  numSockets: 0
+  numSockets: 1
   willWait: 0
   defaultPauseTime: 0.1
   isRunning: 0
@@ -10062,7 +10993,7 @@ MonoBehaviour:
     skipActionActual: {fileID: 0}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
-  endAction: 1
+  endAction: 0
   skipAction: -1
   skipActionActual: {fileID: 0}
   linkedCutscene: {fileID: 0}
@@ -10073,23 +11004,64 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 8
-    y: 408
+    x: 14
+    y: 14
     width: 300
-    height: 150
+    height: 86
   nodeHeight: 0
-  chooseSceneBy: 1
-  sceneNumber: 0
-  sceneNumberParameterID: -1
-  sceneName: Trip2
-  sceneNameParameterID: -1
-  assignScreenOverlay: 0
-  onlyPreload: 0
-  relativePosition: 0
-  relativeMarker: {fileID: 0}
-  relativeMarkerID: 0
-  relativeMarkerParameterID: -1
-  forceReload: 0
+  parameterID: -1
+  timeToPause: 0
+--- !u!114 &1423333044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fadbe8a8547c845659eb5618f68e5019, type: 3}
+  m_Name: (Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 6
+  title: Change interaction
+  description: Enables and disables individual Interactions on a Hotspot.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: 6
+  skipActionActual: {fileID: 1423333044}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 1652
+    width: 300
+    height: 165
+  nodeHeight: 0
+  parameterID: -1
+  constantID: 0
+  hotspot: {fileID: 1948514945}
+  interactionType: 0
+  changeType: 0
+  number: 0
 --- !u!114 &1438849037
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10278,7 +11250,7 @@ MonoBehaviour:
   nodeHeight: 0
   parameterID: -1
   timeToPause: 0
---- !u!114 &1491122742
+--- !u!114 &1461638468
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -10286,22 +11258,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f1d11677f69f745f88dbe9922511d53f, type: 3}
-  m_Name: 
+  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
+  m_Name: (Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
   id: 0
-  category: 14
-  title: Switch
-  description: 'Moves the Player to a new scene. The scene must be listed in Unity''s
-    Build Settings. By default, the screen will cut to black during the transition,
-    but the last frame of the current scene can instead be overlayed. This allows
-    for cinematic effects: if the next scene fades in, it will cause a crossfade effect;
-    if the next scene doesn''t fade, it will cause a straight cut.'
+  category: 11
+  title: Fade sprite
+  description: Fades a sprite in or out.
   isDisplayed: 1
   showComment: 0
   comment: 
   showOutputSockets: 1
-  numSockets: 0
+  numSockets: 1
   willWait: 0
   defaultPauseTime: 0.1
   isRunning: 0
@@ -10322,23 +11290,123 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 22
-    y: 377
+    x: 364
+    y: 336
     width: 300
-    height: 150
+    height: 140
   nodeHeight: 0
-  chooseSceneBy: 1
-  sceneNumber: 0
-  sceneNumberParameterID: -1
-  sceneName: Statue
-  sceneNameParameterID: -1
-  assignScreenOverlay: 0
-  onlyPreload: 0
-  relativePosition: 0
-  relativeMarker: {fileID: 0}
-  relativeMarkerID: 0
-  relativeMarkerParameterID: -1
-  forceReload: 0
+  constantID: 0
+  parameterID: -1
+  spriteFader: {fileID: 1510127373}
+  fadeType: 0
+  fadeSpeed: 0.6
+--- !u!114 &1474789951
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
+  m_Name: (Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 11
+  title: Fade sprite
+  description: Fades a sprite in or out.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 336
+    width: 300
+    height: 140
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  spriteFader: {fileID: 685293794}
+  fadeType: 1
+  fadeSpeed: 0.3
+--- !u!114 &1487717573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0643024da91f402a9281e781736a4c6, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 2
+  title: Move to point
+  description: Moves a character to a given Marker object. By default, the character
+    will attempt to pathfind their way to the marker, but can optionally just move
+    in a straight line.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 1
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 130
+    width: 300
+    height: 176
+  nodeHeight: 0
+  charToMoveParameterID: -1
+  markerParameterID: -1
+  charToMoveID: 0
+  markerID: 0
+  marker: {fileID: 1624733478}
+  isPlayer: 1
+  charToMove: {fileID: 0}
+  speed: 0
+  pathFind: 1
+  doFloat: 0
 --- !u!1001 &1494445206
 Prefab:
   m_ObjectHideFlags: 0
@@ -10412,11 +11480,73 @@ Prefab:
       objectReference: {fileID: 1252369256}
     - target: {fileID: 11400000, guid: 91d6ab39027244ea689b8f0ec9b5b548, type: 2}
       propertyPath: showInEditor
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 91d6ab39027244ea689b8f0ec9b5b548, type: 2}
   m_IsPrefabParent: 0
+--- !u!114 &1502866920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea4c3ba658ee84d51a7ccd6f9fc22176, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 0
+  title: Run
+  description: Runs any ActionList (either scene-based like Cutscenes, Triggers and
+    Interactions, or ActionList assets). If the new ActionList takes parameters, this
+    Action can be used to set them.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: 6
+  skipActionActual: {fileID: 1502866920}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 451
+    y: 570
+    width: 300
+    height: 140
+  nodeHeight: 0
+  listSource: 0
+  actionList: {fileID: 1122341879}
+  constantID: 0
+  parameterID: -1
+  invActionList: {fileID: 0}
+  assetParameterID: -1
+  runFromStart: 1
+  jumpToAction: 0
+  jumpToActionParameterID: -1
+  jumpToActionActual: {fileID: 0}
+  runInParallel: 1
+  isSkippable: 0
+  localParameters: []
+  parameterIDs: 
+  setParameters: 1
 --- !u!1 &1510127370
 GameObject:
   m_ObjectHideFlags: 0
@@ -10478,7 +11608,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1984329013
   m_SortingLayer: -1
-  m_SortingOrder: 2
+  m_SortingOrder: 3
   m_Sprite: {fileID: 21300000, guid: 77693ea639d53224eb1bbf86b7d0f1f7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_FlipX: 0
@@ -10502,6 +11632,67 @@ MonoBehaviour:
   fadeStartTime: 0
   fadeTime: 0
   fadeType: 0
+--- !u!114 &1510578231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1d11677f69f745f88dbe9922511d53f, type: 3}
+  m_Name: (Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 14
+  title: Switch
+  description: 'Moves the Player to a new scene. The scene must be listed in Unity''s
+    Build Settings. By default, the screen will cut to black during the transition,
+    but the last frame of the current scene can instead be overlayed. This allows
+    for cinematic effects: if the next scene fades in, it will cause a crossfade effect;
+    if the next scene doesn''t fade, it will cause a straight cut.'
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 0
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 8
+    y: 408
+    width: 300
+    height: 150
+  nodeHeight: 0
+  chooseSceneBy: 1
+  sceneNumber: 0
+  sceneNumberParameterID: -1
+  sceneName: Trip2
+  sceneNameParameterID: -1
+  assignScreenOverlay: 0
+  onlyPreload: 0
+  relativePosition: 0
+  relativeMarker: {fileID: 0}
+  relativeMarkerID: 0
+  relativeMarkerParameterID: -1
+  forceReload: 0
 --- !u!1 &1518411132
 GameObject:
   m_ObjectHideFlags: 0
@@ -10587,6 +11778,53 @@ MonoBehaviour:
   fadeStartTime: 0
   fadeTime: 0
   fadeType: 0
+--- !u!114 &1518659290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9289eb0ca58ef471f9062a5f77161403, type: 3}
+  m_Name: (Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 5
+  title: Wait
+  description: Waits a set time before continuing.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 14
+    width: 300
+    height: 86
+  nodeHeight: 0
+  parameterID: -1
+  timeToPause: 0
 --- !u!1 &1531375851
 GameObject:
   m_ObjectHideFlags: 0
@@ -10728,6 +11966,75 @@ MonoBehaviour:
   stringValue: 
   checkCase: 1
   location: 0
+--- !u!114 &1537837867
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fee606cf6f21b4a7f98958d38261139e, type: 3}
+  m_Name: (Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 11
+  title: Call event
+  description: Sends a given message to a GameObject. Can be either a message commonly-used
+    by Adventure Creator (Interact, TurnOn, etc) or a custom one, with an integer
+    argument.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 2
+  skipAction: 3
+  skipActionActual: {fileID: 1539263854}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 130
+    width: 300
+    height: 187
+  nodeHeight: 0
+  unityEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1617687460}
+        m_MethodName: Switch
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  skipEvent:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  ignoreWhenSkipping: 0
 --- !u!114 &1539263854
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10810,6 +12117,9 @@ Transform:
   - {fileID: 1078819130}
   - {fileID: 1252369255}
   - {fileID: 2044506799}
+  - {fileID: 2088735662}
+  - {fileID: 1829882215}
+  - {fileID: 129040050}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -10822,6 +12132,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1549025121}
   - component: {fileID: 1549025122}
+  - component: {fileID: 1549025123}
   m_Layer: 0
   m_Name: trip1_bg
   m_TagString: Untagged
@@ -10884,6 +12195,100 @@ SpriteRenderer:
   m_Size: {x: 9.6, y: 5.4}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+--- !u!114 &1549025123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1549025120}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0f37b80b5a24452ba3a081c115f77bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  depth: 1
+  xScroll: 1
+  yScroll: 0
+  xOffset: 0
+  yOffset: 0
+  limitX: 1
+  minX: -1.3
+  maxX: 1.3
+  limitY: 0
+  minY: 0
+  maxY: 0
+--- !u!114 &1557657421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdaacaae7eb224bd2b2b6d336bb7b1a8, type: 3}
+  m_Name: (Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 17
+  title: Check
+  description: Queries the value of both Global and Local Variables declared in the
+    Variables Manager. Variables can be compared with a fixed value, or with the values
+    of other Variables.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 2
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 130
+    width: 300
+    height: 176
+  nodeHeight: 0
+  resultActionTrue: 0
+  skipActionTrue: -1
+  skipActionTrueActual: {fileID: 0}
+  linkedCutsceneTrue: {fileID: 0}
+  linkedAssetTrue: {fileID: 0}
+  resultActionFail: 2
+  skipActionFail: 3
+  skipActionFailActual: {fileID: 222272513}
+  linkedCutsceneFail: {fileID: 0}
+  linkedAssetFail: {fileID: 0}
+  parameterID: -1
+  variableID: 0
+  variableNumber: 0
+  checkParameterID: -1
+  getVarMethod: 0
+  compareVariableID: 0
+  intValue: 2
+  floatValue: 0
+  intCondition: 0
+  isAdditive: 0
+  boolValue: 1
+  boolCondition: 0
+  stringValue: 
+  checkCase: 1
+  location: 0
 --- !u!1 &1562145363
 GameObject:
   m_ObjectHideFlags: 0
@@ -11009,56 +12414,6 @@ Transform:
   m_Father: {fileID: 1594891940}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1591562041
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 11
-  title: Fade sprite
-  description: Fades a sprite in or out.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 1
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 2
-  skipAction: 4
-  skipActionActual: {fileID: 850308248}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 1294
-    width: 300
-    height: 158
-  nodeHeight: 0
-  constantID: 0
-  parameterID: -1
-  spriteFader: {fileID: 1593886055}
-  fadeType: 0
-  fadeSpeed: 1
 --- !u!1 &1593886053
 GameObject:
   m_ObjectHideFlags: 0
@@ -11316,68 +12671,6 @@ MonoBehaviour:
   localVariableId: 0
   isTarget: 0
   currentIndex: 0
---- !u!114 &1623822185
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea4c3ba658ee84d51a7ccd6f9fc22176, type: 3}
-  m_Name: (Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 0
-  title: Run
-  description: Runs any ActionList (either scene-based like Cutscenes, Triggers and
-    Interactions, or ActionList assets). If the new ActionList takes parameters, this
-    Action can be used to set them.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 1
-  skipAction: 2
-  skipActionActual: {fileID: 1623822185}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 517
-    width: 300
-    height: 140
-  nodeHeight: 0
-  listSource: 0
-  actionList: {fileID: 1602479651}
-  constantID: 0
-  parameterID: -1
-  invActionList: {fileID: 0}
-  assetParameterID: -1
-  runFromStart: 1
-  jumpToAction: 0
-  jumpToActionParameterID: -1
-  jumpToActionActual: {fileID: 0}
-  runInParallel: 1
-  isSkippable: 0
-  localParameters: []
-  parameterIDs: 
-  setParameters: 1
 --- !u!1001 &1624733476
 Prefab:
   m_ObjectHideFlags: 0
@@ -11450,7 +12743,57 @@ MonoBehaviour:
     type: 2}
   m_PrefabInternal: {fileID: 1624733476}
   m_Script: {fileID: 11500000, guid: 3ffb48ecf9de44666b3779fe84044e36, type: 3}
---- !u!114 &1649495690
+--- !u!114 &1638636427
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98cbf837c7ba24dda959b0c08f753c33, type: 3}
+  m_Name: (Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 15
+  title: Play one-shot
+  description: Plays an AudioClip once without the need for a Sound object.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 2
+  skipAction: 2
+  skipActionActual: {fileID: 783741646}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 347
+    width: 300
+    height: 140
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  origin: {fileID: 0}
+  audioClip: {fileID: 8300000, guid: c1a84fcfe05744a4d9543159033068a6, type: 3}
+  audioClipParameterID: -1
+--- !u!114 &1643088862
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -11459,7 +12802,54 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9289eb0ca58ef471f9062a5f77161403, type: 3}
-  m_Name: (Clone)
+  m_Name: (Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 5
+  title: Wait
+  description: Waits a set time before continuing.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 14
+    width: 300
+    height: 86
+  nodeHeight: 0
+  parameterID: -1
+  timeToPause: 0
+--- !u!114 &1659042191
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9289eb0ca58ef471f9062a5f77161403, type: 3}
+  m_Name: (Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
   id: 0
   category: 5
@@ -11481,7 +12871,7 @@ MonoBehaviour:
     linkedAsset: {fileID: 0}
   endAction: 0
   skipAction: 1
-  skipActionActual: {fileID: 1605771321}
+  skipActionActual: {fileID: 1774818833}
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -11641,7 +13031,7 @@ MonoBehaviour:
     type: 2}
   m_PrefabInternal: {fileID: 1795985103}
   m_Script: {fileID: 11500000, guid: ea52220853ef74eb1b84cc002ce3d474, type: 3}
---- !u!114 &1674806881
+--- !u!114 &1679066650
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -11649,19 +13039,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_Script: {fileID: 11500000, guid: a0643024da91f402a9281e781736a4c6, type: 3}
+  m_Name: (Clone)(Clone)
   m_EditorClassIdentifier: 
   id: 0
-  category: 11
-  title: Fade sprite
-  description: Fades a sprite in or out.
+  category: 2
+  title: Move to point
+  description: Moves a character to a given Marker object. By default, the character
+    will attempt to pathfind their way to the marker, but can optionally just move
+    in a straight line.
   isDisplayed: 1
   showComment: 0
   comment: 
   showOutputSockets: 1
   numSockets: 1
-  willWait: 0
+  willWait: 1
   defaultPauseTime: 0.1
   isRunning: 0
   lastResult:
@@ -11670,9 +13062,9 @@ MonoBehaviour:
     skipActionActual: {fileID: 0}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
-  endAction: 2
-  skipAction: 9
-  skipActionActual: {fileID: 1132885668}
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -11681,16 +13073,21 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 14
-    y: 918
+    x: 10
+    y: 164
     width: 300
-    height: 158
+    height: 176
   nodeHeight: 0
-  constantID: 0
-  parameterID: -1
-  spriteFader: {fileID: 237890051}
-  fadeType: 0
-  fadeSpeed: 1
+  charToMoveParameterID: -1
+  markerParameterID: -1
+  charToMoveID: 0
+  markerID: 0
+  marker: {fileID: 1254035989}
+  isPlayer: 1
+  charToMove: {fileID: 0}
+  speed: 0
+  pathFind: 1
+  doFloat: 0
 --- !u!1 &1690963775
 GameObject:
   m_ObjectHideFlags: 0
@@ -11761,7 +13158,7 @@ SpriteRenderer:
   m_Size: {x: 6.037037, y: 4.296296}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
---- !u!114 &1716786696
+--- !u!114 &1691547012
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -11770,7 +13167,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bdaacaae7eb224bd2b2b6d336bb7b1a8, type: 3}
-  m_Name: (Clone)
+  m_Name: (Clone)(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
   id: 0
   category: 17
@@ -11803,28 +13200,28 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 47
-    y: 145
+    x: 14
+    y: 130
     width: 300
     height: 176
   nodeHeight: 0
-  resultActionTrue: 0
-  skipActionTrue: -1
-  skipActionTrueActual: {fileID: 0}
+  resultActionTrue: 2
+  skipActionTrue: 2
+  skipActionTrueActual: {fileID: 160215997}
   linkedCutsceneTrue: {fileID: 0}
   linkedAssetTrue: {fileID: 0}
-  resultActionFail: 2
-  skipActionFail: 3
-  skipActionFailActual: {fileID: 1438849037}
+  resultActionFail: 1
+  skipActionFail: -1
+  skipActionFailActual: {fileID: 0}
   linkedCutsceneFail: {fileID: 0}
   linkedAssetFail: {fileID: 0}
   parameterID: -1
   variableID: 0
-  variableNumber: 0
+  variableNumber: 3
   checkParameterID: -1
-  getVarMethod: 0
-  compareVariableID: 0
-  intValue: 1
+  getVarMethod: 2
+  compareVariableID: 3
+  intValue: 0
   floatValue: 0
   intCondition: 0
   isAdditive: 0
@@ -11832,64 +13229,7 @@ MonoBehaviour:
   boolCondition: 0
   stringValue: 
   checkCase: 1
-  location: 0
---- !u!114 &1737102802
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0643024da91f402a9281e781736a4c6, type: 3}
-  m_Name: (Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 2
-  title: Move to point
-  description: Moves a character to a given Marker object. By default, the character
-    will attempt to pathfind their way to the marker, but can optionally just move
-    in a straight line.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 0
-  skipAction: -1
-  skipActionActual: {fileID: 0}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 13
-    y: 149
-    width: 300
-    height: 176
-  nodeHeight: 0
-  charToMoveParameterID: -1
-  markerParameterID: -1
-  charToMoveID: 0
-  markerID: 0
-  marker: {fileID: 1624733478}
-  isPlayer: 1
-  charToMove: {fileID: 0}
-  speed: 0
-  pathFind: 1
-  doFloat: 0
+  location: 1
 --- !u!1 &1739424199
 GameObject:
   m_ObjectHideFlags: 0
@@ -11899,6 +13239,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1739424200}
   - component: {fileID: 1739424201}
+  - component: {fileID: 1739424202}
   m_Layer: 0
   m_Name: trip_base2
   m_TagString: Untagged
@@ -11960,6 +13301,18 @@ SpriteRenderer:
   m_Size: {x: 0.8425926, y: 0.6574074}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+--- !u!114 &1739424202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1739424199}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 746173d260200ab4d9b0d281946ef7fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ToRun: {fileID: 1829882216}
 --- !u!114 &1752905006
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12010,7 +13363,7 @@ MonoBehaviour:
   origin: {fileID: 0}
   audioClip: {fileID: 8300000, guid: 3b3dfd558ead65d429bcd6a82f18beee, type: 3}
   audioClipParameterID: -1
---- !u!114 &1759961728
+--- !u!114 &1758229049
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -12018,21 +13371,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0643024da91f402a9281e781736a4c6, type: 3}
+  m_Script: {fileID: 11500000, guid: 9289eb0ca58ef471f9062a5f77161403, type: 3}
   m_Name: (Clone)
   m_EditorClassIdentifier: 
   id: 0
-  category: 2
-  title: Move to point
-  description: Moves a character to a given Marker object. By default, the character
-    will attempt to pathfind their way to the marker, but can optionally just move
-    in a straight line.
+  category: 5
+  title: Wait
+  description: Waits a set time before continuing.
   isDisplayed: 1
   showComment: 0
   comment: 
   showOutputSockets: 1
   numSockets: 1
-  willWait: 1
+  willWait: 0
   defaultPauseTime: 0.1
   isRunning: 0
   lastResult:
@@ -12042,8 +13393,8 @@ MonoBehaviour:
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
   endAction: 0
-  skipAction: -1
-  skipActionActual: {fileID: 0}
+  skipAction: 1
+  skipActionActual: {fileID: 1605771321}
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -12052,21 +13403,13 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 10
-    y: 164
+    x: 14
+    y: 14
     width: 300
-    height: 176
+    height: 86
   nodeHeight: 0
-  charToMoveParameterID: -1
-  markerParameterID: -1
-  charToMoveID: 0
-  markerID: 0
-  marker: {fileID: 1254035989}
-  isPlayer: 1
-  charToMove: {fileID: 0}
-  speed: 0
-  pathFind: 1
-  doFloat: 0
+  parameterID: -1
+  timeToPause: 0
 --- !u!1 &1763806815
 GameObject:
   m_ObjectHideFlags: 0
@@ -12209,78 +13552,6 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   ignoreWhenSkipping: 0
---- !u!114 &1777184141
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bdaacaae7eb224bd2b2b6d336bb7b1a8, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 17
-  title: Check
-  description: Queries the value of both Global and Local Variables declared in the
-    Variables Manager. Variables can be compared with a fixed value, or with the values
-    of other Variables.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 2
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 1
-  skipAction: -1
-  skipActionActual: {fileID: 0}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 56
-    y: 553
-    width: 300
-    height: 176
-  nodeHeight: 0
-  resultActionTrue: 2
-  skipActionTrue: 6
-  skipActionTrueActual: {fileID: 819554320}
-  linkedCutsceneTrue: {fileID: 0}
-  linkedAssetTrue: {fileID: 0}
-  resultActionFail: 1
-  skipActionFail: 3
-  skipActionFailActual: {fileID: 0}
-  linkedCutsceneFail: {fileID: 0}
-  linkedAssetFail: {fileID: 0}
-  parameterID: -1
-  variableID: 0
-  variableNumber: 0
-  checkParameterID: -1
-  getVarMethod: 0
-  compareVariableID: 0
-  intValue: 3
-  floatValue: 0
-  intCondition: 0
-  isAdditive: 0
-  boolValue: 1
-  boolCondition: 0
-  stringValue: 
-  checkCase: 1
-  location: 0
 --- !u!1001 &1795985103
 Prefab:
   m_ObjectHideFlags: 0
@@ -12419,7 +13690,136 @@ Prefab:
 Transform:
   m_PrefabParentObject: {fileID: 400000, guid: ead02cb43d742407ba1be2b3ab274614, type: 2}
   m_PrefabInternal: {fileID: 1795985103}
---- !u!114 &1842023740
+--- !u!114 &1822572503
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59db1a4cca423454da15f861a614c595, type: 3}
+  m_Name: (Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 11
+  title: Fade sprite
+  description: Fades a sprite in or out.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 364
+    y: 336
+    width: 300
+    height: 140
+  nodeHeight: 0
+  constantID: 0
+  parameterID: -1
+  spriteFader: {fileID: 759503302}
+  fadeType: 0
+  fadeSpeed: 0.6
+--- !u!4 &1829882215 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+  m_PrefabInternal: {fileID: 1981922660}
+--- !u!114 &1829882216 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 11400000, guid: a9d4e17cb5a8745ccad47e11f075de33,
+    type: 2}
+  m_PrefabInternal: {fileID: 1981922660}
+  m_Script: {fileID: 11500000, guid: 6a1e6413216104fd580c7ce85907039c, type: 3}
+--- !u!114 &1831810233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fee606cf6f21b4a7f98958d38261139e, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 11
+  title: Call event
+  description: Sends a given message to a GameObject. Can be either a message commonly-used
+    by Adventure Creator (Interact, TurnOn, etc) or a custom one, with an integer
+    argument.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 2
+  skipAction: 3
+  skipActionActual: {fileID: 1272817129}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 130
+    width: 300
+    height: 187
+  nodeHeight: 0
+  unityEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2090463946}
+        m_MethodName: Switch
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  skipEvent:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  ignoreWhenSkipping: 0
+--- !u!114 &1832921859
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -12428,7 +13828,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9289eb0ca58ef471f9062a5f77161403, type: 3}
-  m_Name: (Clone)
+  m_Name: (Clone)(Clone)
   m_EditorClassIdentifier: 
   id: 0
   category: 5
@@ -12604,100 +14004,6 @@ SpriteRenderer:
   m_Size: {x: 0.42592594, y: 0.5555556}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
---- !u!114 &1868167162
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9289eb0ca58ef471f9062a5f77161403, type: 3}
-  m_Name: (Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 5
-  title: Wait
-  description: Waits a set time before continuing.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 0
-  skipAction: 1
-  skipActionActual: {fileID: 1774818833}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 14
-    width: 300
-    height: 86
-  nodeHeight: 0
-  parameterID: -1
-  timeToPause: 0
---- !u!114 &1882453473
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9289eb0ca58ef471f9062a5f77161403, type: 3}
-  m_Name: (Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 5
-  title: Wait
-  description: Waits a set time before continuing.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 0
-  skipAction: -1
-  skipActionActual: {fileID: 0}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 14
-    width: 300
-    height: 86
-  nodeHeight: 0
-  parameterID: -1
-  timeToPause: 0
 --- !u!1001 &1924820100
 Prefab:
   m_ObjectHideFlags: 0
@@ -12748,15 +14054,23 @@ Prefab:
     - target: {fileID: 11400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
       propertyPath: actions.Array.data[0]
       value: 
-      objectReference: {fileID: 1882453473}
+      objectReference: {fileID: 2136134134}
     - target: {fileID: 11400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
       propertyPath: actions.Array.data[1]
       value: 
-      objectReference: {fileID: 1759961728}
+      objectReference: {fileID: 1679066650}
     - target: {fileID: 11400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
       propertyPath: actions.Array.data[2]
       value: 
-      objectReference: {fileID: 893795656}
+      objectReference: {fileID: 1510578231}
+    - target: {fileID: 11400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: actionListType
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: source
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
   m_IsPrefabParent: 0
@@ -12788,6 +14102,63 @@ MonoBehaviour:
   constantID: 811532
   retainInPrefab: 0
   autoManual: 0
+--- !u!114 &1949795477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0643024da91f402a9281e781736a4c6, type: 3}
+  m_Name: (Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 2
+  title: Move to point
+  description: Moves a character to a given Marker object. By default, the character
+    will attempt to pathfind their way to the marker, but can optionally just move
+    in a straight line.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 1
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 10
+    y: 164
+    width: 300
+    height: 176
+  nodeHeight: 0
+  charToMoveParameterID: -1
+  markerParameterID: -1
+  charToMoveID: 0
+  markerID: 0
+  marker: {fileID: 1254035989}
+  isPlayer: 1
+  charToMove: {fileID: 0}
+  speed: 0
+  pathFind: 1
+  doFloat: 0
 --- !u!4 &1963183582 stripped
 Transform:
   m_PrefabParentObject: {fileID: 400000, guid: 91d6ab39027244ea689b8f0ec9b5b548, type: 2}
@@ -12839,75 +14210,72 @@ MonoBehaviour:
   nodeHeight: 0
   parameterID: -1
   timeToPause: 0
---- !u!114 &1982899662
-MonoBehaviour:
+--- !u!1001 &1981922660
+Prefab:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fee606cf6f21b4a7f98958d38261139e, type: 3}
-  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 11
-  title: Call event
-  description: Sends a given message to a GameObject. Can be either a message commonly-used
-    by Adventure Creator (Interact, TurnOn, etc) or a custom one, with an integer
-    argument.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 2
-  skipAction: 3
-  skipActionActual: {fileID: 1272817129}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 130
-    width: 300
-    height: 187
-  nodeHeight: 0
-  unityEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2090463946}
-        m_MethodName: Switch
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  skipEvent:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  ignoreWhenSkipping: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1546463786}
+    m_Modifications:
+    - target: {fileID: 11400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: actions.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: m_RootOrder
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: m_Name
+      value: Base2Light
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: actions.Array.data[0]
+      value: 
+      objectReference: {fileID: 1832921859}
+    - target: {fileID: 11400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: actions.Array.data[1]
+      value: 
+      objectReference: {fileID: 202139961}
+    - target: {fileID: 11400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: actions.Array.data[2]
+      value: 
+      objectReference: {fileID: 495117860}
+    - target: {fileID: 11400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+      propertyPath: actions.Array.data[3]
+      value: 
+      objectReference: {fileID: 222272513}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1 &1988020887
 GameObject:
   m_ObjectHideFlags: 0
@@ -12962,6 +14330,78 @@ MonoBehaviour:
   localVariableId: 4
   isTarget: 1
   currentIndex: 0
+--- !u!114 &1999485803
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdaacaae7eb224bd2b2b6d336bb7b1a8, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 17
+  title: Check
+  description: Queries the value of both Global and Local Variables declared in the
+    Variables Manager. Variables can be compared with a fixed value, or with the values
+    of other Variables.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 2
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 47
+    y: 145
+    width: 300
+    height: 176
+  nodeHeight: 0
+  resultActionTrue: 0
+  skipActionTrue: -1
+  skipActionTrueActual: {fileID: 0}
+  linkedCutsceneTrue: {fileID: 0}
+  linkedAssetTrue: {fileID: 0}
+  resultActionFail: 2
+  skipActionFail: 3
+  skipActionFailActual: {fileID: 1438849037}
+  linkedCutsceneFail: {fileID: 0}
+  linkedAssetFail: {fileID: 0}
+  parameterID: -1
+  variableID: 0
+  variableNumber: 0
+  checkParameterID: -1
+  getVarMethod: 0
+  compareVariableID: 0
+  intValue: 1
+  floatValue: 0
+  intCondition: 0
+  isAdditive: 0
+  boolValue: 1
+  boolCondition: 0
+  stringValue: 
+  checkCase: 1
+  location: 0
 --- !u!1 &2009546711
 GameObject:
   m_ObjectHideFlags: 0
@@ -13301,6 +14741,78 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5a39e31ce28cc48b096320990773071b, type: 2}
   m_IsPrefabParent: 0
+--- !u!114 &2038295827
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdaacaae7eb224bd2b2b6d336bb7b1a8, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 17
+  title: Check
+  description: Queries the value of both Global and Local Variables declared in the
+    Variables Manager. Variables can be compared with a fixed value, or with the values
+    of other Variables.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 2
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 130
+    width: 300
+    height: 176
+  nodeHeight: 0
+  resultActionTrue: 0
+  skipActionTrue: -1
+  skipActionTrueActual: {fileID: 0}
+  linkedCutsceneTrue: {fileID: 0}
+  linkedAssetTrue: {fileID: 0}
+  resultActionFail: 2
+  skipActionFail: 3
+  skipActionFailActual: {fileID: 485391678}
+  linkedCutsceneFail: {fileID: 0}
+  linkedAssetFail: {fileID: 0}
+  parameterID: -1
+  variableID: 0
+  variableNumber: 0
+  checkParameterID: -1
+  getVarMethod: 0
+  compareVariableID: 0
+  intValue: 1
+  floatValue: 0
+  intCondition: 0
+  isAdditive: 0
+  boolValue: 1
+  boolCondition: 0
+  stringValue: 
+  checkCase: 1
+  location: 0
 --- !u!114 &2038977102
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13424,6 +14936,63 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
   m_IsPrefabParent: 0
+--- !u!114 &2066242394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9289eb0ca58ef471f9062a5f77161403, type: 3}
+  m_Name: (Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 5
+  title: Wait
+  description: Waits a set time before continuing.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 0
+  skipAction: 1
+  skipActionActual: {fileID: 764464778}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 14
+    width: 300
+    height: 86
+  nodeHeight: 0
+  parameterID: -1
+  timeToPause: 0
+--- !u!4 &2088735662 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 400000, guid: a9d4e17cb5a8745ccad47e11f075de33, type: 2}
+  m_PrefabInternal: {fileID: 747441716}
+--- !u!114 &2088735663 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 11400000, guid: a9d4e17cb5a8745ccad47e11f075de33,
+    type: 2}
+  m_PrefabInternal: {fileID: 747441716}
+  m_Script: {fileID: 11500000, guid: 6a1e6413216104fd580c7ce85907039c, type: 3}
 --- !u!1 &2090463944
 GameObject:
   m_ObjectHideFlags: 0
@@ -13660,107 +15229,6 @@ MonoBehaviour:
   nodeHeight: 0
   parameterID: -1
   timeToPause: 0
---- !u!114 &2115731751
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fadbe8a8547c845659eb5618f68e5019, type: 3}
-  m_Name: (Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 6
-  title: Change interaction
-  description: Enables and disables individual Interactions on a Hotspot.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 1
-  skipAction: 6
-  skipActionActual: {fileID: 2115731751}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 1652
-    width: 300
-    height: 165
-  nodeHeight: 0
-  parameterID: -1
-  constantID: 0
-  hotspot: {fileID: 1948514945}
-  interactionType: 0
-  changeType: 0
-  number: 0
---- !u!114 &2120260970
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 98cbf837c7ba24dda959b0c08f753c33, type: 3}
-  m_Name: (Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  category: 15
-  title: Play one-shot
-  description: Plays an AudioClip once without the need for a Sound object.
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  showOutputSockets: 1
-  numSockets: 1
-  willWait: 0
-  defaultPauseTime: 0.1
-  isRunning: 0
-  lastResult:
-    resultAction: 0
-    skipAction: -10
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  endAction: 2
-  skipAction: 2
-  skipActionActual: {fileID: 783741646}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 0
-  isMarked: 0
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 347
-    width: 300
-    height: 140
-  nodeHeight: 0
-  constantID: 0
-  parameterID: -1
-  origin: {fileID: 0}
-  audioClip: {fileID: 8300000, guid: c1a84fcfe05744a4d9543159033068a6, type: 3}
-  audioClipParameterID: -1
 --- !u!1 &2123852753
 GameObject:
   m_ObjectHideFlags: 0
@@ -13830,6 +15298,114 @@ SpriteRenderer:
   m_Size: {x: 0.8055556, y: 0.6666667}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+--- !u!114 &2132657932
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1d11677f69f745f88dbe9922511d53f, type: 3}
+  m_Name: (Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 14
+  title: Switch
+  description: 'Moves the Player to a new scene. The scene must be listed in Unity''s
+    Build Settings. By default, the screen will cut to black during the transition,
+    but the last frame of the current scene can instead be overlayed. This allows
+    for cinematic effects: if the next scene fades in, it will cause a crossfade effect;
+    if the next scene doesn''t fade, it will cause a straight cut.'
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 0
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 1
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 336
+    width: 300
+    height: 150
+  nodeHeight: 0
+  chooseSceneBy: 1
+  sceneNumber: 0
+  sceneNumberParameterID: -1
+  sceneName: Statue
+  sceneNameParameterID: -1
+  assignScreenOverlay: 0
+  onlyPreload: 0
+  relativePosition: 0
+  relativeMarker: {fileID: 0}
+  relativeMarkerID: 0
+  relativeMarkerParameterID: -1
+  forceReload: 0
+--- !u!114 &2136134134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9289eb0ca58ef471f9062a5f77161403, type: 3}
+  m_Name: (Clone)(Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  category: 5
+  title: Wait
+  description: Waits a set time before continuing.
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  showOutputSockets: 1
+  numSockets: 1
+  willWait: 0
+  defaultPauseTime: 0.1
+  isRunning: 0
+  lastResult:
+    resultAction: 0
+    skipAction: -10
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 0
+  isMarked: 0
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 14
+    width: 300
+    height: 86
+  nodeHeight: 0
+  parameterID: -1
+  timeToPause: 0
 --- !u!1 &2147320253
 GameObject:
   m_ObjectHideFlags: 0
@@ -13839,6 +15415,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2147320254}
   - component: {fileID: 2147320255}
+  - component: {fileID: 2147320256}
   m_Layer: 0
   m_Name: trip_base3
   m_TagString: Untagged
@@ -13900,3 +15477,15 @@ SpriteRenderer:
   m_Size: {x: 1.3703704, y: 0.7592593}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+--- !u!114 &2147320256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2147320253}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 746173d260200ab4d9b0d281946ef7fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ToRun: {fileID: 129040051}
