@@ -74,7 +74,7 @@ public class SpinningBlock : MonoBehaviour {
     {
         if (!Rotating)
             return;
-        gameObject.transform.Rotate(Vector3.forward * 360f / CHUNKS * -1);
+        gameObject.transform.Rotate((Vector3.forward * 360f / CHUNKS * -1));
         offset = (offset + 1) % CHUNKS;
         AC.GlobalVariables.SetBooleanValue(4, !IsCurrentPositionValid());
     }
@@ -96,6 +96,15 @@ public class SpinningBlock : MonoBehaviour {
         AC.LocalVariables.SetBooleanValue(LocalVarCorrectId, offset == TargetOffset);
 
         CheckWinActionList.Interact();
+    }
+
+    public void Solve()
+    {
+        SetCurrentPosition(false);
+        gameObject.transform.localRotation = Quaternion.Euler((Vector3.forward * 360f / CHUNKS * -1) * TargetOffset);
+        offset = TargetOffset;
+        AC.LocalVariables.SetBooleanValue(LocalVarCorrectId, offset == TargetOffset);
+        SetCurrentPosition();
     }
 
     private void ReturnToInitialPosition()
