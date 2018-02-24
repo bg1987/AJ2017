@@ -18,6 +18,8 @@ MonoBehaviour:
   narrationTextScrollCLip: {fileID: 0}
   playScrollAudioEveryCharacter: 1
   displayForever: 0
+  displayNarrationForever: 0
+  playAnimationForever: 1
   canSkipWithMouseClicks: 1
   minimumDisplayTime: 1
   screenTimeFactor: 0.1
@@ -25,6 +27,7 @@ MonoBehaviour:
   allowGameplaySpeechSkipping: 0
   skipThresholdTime: 0
   endScrollBeforeSkip: 0
+  scrollingTextFactorsLength: 0
   searchAudioFiles: 1
   autoNameSpeechFiles: 1
   forceSubtitles: 1
@@ -33,12 +36,14 @@ MonoBehaviour:
   keepTextInBuffer: 0
   relegateBackgroundSpeechAudio: 0
   usePlayerRealName: 0
+  separateSharedPlayerAudio: 0
   placeAudioInSubfolders: 0
   separateLines: 0
   separateLinePause: 1
   lines: []
   languages:
   - Original
+  languageIsRightToLeft: 00
   ignoreOriginalText: 0
   sfxDucking: 0
   musicDucking: 0

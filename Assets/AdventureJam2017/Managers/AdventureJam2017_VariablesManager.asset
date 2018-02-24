@@ -19,6 +19,7 @@ MonoBehaviour:
     floatVal: 0
     textVal: 
     popUps: []
+    vector3Val: {x: 0, y: 0, z: 0}
     link: 0
     pmVar: 
     updateLinkOnStart: 0
@@ -26,6 +27,7 @@ MonoBehaviour:
     canTranslate: 1
     textValLineID: -1
     popUpsLineID: -1
+    description: 
   - label: Puzzle1Solved
     id: 1
     type: 0
@@ -33,6 +35,7 @@ MonoBehaviour:
     floatVal: 0
     textVal: 
     popUps: []
+    vector3Val: {x: 0, y: 0, z: 0}
     link: 0
     pmVar: 
     updateLinkOnStart: 0
@@ -40,6 +43,7 @@ MonoBehaviour:
     canTranslate: 1
     textValLineID: -1
     popUpsLineID: -1
+    description: 
   - label: Puzzle2Solved
     id: 2
     type: 0
@@ -47,6 +51,7 @@ MonoBehaviour:
     floatVal: 0
     textVal: 
     popUps: []
+    vector3Val: {x: 0, y: 0, z: 0}
     link: 0
     pmVar: 
     updateLinkOnStart: 0
@@ -54,6 +59,7 @@ MonoBehaviour:
     canTranslate: 1
     textValLineID: -1
     popUpsLineID: -1
+    description: 
   - label: Puzzle3Solved
     id: 3
     type: 0
@@ -61,6 +67,7 @@ MonoBehaviour:
     floatVal: 0
     textVal: 
     popUps: []
+    vector3Val: {x: 0, y: 0, z: 0}
     link: 0
     pmVar: 
     updateLinkOnStart: 0
@@ -68,6 +75,7 @@ MonoBehaviour:
     canTranslate: 1
     textValLineID: -1
     popUpsLineID: -1
+    description: 
   - label: StaffLocked
     id: 4
     type: 0
@@ -75,6 +83,7 @@ MonoBehaviour:
     floatVal: 0
     textVal: 
     popUps: []
+    vector3Val: {x: 0, y: 0, z: 0}
     link: 0
     pmVar: 
     updateLinkOnStart: 0
@@ -82,6 +91,7 @@ MonoBehaviour:
     canTranslate: 1
     textValLineID: -1
     popUpsLineID: -1
+    description: 
   - label: Trip3 solved
     id: 5
     type: 0
@@ -89,6 +99,7 @@ MonoBehaviour:
     floatVal: 0
     textVal: 
     popUps: []
+    vector3Val: {x: 0, y: 0, z: 0}
     link: 0
     pmVar: 
     updateLinkOnStart: 0
@@ -96,6 +107,7 @@ MonoBehaviour:
     canTranslate: 1
     textValLineID: -1
     popUpsLineID: -1
+    description: 
   - label: Trip2 solved
     id: 6
     type: 0
@@ -103,6 +115,7 @@ MonoBehaviour:
     floatVal: 0
     textVal: 
     popUps: []
+    vector3Val: {x: 0, y: 0, z: 0}
     link: 0
     pmVar: 
     updateLinkOnStart: 0
@@ -110,6 +123,7 @@ MonoBehaviour:
     canTranslate: 1
     textValLineID: -1
     popUpsLineID: -1
+    description: 
   - label: MushroomSubSolved
     id: 7
     type: 0
@@ -117,6 +131,7 @@ MonoBehaviour:
     floatVal: 0
     textVal: 
     popUps: []
+    vector3Val: {x: 0, y: 0, z: 0}
     link: 0
     pmVar: 
     updateLinkOnStart: 0
@@ -124,6 +139,7 @@ MonoBehaviour:
     canTranslate: 1
     textValLineID: -1
     popUpsLineID: -1
+    description: 
   - label: LilyPuzzleSolved
     id: 8
     type: 0
@@ -131,13 +147,31 @@ MonoBehaviour:
     floatVal: 0
     textVal: 
     popUps: []
+    vector3Val: {x: 0, y: 0, z: 0}
     link: 0
     pmVar: 
     updateLinkOnStart: 0
-    isEditing: 1
+    isEditing: 0
     canTranslate: 1
     textValLineID: -1
     popUpsLineID: -1
+    description: 
+  - label: Trip1 solved
+    id: 9
+    type: 0
+    val: 0
+    floatVal: 0
+    textVal: 
+    popUps: []
+    vector3Val: {x: 0, y: 0, z: 0}
+    link: 0
+    pmVar: 
+    updateLinkOnStart: 0
+    isEditing: 0
+    canTranslate: 1
+    textValLineID: -1
+    popUpsLineID: -1
+    description: 
   varPresets:
   - label: New preset
     ID: 1
@@ -146,36 +180,50 @@ MonoBehaviour:
       val: 0
       floatVal: 0
       textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
     - id: 1
       val: 0
       floatVal: 0
       textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
     - id: 2
       val: 0
       floatVal: 0
       textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
     - id: 3
       val: 0
       floatVal: 0
       textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
     - id: 4
       val: 0
       floatVal: 0
       textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
     - id: 5
       val: 0
       floatVal: 0
       textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
     - id: 6
       val: 0
       floatVal: 0
       textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
     - id: 7
       val: 0
       floatVal: 0
       textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
     - id: 8
       val: 0
       floatVal: 0
       textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+    - id: 9
+      val: 0
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
   updateRuntime: 0
