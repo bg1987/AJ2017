@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2016
+ *	by Chris Burton, 2013-2018
  *	
  *	"RememberAnimator.cs"
  * 
@@ -16,7 +16,7 @@ using System.Text;
 namespace AC
 {
 
-	#if UNITY_5
+	#if UNITY_5 || UNITY_2017_1_OR_NEWER
 	
 	/**
 	 * This script is attached to Animator components in the scene we wish to save the state of. (Unity 5-only)
@@ -42,6 +42,7 @@ namespace AC
 		{
 			AnimatorData animatorData = new AnimatorData ();
 			animatorData.objectID = constantID;
+			animatorData.savePrevented = savePrevented;
 			
 			animatorData.parameterData = ParameterValuesToString (_animator.parameters);
 			animatorData.layerWeightData = LayerWeightsToString ();
@@ -55,6 +56,7 @@ namespace AC
 		{
 			AnimatorData data = Serializer.LoadScriptData <AnimatorData> (stringData);
 			if (data == null) return;
+			SavePrevented = data.savePrevented; if (savePrevented) return;
 			
 			StringToParameterValues (_animator.parameters, data.parameterData);
 			StringToLayerWeights (data.layerWeightData);
@@ -133,11 +135,19 @@ namespace AC
 		{
 			int nameHash = stateInfo.shortNameHash;
 			float timeAlong = stateInfo.normalizedTime;
+
 			if (timeAlong > 1f)
 			{
-				while (timeAlong > 1f)
+				if (stateInfo.loop)
 				{
-					timeAlong -= 1f;
+					while (timeAlong > 1f)
+					{
+						timeAlong -= 1f;
+					}
+				}
+				else
+				{
+					timeAlong = 1f;
 				}
 			}
 
@@ -148,7 +158,7 @@ namespace AC
 		
 		private void StringToParameterValues (AnimatorControllerParameter[] parameters, string valuesString)
 		{
-			if (valuesString.Length == 0)
+			if (string.IsNullOrEmpty (valuesString))
 			{
 				return;
 			}
@@ -188,7 +198,7 @@ namespace AC
 
 		private void StringToLayerWeights (string valuesString)
 		{
-			if (valuesString == null || valuesString.Length == 0 || _animator.layerCount <= 1)
+			if (string.IsNullOrEmpty (valuesString) || _animator.layerCount <= 1)
 			{
 				return;
 			}
@@ -211,7 +221,7 @@ namespace AC
 
 		private void StringToStates (string valuesString)
 		{
-			if (valuesString.Length == 0)
+			if (string.IsNullOrEmpty (valuesString))
 			{
 				return;
 			}

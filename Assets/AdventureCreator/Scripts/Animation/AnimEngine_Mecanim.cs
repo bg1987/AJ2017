@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2016
+ *	by Chris Burton, 2013-2018
  *	
  *	"AnimEngine_Mecanim.cs"
  * 
@@ -71,9 +71,9 @@ namespace AC
 				character.headYawParameter = EditorGUILayout.TextField ("Head yaw float:", character.headYawParameter);
 				character.headPitchParameter = EditorGUILayout.TextField ("Head pitch float:", character.headPitchParameter);
 			}
-			character.headTurnSpeed = EditorGUILayout.Slider ("Head turn speed:", character.headTurnSpeed, 0.1f, 20f);
 
 			character.verticalMovementParameter = EditorGUILayout.TextField ("Vertical movement float:", character.verticalMovementParameter);
+			character.isGroundedParameter = EditorGUILayout.TextField ("'Is grounded' bool:", character.isGroundedParameter);
 			if (character is Player)
 			{
 				Player player = (Player) character;
@@ -90,7 +90,7 @@ namespace AC
 			EditorGUILayout.BeginVertical ("Button");
 			EditorGUILayout.LabelField ("Mecanim settings:", EditorStyles.boldLabel);
 
-			if (AdvGame.GetReferences () && AdvGame.GetReferences ().settingsManager && AdvGame.GetReferences ().settingsManager.IsTopDown ())
+			if (SceneSettings.IsTopDown ())
 			{
 				character.spriteChild = (Transform) EditorGUILayout.ObjectField ("Animator child:", character.spriteChild, typeof (Transform), true);
 			}
@@ -106,7 +106,7 @@ namespace AC
 			character.ikHeadTurning = EditorGUILayout.Toggle ("IK head-turning?", character.ikHeadTurning);
 			if (character.ikHeadTurning)
 			{
-				#if UNITY_5 || UNITY_PRO_LICENSE
+				#if UNITY_5 || UNITY_2017_1_OR_NEWER || UNITY_PRO_LICENSE
 				EditorGUILayout.HelpBox ("'IK Pass' must be enabled for this character's Base layer.", MessageType.Info);
 				#else
 				EditorGUILayout.HelpBox ("This features is only available with Unity 5 or Unity Pro.", MessageType.Info);
@@ -125,6 +125,7 @@ namespace AC
 			character.doWallReduction = EditorGUILayout.BeginToggleGroup ("Slow movement near wall colliders?", character.doWallReduction);
 			character.wallLayer = EditorGUILayout.TextField ("Wall collider layer:", character.wallLayer);
 			character.wallDistance = EditorGUILayout.Slider ("Collider distance:", character.wallDistance, 0f, 2f);
+			character.wallReductionOnlyParameter = EditorGUILayout.Toggle ("Only affects Mecanim parameter?", character.wallReductionOnlyParameter);
 			EditorGUILayout.EndToggleGroup ();
 
 			EditorGUILayout.EndVertical ();
@@ -603,7 +604,7 @@ namespace AC
 				{
 					if (action.clip2D != "")
 					{
-						#if UNITY_EDITOR && UNITY_5
+						#if UNITY_EDITOR && (UNITY_5 || UNITY_2017_1_OR_NEWER)
 
 						int hash = Animator.StringToHash (action.clip2D);
 						if (action.animator.HasState (0, hash))
@@ -612,7 +613,7 @@ namespace AC
 						}
 						else
 						{
-							ACDebug.LogError ("Cannot play clip " + action.clip2D + " on " + action.animator.name);
+							ACDebug.LogError ("Cannot play clip " + action.clip2D + " on " + action.animator.name, action.animator);
 						}
 						
 						#else
@@ -738,7 +739,7 @@ namespace AC
 				character.GetAnimator ().SetFloat (character.turnParameter, character.GetTurnFloat ());
 			}
 
-			if (character is Player)
+			if (character.IsPlayer)
 			{
 				Player player = (Player) character;
 				
@@ -806,7 +807,7 @@ namespace AC
 				character.GetAnimator ().SetFloat (character.turnParameter, character.GetTurnFloat ());
 			}
 
-			if (character is Player)
+			if (character.IsPlayer)
 			{
 				Player player = (Player) character;
 				
@@ -851,9 +852,14 @@ namespace AC
 				return;
 			}
 			
-			if (character.verticalMovementParameter != "")
+			if (!string.IsNullOrEmpty (character.verticalMovementParameter))
 			{
 				character.GetAnimator ().SetFloat (character.verticalMovementParameter, character.GetHeightChange ());
+			}
+
+			if (!string.IsNullOrEmpty (character.isGroundedParameter))
+			{
+				character.GetAnimator ().SetBool (character.isGroundedParameter, character.IsGrounded ());
 			}
 		}
 
@@ -865,7 +871,7 @@ namespace AC
 				return;
 			}
 
-			if (character is Player)
+			if (character.IsPlayer)
 			{
 				Player player = (Player) character;
 				
@@ -901,7 +907,7 @@ namespace AC
 		}
 
 
-		#if UNITY_EDITOR && UNITY_5
+		#if UNITY_EDITOR && (UNITY_5 || UNITY_2017_1_OR_NEWER)
 
 		public override void AddSaveScript (Action _action, GameObject _gameObject)
 		{

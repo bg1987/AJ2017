@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2016
+ *	by Chris Burton, 2013-2018
  *	
  *	"ConstantID.cs"
  * 
@@ -111,16 +111,6 @@ namespace AC
 				retainInPrefab = false;
 				SetNewID ();
 			}
-			/*else if (gameObject.activeInHierarchy)
-			{
-				retainInPrefab = false;
-				SetNewID ();
-			}
-			else
-			{
-				retainInPrefab = true;
-				SetNewID_Prefab ();
-			}*/
 			return constantID;
 		}
 
@@ -268,6 +258,11 @@ namespace AC
 			}
 			
 			string[] stringArray = _string.Split (SaveSystem.pipe[0]);
+			for (int i=0; i<stringArray.Length; i++)
+			{
+				stringArray[i] = AdvGame.PrepareStringForLoading (stringArray[i]);
+			}
+
 			return stringArray;
 		}
 		
@@ -278,7 +273,8 @@ namespace AC
 			
 			foreach (T state in _list)
 			{
-				_string.Append (state.ToString() + SaveSystem.pipe);
+				string stateString = AdvGame.PrepareStringForSaving (state.ToString ());
+				_string.Append (stateString + SaveSystem.pipe);
 			}
 			if (_string.Length > 0)
 			{
@@ -295,7 +291,24 @@ namespace AC
 	 */
 	[System.Serializable]
 	public class Remember : ConstantID
-	{}
+	{
+
+		protected bool savePrevented = false;
+
+		/** If True, saving is prevented */
+		public bool SavePrevented
+		{
+			get
+			{
+				return savePrevented;
+			}
+			set
+			{
+				savePrevented = value;
+			}
+		}
+
+	}
 	
 
 	/**
@@ -307,6 +320,8 @@ namespace AC
 
 		/** The ConstantID number of the object being saved */
 		public int objectID;
+		/** If True, saving is prevented */
+		public bool savePrevented;
 
 		/**
 		 * The base constructor.

@@ -39,7 +39,8 @@ namespace AC
 		public float focalDistance = 10f;
 
 		protected Vector2 inputMovement;
-		protected bool doFixedUpdate = false;
+
+		[SerializeField] [HideInInspector] private bool is2D = false;
 
 
 		protected virtual void Awake ()
@@ -67,13 +68,47 @@ namespace AC
 		}
 
 
+		private void OnEnable ()
+		{
+			if (KickStarter.stateHandler) KickStarter.stateHandler.Register (this);
+		}
+
+
+		protected virtual void Start ()
+		{
+			if (KickStarter.stateHandler) KickStarter.stateHandler.Register (this);
+		}
+
+
+		private void OnDisable ()
+		{
+			if (KickStarter.stateHandler) KickStarter.stateHandler.Unregister (this);
+		}
+
+
+		/**
+		 * True if the game plays in 2D, making use of 2D colliders and raycasts
+		 */
+		public bool isFor2D
+		{
+			get
+			{
+				return is2D;
+			}
+			set
+			{
+				is2D = value;
+			}
+		}
+
+
 		/**
 		 * <summary>Checks if the camera is for 2D games.  This is necessary for working out if the MainCamera needs to change its projection matrix.</summary>
 		 * <returns>True if the camera is for 2D games</returns>
 		 */
 		public virtual bool Is2D ()
 		{
-			return false;
+			return is2D;
 		}
 
 
@@ -82,14 +117,6 @@ namespace AC
 		 * This is called every frame by StateHandler.
 		 */
 		public virtual void _Update ()
-		{}
-
-
-		/**
-		 * Updates the camera if it follows a Rigidbody.
-		 * This is called every fixed interval by StateHandler.
-		 */
-		public virtual void _FixedUpdate ()
 		{}
 
 
@@ -121,15 +148,6 @@ namespace AC
 			if (targetIsPlayer && KickStarter.player)
 			{
 				target = KickStarter.player.transform;
-			}
-
-			if (target != null && target.GetComponent <Rigidbody>())
-			{
-				doFixedUpdate = true;
-			}
-			else
-			{
-				doFixedUpdate = false;
 			}
 		}
 
@@ -215,6 +233,20 @@ namespace AC
 		public virtual Vector2 GetPerspectiveOffset ()
 		{
 			return Vector2.zero;
+		}
+
+
+		/**
+		 * <summary>Checks if the _Camera is currently the MainCamera's active camera (attachedCamera)</summary>
+		 * <returns>True if the _Camera is currently the MainCamera's active camera (attachedCamera)</returns>
+		 */
+		public bool IsActive ()
+		{
+			if (KickStarter.mainCamera != null)
+			{
+				return (KickStarter.mainCamera.attachedCamera == this);
+			}
+			return false;
 		}
 
 	}

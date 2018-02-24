@@ -99,8 +99,33 @@ namespace AC
 				SharedGUI (_target, false);
 			}
 
+			DisplayInputList (_target);
+
 			UnityVersionHandler.CustomSetDirty (_target);
 		}
+
+
+		private void DisplayInputList (Moveable_Drag _target)
+		{
+			string result = "";
+
+			if (_target.dragMode == DragMode.RotateOnly)
+			{
+				if (_target.allowZooming)
+				{
+					result += "\n";
+					result += "- ZoomMoveable";
+				}
+			}
+
+			if (result != "")
+			{
+				EditorGUILayout.Space ();
+				EditorGUILayout.LabelField ("Required inputs:", EditorStyles.boldLabel);
+				EditorGUILayout.HelpBox ("The following input axes are available for the chosen settings:" + result, MessageType.Info);
+			}
+		}
+
 	}
 
 }

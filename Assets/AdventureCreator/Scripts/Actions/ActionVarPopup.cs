@@ -113,6 +113,10 @@ namespace AC
 				{
 					variableID = ShowVarGUI (localVariables.localVars, variableID, true);
 				}
+				else
+				{
+					EditorGUILayout.HelpBox ("No 'Local Variables' component found in the scene. Please add an AC GameEngine object from the Scene Manager.", MessageType.Info);
+				}
 			}
 
 			GVar _var = GetVariable ();
@@ -291,6 +295,37 @@ namespace AC
 					EditorGUILayout.Space ();
 				}*/
 			}
+		}
+
+
+		public override bool ConvertLocalVariableToGlobal (int oldLocalID, int newGlobalID)
+		{
+			bool wasAmended = base.ConvertLocalVariableToGlobal (oldLocalID, newGlobalID);
+
+			if (location == VariableLocation.Local && variableID == oldLocalID)
+			{
+				location = VariableLocation.Global;
+				variableID = newGlobalID;
+				wasAmended = true;
+			}
+			return wasAmended;
+		}
+
+
+		public override bool ConvertGlobalVariableToLocal (int oldGlobalID, int newLocalID, bool isCorrectScene)
+		{
+			bool wasAmended = base.ConvertGlobalVariableToLocal (oldGlobalID, newLocalID, isCorrectScene);
+
+			if (location == VariableLocation.Global && variableID == oldGlobalID)
+			{
+				wasAmended = true;
+				if (isCorrectScene)
+				{
+					location = VariableLocation.Local;
+					variableID = newLocalID;
+				}
+			}
+			return wasAmended;
 		}
 		
 		#endif

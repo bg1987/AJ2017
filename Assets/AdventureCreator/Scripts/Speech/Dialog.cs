@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2016
+ *	by Chris Burton, 2013-2018
  *	
  *	"Dialog.cs"
  * 
@@ -32,11 +32,12 @@ namespace AC
 
 		private AudioSource defaultAudioSource;
 		private AudioSource narratorAudioSource;
+		private string[] speechEventTokenKeys = new string[0];
 
 
 		public void OnAwake ()
 		{
-			if (KickStarter.speechManager.textScrollSpeed == 0f)
+			if (KickStarter.speechManager != null && KickStarter.speechManager.textScrollSpeed == 0f)
 			{
 				ACDebug.LogError ("Cannot have a Text Scroll Speed of zero - please amend your Speech Manager");
 			}
@@ -58,22 +59,27 @@ namespace AC
 			{
 				for (int i=0; i<speechList.Count; i++)
 				{
-					speechList[i].UpdateInput ();
+					if (speechList[i].isAlive)
+					{
+						speechList[i].UpdateInput ();
+					}
 				}
 			}
 
 			if (KickStarter.playerInput.InputGetButtonDown ("EndConversation") && KickStarter.stateHandler.gameState == GameState.DialogOptions)
 			{
 				KickStarter.playerInput.EndConversation ();
+				KickStarter.actionListManager.OnEndConversation ();
+				KickStarter.actionListManager.SetCorrectGameState ();
 			}
 		}
 
 
-		public void _FixedUpdate ()
+		public void _LateUpdate ()
 		{
 			for (int i=0; i<speechList.Count; i++)
 			{
-				speechList[i]._FixedUpdate ();
+				speechList[i].UpdateDisplay ();
 				if (!speechList[i].isAlive)
 				{
 					EndSpeech (i);
@@ -81,7 +87,7 @@ namespace AC
 				}
 			}
 		}
-		
+
 
 		/**
 		 * <summary>Initialises a new Speech line.</summary>
@@ -90,11 +96,16 @@ namespace AC
 		 * <param name = "isBackground">True if the line should play in the background, and not interrupt any Actions or gameplay</param>
 		 * <param name = "lineID">The ID number of the line, if it is listed in the Speech Manager</param>
 		 * <param name = "noAnimation">True if the character should not play a talking animation</param>
-		 * <param name = "runActionListInBackground">True if the ActionList that contains the call is set to Run In Background</param>
 		 * <returns>The generated Speech line</returns>
 		 */
-		public Speech StartDialog (Char _speaker, string _text, bool isBackground = false, int lineID = -1, bool noAnimation = false, bool runActionListInBackground = false)
+		public Speech StartDialog (Char _speaker, string _text, bool isBackground = false, int lineID = -1, bool noAnimation = false)
 		{
+			if (!KickStarter.actionListManager.IsGameplayBlocked () && !KickStarter.stateHandler.IsInScriptedCutscene ())
+			{
+				// Force background if during gameplay
+				isBackground = true;
+			}
+
 			// Get the language
 			string _language = "";
 			int lanuageNumber = Options.GetLanguage ();
@@ -114,7 +125,69 @@ namespace AC
 				}
 			}
 			
-			Speech speech = new Speech (_speaker, _text, lineID, _language, isBackground, noAnimation, runActionListInBackground);
+			Speech speech = new Speech (_speaker, _text, lineID, _language, isBackground, noAnimation);
+			speechList.Add (speech);
+
+			KickStarter.runtimeVariables.AddToSpeechLog (speech.log);
+			KickStarter.playerMenus.AssignSpeechToMenu (speech);
+
+			if (speech.hasAudio)
+			{
+				if (KickStarter.speechManager.relegateBackgroundSpeechAudio)
+				{
+					EndBackgroundSpeechAudio (speech);
+				}
+
+				KickStarter.stateHandler.UpdateAllMaxVolumes ();
+			}
+
+			return speech;
+		}
+
+
+		/**
+		 * <summary>Initialises a new Speech line. This differs from the other StartDialog function in that it requires a lineID, which must be present in the Speech Manager and is used to source the line's actual text.</summary>
+		 * <param name = "_speaker">The speaking character. If null, the line will be treated as narration</param>
+		 * <param name = "lineID">The ID number of the line, if it is listed in the Speech Manager</param>
+		 * <param name = "isBackground">True if the line should play in the background, and not interrupt any Actions or gameplay</param>
+		 * <param name = "noAnimation">True if the character should not play a talking animation</param>
+		 * <returns>The generated Speech line</returns>
+		 */
+		public Speech StartDialog (Char _speaker, int lineID, bool isBackground = false, bool noAnimation = false)
+		{
+			string _text = "";
+
+			SpeechLine speechLine = KickStarter.speechManager.GetLine (lineID);
+			if (speechLine != null)
+			{
+				_text = speechLine.text;
+			}
+			else
+			{
+				ACDebug.LogWarning ("Cannot start dialog because the line ID " + lineID + " was not found in the Speech Manager.");
+				return null;
+			}
+
+			// Get the language
+			string _language = "";
+			int lanuageNumber = Options.GetLanguage ();
+			if (lanuageNumber > 0)
+			{
+				// Not in original language, so pull translation in from Speech Manager
+				_language = KickStarter.runtimeLanguages.Languages [lanuageNumber];
+			}
+
+			// Remove speaker's previous line
+			for (int i=0; i<speechList.Count; i++)
+			{
+				if (speechList[i].GetSpeakingCharacter () == _speaker)
+				{
+					EndSpeech (i);
+					i=0;
+				}
+			}
+			
+			Speech speech = new Speech (_speaker, _text, lineID, _language, isBackground, noAnimation);
 			speechList.Add (speech);
 
 			KickStarter.runtimeVariables.AddToSpeechLog (speech.log);
@@ -147,7 +220,7 @@ namespace AC
 
 				narratorAudioSource = narratorSoundOb.AddComponent <AudioSource>();
 				AdvGame.AssignMixerGroup (narratorAudioSource, SoundType.Speech);
-				#if UNITY_5
+				#if UNITY_5 || UNITY_2017_1_OR_NEWER
 				narratorAudioSource.spatialBlend = 0f;
 				#endif
 
@@ -331,23 +404,27 @@ namespace AC
 		 * <param name = "forceMenusOff">True if subtitles should be turned off immediately</param>
 		 * <param name = "speechMenuLimit">The type of speech to kill (All, BlockingOnly, BackgroundOnly)</param>
 		 */
-		public void KillDialog (bool stopCharacter, bool forceMenusOff, SpeechMenuLimit speechMenuLimit = SpeechMenuLimit.All)
+		public void KillDialog (bool stopCharacter, bool forceMenusOff, SpeechMenuLimit speechMenuLimit = SpeechMenuLimit.All, SpeechMenuType speechMenuType = SpeechMenuType.All, string limitToCharacters = "")
 		{
+			bool hadEffect = false;
+
 			for (int i=0; i<speechList.Count; i++)
 			{
-				if (speechMenuLimit == SpeechMenuLimit.All ||
-				   (speechMenuLimit == SpeechMenuLimit.BackgroundOnly && speechList[i].isBackground) ||
-				   (speechMenuLimit == SpeechMenuLimit.BlockingOnly && !speechList[i].isBackground))
+				if (speechList[i].HasConditions (speechMenuLimit, speechMenuType, limitToCharacters))
 				{
 					EndSpeech (i, stopCharacter);
+					hadEffect = true;
 					i=0;
 				}
 			}
-			
-			KickStarter.stateHandler.UpdateAllMaxVolumes ();
-			if (forceMenusOff)
+
+			if (hadEffect)
 			{
-				KickStarter.playerMenus.ForceOffSubtitles ();
+				KickStarter.stateHandler.UpdateAllMaxVolumes ();
+				if (forceMenusOff)
+				{
+					KickStarter.playerMenus.ForceOffSubtitles ();
+				}
 			}
 		}
 
@@ -447,7 +524,9 @@ namespace AC
 			
 			if (_lipSyncMode == LipSyncMode.ReadPamelaFile && textFile != null)
 			{
-				string[] pamLines = textFile.text.Split('\n');
+				var splitFile = new string[] { "\r\n", "\r", "\n" };
+				var pamLines = textFile.text.Split (splitFile, System.StringSplitOptions.None);
+
 				bool foundSpeech = false;
 				float fps = 24f;
 				foreach (string pamLine in pamLines)
@@ -499,7 +578,9 @@ namespace AC
 			}
 			else if (_lipSyncMode == LipSyncMode.ReadSapiFile && textFile != null)
 			{
-				string[] sapiLines = textFile.text.Split('\n');
+				var splitFile = new string[] { "\r\n", "\r", "\n" };
+				var sapiLines = textFile.text.Split (splitFile, System.StringSplitOptions.None);
+
 				foreach (string sapiLine in sapiLines)
 				{
 					if (sapiLine.StartsWith ("phn "))
@@ -535,7 +616,9 @@ namespace AC
 			}
 			else if (_lipSyncMode == LipSyncMode.ReadPapagayoFile && textFile != null)
 			{
-				string[] papagoyoLines = textFile.text.Split('\n');
+				var splitFile = new string[] { "\r\n", "\r", "\n" };
+				var papagoyoLines = textFile.text.Split (splitFile, System.StringSplitOptions.None);
+
 				foreach (string papagoyoLine in papagoyoLines)
 				{
 					if (papagoyoLine != "" && !papagoyoLine.Contains ("MohoSwitch"))
@@ -563,6 +646,7 @@ namespace AC
 													int frame = KickStarter.speechManager.phonemes.IndexOf (phoneme);
 													lipSyncShapes.Add (new LipSyncShape (frame, timeIndex, KickStarter.speechManager.lipSyncSpeed, 24f));
 													found = true;
+													break;
 												}
 											}
 										}
@@ -644,6 +728,7 @@ namespace AC
 					oldSpeech.EndSpeechAudio ();
 				}
 			}
+			oldSpeech.isAlive = false;
 			speechList.RemoveAt (i);
 			
 			if (oldSpeech.hasAudio)
@@ -653,6 +738,23 @@ namespace AC
 
 			// Call event
 			KickStarter.eventManager.Call_OnStopSpeech (oldSpeech.GetSpeakingCharacter ());
+		}
+
+
+		/**
+		 * An array of string keys that can be inserted into speech text in the form [key:value].
+		 * When processed by the speech display, they will be removed from the speech, but will trigger the OnSpeechToken event.
+		 */
+		public string[] SpeechEventTokenKeys
+		{
+			get
+			{
+				return speechEventTokenKeys;
+			}
+			set
+			{
+				speechEventTokenKeys = value;
+			}
 		}
 
 
@@ -679,6 +781,10 @@ namespace AC
 		public bool pauseIsIndefinite;
 		/** The ID number of the Expression */
 		public int expressionID;
+		/** The key, if a custom event token */
+		public string tokenKey;
+		/** The value, if a custom event token */
+		public string tokenValue;
 
 
 		/**
@@ -692,6 +798,7 @@ namespace AC
 			waitTime = _waitTime;
 			expressionID = -1;
 			pauseIsIndefinite = false;
+			tokenKey = tokenValue = "";
 		}
 
 
@@ -706,6 +813,7 @@ namespace AC
 			waitTime = -1f;
 			expressionID = -1;
 			pauseIsIndefinite = _pauseIsIndefinite;
+			tokenKey = tokenValue = "";
 		}
 
 
@@ -720,6 +828,32 @@ namespace AC
 			waitTime = -1f;
 			expressionID = _expressionID;
 			pauseIsIndefinite = false;
+			tokenKey = tokenValue = "";
+		}
+
+
+		/**
+		 * A Constructor for custom event tokens.</summary>
+		 * <param name = "_characterIndex</param>The character index of the gap</param>
+		 * <param name = "_expressionID</param>The ID number of the Expression</param>
+		 */
+		public SpeechGap (int _characterIndex, string _tokenKey, string _tokenValue)
+		{
+			characterIndex = _characterIndex;
+			waitTime = 0f;
+			expressionID = -1;
+			tokenKey = _tokenKey;
+			tokenValue = _tokenValue;
+			pauseIsIndefinite = false;
+		}
+
+
+		public void CallEvent (AC.Char speaker, int lineID)
+		{
+			if (!string.IsNullOrEmpty (tokenValue))
+			{
+				KickStarter.eventManager.Call_OnSpeechToken (speaker, lineID, tokenKey, tokenValue);
+			}
 		}
 		
 	}

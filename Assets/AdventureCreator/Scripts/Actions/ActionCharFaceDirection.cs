@@ -63,9 +63,9 @@ namespace AC
 				
 				if (charToMove)
 				{
-					if (!isInstant)
+					if (!isInstant && charToMove.IsMovingAlongPath ())
 					{
-						charToMove.Halt ();
+						charToMove.EndPath ();
 					}
 
 					charToMove.SetLookDirection (GetLookVector (), isInstant);
@@ -111,7 +111,7 @@ namespace AC
 			Vector3 upVector = Camera.main.transform.up;
 			Vector3 rightVector = Camera.main.transform.right - new Vector3 (0f, 0.01f); // Angle slightly so that left->right rotations face camera
 
-			if (KickStarter.settingsManager.IsTopDown ())
+			if (SceneSettings.IsTopDown ())
 			{
 				upVector = -Camera.main.transform.forward;
 			}

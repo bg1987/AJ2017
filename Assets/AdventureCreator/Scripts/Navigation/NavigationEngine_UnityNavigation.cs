@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2016
+ *	by Chris Burton, 2013-2018
  *	
  *	"NavigationEngine_meshCollider.cs"
  * 
@@ -30,7 +30,7 @@ namespace AC
 		public override void SceneSettingsGUI ()
 		{
 			#if UNITY_EDITOR
-			if (AdvGame.GetReferences ().settingsManager && AdvGame.GetReferences ().settingsManager.IsUnity2D ())
+			if (SceneSettings.IsUnity2D ())
 			{
 				EditorGUILayout.HelpBox ("This method is not compatible with 'Unity 2D' mode.", MessageType.Warning);
 			}
@@ -109,7 +109,7 @@ namespace AC
 			Vector3 randomOffset = new Vector3 (circle.x, 0f, circle.y) * Random.Range (minDistance, maxDistance);
 			Vector3 randomPoint = point + randomOffset;
 
-			#if UNITY_5
+			#if UNITY_5 || UNITY_2017_1_OR_NEWER
 
 			NavMeshHit hit = new NavMeshHit ();
 			bool blocked = NavMesh.Raycast (point, randomPoint, out hit, NavMesh.AllAreas);

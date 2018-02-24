@@ -25,13 +25,15 @@ namespace AC
 	public class ActionQTE : ActionCheck
 	{
 
-		public enum QTEType { SingleKeypress, HoldKey, ButtonMash };
+		public enum QTEType { SingleKeypress, HoldKey, ButtonMash, SingleAxis };
 		public QTEType qteType = QTEType.SingleKeypress;
 
 		public int menuNameParameterID = -1;
 		public string menuName;
 		public bool animateUI = false;
 		public bool wrongKeyFails = false;
+
+		public float axisThreshold = 0.2f;
 
 		public int inputNameParameterID = -1;
 		public string inputName;
@@ -64,7 +66,13 @@ namespace AC
 		
 		override public float Run ()
 		{
-			if (duration <= 0f || inputName == "")
+			if (string.IsNullOrEmpty (inputName) && (KickStarter.settingsManager.inputMethod != InputMethod.TouchScreen || qteType == QTEType.SingleAxis))
+			{
+				isRunning = false;
+				return 0f;
+			}
+
+			if (duration <= 0f)
 			{
 				isRunning = false;
 				return 0f;
@@ -75,19 +83,26 @@ namespace AC
 				isRunning = true;
 
 				Animator animator = null;
-				if (menuName != "")
+				if (!string.IsNullOrEmpty (menuName))
 				{
 					AC.Menu menu = PlayerMenus.GetMenuWithName (menuName);
-					menu.TurnOn (true);
-					if (animateUI && menu.canvas != null && menu.canvas.GetComponent <Animator>())
+					if (menu != null)
 					{
-						animator = menu.canvas.GetComponent <Animator>();
+						menu.TurnOn (true);
+						if (animateUI && menu.canvas != null && menu.canvas.GetComponent <Animator>())
+						{
+							animator = menu.canvas.GetComponent <Animator>();
+						}
 					}
 				}
 
 				if (qteType == QTEType.SingleKeypress)
 				{
 					KickStarter.playerQTE.StartSinglePressQTE (inputName, duration, animator, wrongKeyFails);
+				}
+				else if (qteType == QTEType.SingleAxis)
+				{
+					KickStarter.playerQTE.StartSingleAxisQTE (inputName, duration, axisThreshold, animator, wrongKeyFails);
 				}
 				else if (qteType == QTEType.HoldKey)
 				{
@@ -107,9 +122,13 @@ namespace AC
 					return defaultPauseTime;
 				}
 
-				if (menuName != "")
+				if (!string.IsNullOrEmpty (menuName))
 				{
-					PlayerMenus.GetMenuWithName (menuName).TurnOff (true);
+					AC.Menu menu = PlayerMenus.GetMenuWithName (menuName);
+					if (menu != null)
+					{
+						menu.TurnOff (true);
+					}
 				}
 
 				isRunning = false;
@@ -143,14 +162,52 @@ namespace AC
 		override public void ShowGUI (List<ActionParameter> parameters)
 		{
 			qteType = (QTEType) EditorGUILayout.EnumPopup ("QTE type:" , qteType);
-			
-			inputNameParameterID = Action.ChooseParameterGUI ("Input button name:", parameters, inputNameParameterID, ParameterType.String);
+
+			string _label = (qteType == QTEType.SingleAxis) ? "axis" : "button";
+			inputNameParameterID = Action.ChooseParameterGUI ("Input " + _label + " name:", parameters, inputNameParameterID, ParameterType.String);
 			if (inputNameParameterID < 0)
 			{
-				inputName = EditorGUILayout.TextField ("Input button name:", inputName);
+				inputName = EditorGUILayout.TextField ("Input " + _label + " name:", inputName);
 			}
-			wrongKeyFails = EditorGUILayout.Toggle ("Wrong key fails?", wrongKeyFails);
-			
+
+			if (qteType == QTEType.SingleAxis)
+			{
+				axisThreshold = EditorGUILayout.Slider ("Axis threshold:", axisThreshold, -1f, 1f);
+
+				if (axisThreshold >= 0f)
+				{
+					_label = "Negative axis fails?";
+				}
+				else if (axisThreshold < 0f)
+				{
+					_label = "Positive axis fails?";
+				}
+
+				if (axisThreshold == 0f)
+				{
+					EditorGUILayout.HelpBox ("The 'Axis threshold' cannot be zero.", MessageType.Warning);
+				}
+				else if (axisThreshold > 0f)
+				{
+					EditorGUILayout.HelpBox ("The QTE will be succesful when the input value is greater than the 'Axis threshold'.", MessageType.Info);
+				}
+				else if (axisThreshold < 0f)
+				{
+					EditorGUILayout.HelpBox ("The QTE will be succesful when the input value is less than than the 'Axis threshold'.", MessageType.Info);
+				}
+			}
+			else
+			{
+				_label = "Wrong button fails?";
+		
+				if (KickStarter.settingsManager != null && KickStarter.settingsManager.inputMethod == InputMethod.TouchScreen)
+				{
+					EditorGUILayout.HelpBox ("If the input name field is left blank, then all screen taps will be valid.", MessageType.Info);
+				}
+			}
+
+			wrongKeyFails = EditorGUILayout.Toggle (_label, wrongKeyFails);
+
 			durationParameterID = Action.ChooseParameterGUI ("Duration (s):", parameters, durationParameterID, ParameterType.Float);
 			if (durationParameterID < 0)
 			{
@@ -168,7 +225,7 @@ namespace AC
 			}
 			else if (qteType == QTEType.HoldKey)
 			{
-				holdDuration = EditorGUILayout.Slider ("Required duration (s):", holdDuration, 0f, duration);
+				holdDuration = EditorGUILayout.Slider ("Required duration (s):", holdDuration, 0f, 10f);
 			}
 
 			menuNameParameterID = Action.ChooseParameterGUI ("Menu to display (optional):", parameters, menuNameParameterID, ParameterType.String);
@@ -181,7 +238,7 @@ namespace AC
 
 			if (animateUI)
 			{
-				if (qteType == QTEType.SingleKeypress)
+				if (qteType == QTEType.SingleKeypress || qteType == QTEType.SingleAxis)
 				{
 					EditorGUILayout.HelpBox ("The Menu's Canvas must have an Animator with 2 States: Win, Lose.", MessageType.Info);
 				}

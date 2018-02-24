@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2017
+ *	by Chris Burton, 2013-2018
  *	
  *	"MenuToggle.cs"
  * 
@@ -99,23 +99,26 @@ namespace AC
 		}
 
 
-		/**
-		 * <summary>Creates and returns a new MenuToggle that has the same values as itself.</summary>
-		 * <param name = "fromEditor">If True, the duplication was done within the Menu Manager and not as part of the gameplay initialisation.</param>
-		 * <returns>A new MenuToggle with the same values as itself</returns>
-		 */
-		public override MenuElement DuplicateSelf (bool fromEditor)
+		public override MenuElement DuplicateSelf (bool fromEditor, bool ignoreUnityUI)
 		{
 			MenuToggle newElement = CreateInstance <MenuToggle>();
 			newElement.Declare ();
-			newElement.CopyToggle (this);
+			newElement.CopyToggle (this, ignoreUnityUI);
 			return newElement;
 		}
 		
 		
-		private void CopyToggle (MenuToggle _element)
+		private void CopyToggle (MenuToggle _element, bool ignoreUnityUI)
 		{
-			uiToggle = _element.uiToggle;
+			if (ignoreUnityUI)
+			{
+				uiToggle = null;
+			}
+			else
+			{
+				uiToggle = _element.uiToggle;
+			}
+
 			uiText = null;
 			label = _element.label;
 			isOn = _element.isOn;
@@ -133,6 +136,7 @@ namespace AC
 			offText = _element.offText;
 			onTextLineID = _element.onTextLineID;
 			offTextLineID = _element.offTextLineID;
+			isClickable = _element.isClickable;
 
 			base.Copy (_element);
 		}
@@ -142,28 +146,28 @@ namespace AC
 		 * <summary>Initialises the linked Unity UI GameObject.</summary>
 		 * <param name = "_menu">The element's parent Menu</param>
 		 */
-		public override void LoadUnityUI (AC.Menu _menu)
+		public override void LoadUnityUI (AC.Menu _menu, Canvas canvas)
 		{
-			uiToggle = LinkUIElement <Toggle>();
-
+			uiToggle = LinkUIElement <Toggle> (canvas);
 			if (uiToggle)
 			{
 				if (uiToggle.GetComponentInChildren <Text>())
 				{
 					uiText = uiToggle.GetComponentInChildren <Text>();
 				}
-				uiToggle.onValueChanged.AddListener ((isOn) => {
+
+				uiToggle.interactable = isClickable;
+				if (isClickable)
+				{
+					uiToggle.onValueChanged.AddListener ((isOn) => {
 					ProcessClickUI (_menu, 0, KickStarter.playerInput.GetMouseState ());
-				});
+					});
+				}
 			}
 		}
 
 
-		/**
-		 * <summary>Gets the linked Unity UI GameObject associated with this element.</summary>
-		 * <returns>The Unity UI GameObject associated with the element</returns>
-		 */
-		public override GameObject GetObjectToSelect ()
+		public override GameObject GetObjectToSelect (int slotIndex = 0)
 		{
 			if (uiToggle)
 			{
@@ -250,24 +254,31 @@ namespace AC
 			}
 			else if (toggleType == AC_ToggleType.Variable)
 			{
-				varID = AdvGame.GlobalVariableGUI ("Global boolean var:", varID);
-				if (varID >= 0 && AdvGame.GetReferences () && AdvGame.GetReferences ().variablesManager)
-				{
-					GVar _var = AdvGame.GetReferences ().variablesManager.GetVariable (varID);
-					if (_var != null && _var.type != VariableType.Boolean)
-					{
-						EditorGUILayout.HelpBox ("The chosen Variable must be a Boolean.", MessageType.Warning);
-					}
-				}
+				varID = AdvGame.GlobalVariableGUI ("Global boolean var:", varID, VariableType.Boolean);
 			}
-			if (toggleType != AC_ToggleType.Subtitles)
+
+			isClickable = CustomGUILayout.Toggle ("User can change value?", isClickable, apiPrefix + ".isClickable");
+			if (isClickable)
 			{
-				actionListOnClick = (ActionListAsset) CustomGUILayout.ObjectField <ActionListAsset> ("ActionList on click:", actionListOnClick, false, apiPrefix + ".actionListOnClick");
+				if (toggleType != AC_ToggleType.Subtitles)
+				{
+					actionListOnClick = (ActionListAsset) CustomGUILayout.ObjectField <ActionListAsset> ("ActionList on click:", actionListOnClick, false, apiPrefix + ".actionListOnClick");
+				}
+				alternativeInputButton = CustomGUILayout.TextField ("Alternative input button:", alternativeInputButton, apiPrefix + ".alternativeInputButton");
 			}
-			alternativeInputButton = CustomGUILayout.TextField ("Alternative input button:", alternativeInputButton, apiPrefix + ".alternativeInputButton");
 			EditorGUILayout.EndVertical ();
 			
 			base.ShowGUI (menu);
+		}
+
+
+		public override bool CheckConvertGlobalVariableToLocal (int oldGlobalID, int newLocalID)
+		{
+			if (toggleType == AC_ToggleType.Variable && varID == oldGlobalID)
+			{
+				return true;
+			}
+			return false;
 		}
 		
 		#endif

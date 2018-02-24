@@ -11,10 +11,10 @@ namespace AC
 		
 		public override void OnInspectorGUI()
 		{
-			#if UNITY_5
+			#if UNITY_5 || UNITY_2017_1_OR_NEWER
 			SharedGUI ();
 			#else
-			EditorGUILayout.HelpBox ("This component is only compatible with Unity 5.", MessageType.Info);
+			EditorGUILayout.HelpBox ("This component is only compatible with Unity 5 or later.", MessageType.Info);
 			#endif
 		}
 		

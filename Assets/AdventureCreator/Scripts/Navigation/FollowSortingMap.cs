@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2016
+ *	by Chris Burton, 2013-2018
  *	
  *	"FollowSortingMap.cs"
  * 
@@ -34,8 +34,8 @@ namespace AC
 		public bool lockSorting = false;
 		/** If True, then the sorting values of child SpriteRenderers will be affected as well */
 		public bool affectChildren = true;
-		/** If True, then the SpriteRenderer's sorting values will be amended based on the GameObject's position relative to the scene's default SortingMap */
-		public bool followSortingMap = false;
+		/** If True, then the component will follow the default SortingMap, as defined in SceneSettings */
+		public bool followSortingMap = true;
 		/** The SortingMap to follow, if not the scene default (and followSortingMap = False) */
 		public SortingMap customSortingMap = null;
 		/** If True, then the SpriteRenderer's sorting values will be increased by their original values when the game began */
@@ -52,7 +52,6 @@ namespace AC
 		
 		private List<int> offsets = new List<int>();
 		private int sortingOrder = 0;
-		private string sortingOrderString = "";
 		private string sortingLayer = "";
 		private SortingMap sortingMap;
 		
@@ -63,7 +62,6 @@ namespace AC
 			{
 				return;
 			}
-			sortingOrderString = sortingOrder.ToString ();
 
 			renderers = GetComponentsInChildren <Renderer>();
 
@@ -73,9 +71,24 @@ namespace AC
 			}
 			else
 			{
-				ACDebug.LogWarning ("FollowSortingMap on " + gameObject.name + " must be attached alongside a Renderer component.");
+				if (!affectChildren)
+				{
+					ACDebug.LogWarning ("FollowSortingMap on " + gameObject.name + " must be attached alongside a Renderer component.");
+				}
 			}
 			SetOriginalDepth ();
+		}
+
+
+		private void OnEnable ()
+		{
+			if (KickStarter.stateHandler) KickStarter.stateHandler.Register (this);
+		}
+
+
+		private void OnDisable ()
+		{
+			if (KickStarter.stateHandler) KickStarter.stateHandler.Unregister (this);
 		}
 		
 		
@@ -85,7 +98,9 @@ namespace AC
 			{
 				return;
 			}
-			
+
+			if (KickStarter.stateHandler) KickStarter.stateHandler.Register (this);
+
 			SetOriginalOffsets ();
 
 			if (followSortingMap && KickStarter.sceneSettings != null && KickStarter.sceneSettings.sortingMap != null)
@@ -133,27 +148,28 @@ namespace AC
 		
 
 		/**
-		 * Gets the order of the sprite, according to the GameObject's position in the SortingMap.
-		 * If the SortingMap affects the sprite's order in layer, then the order number will be returned.
-		 * If the SortingMap affects the sprite's sorting layer, then the layer name will be returned.
+		 * The order of the sprite, according to the GameObject's position in the SortingMap, provided that the mapType = SortingMapType.OrderInLayer
 		 */
-		public string GetOrder ()
+		public int SortingOrder
 		{
-			if (sortingMap == null)
+			get
 			{
-				return "";
+				return sortingOrder;
 			}
-			
-			if (sortingMap.mapType == SortingMapType.OrderInLayer)
-			{
-				return sortingOrderString;
-			}
-			else
+		}
+
+
+		/**
+		 * The layer of the sprite, according to the GameObject's position in the SortingMap, provided that the mapType = SortingMapType.SortingLayer
+		 */
+		public string SortingLayer
+		{
+			get
 			{
 				return sortingLayer;
 			}
 		}
-		
+
 		
 		/**
 		 * Called after a scene change.
@@ -177,7 +193,7 @@ namespace AC
 				return;
 			}
 			
-			if (KickStarter.settingsManager.IsTopDown ())
+			if (SceneSettings.IsTopDown ())
 			{
 				depthAxis = DepthAxis.Y;
 			}
@@ -234,17 +250,21 @@ namespace AC
 		 */
 		public void UpdateSortingMap ()
 		{
-			if (followSortingMap && KickStarter.sceneSettings != null && KickStarter.sceneSettings.sortingMap != null)
+			if (followSortingMap)
 			{
-				sortingMap = KickStarter.sceneSettings.sortingMap;
-				SetOriginalDepth ();
-				sortingMap.UpdateSimilarFollowers (this);
+				if (KickStarter.sceneSettings != null && KickStarter.sceneSettings.sortingMap != null)
+				{
+					sortingMap = KickStarter.sceneSettings.sortingMap;
+					SetOriginalDepth ();
+				}
 			}
-			else if (!followSortingMap && customSortingMap != null)
+			else
 			{
-				sortingMap = customSortingMap;
-				SetOriginalDepth ();
-				sortingMap.UpdateSimilarFollowers (this);
+				if (customSortingMap != null)
+				{
+					sortingMap = customSortingMap;
+					SetOriginalDepth ();
+				}
 			}
 		}
 
@@ -275,7 +295,7 @@ namespace AC
 				followSortingMap = false;
 				customSortingMap = _sortingMap;
 			}
-			KickStarter.sceneSettings.UpdateAllSortingMaps ();
+			UpdateSortingMap ();
 		}
 		
 		
@@ -288,23 +308,25 @@ namespace AC
 			}
 			#endif
 
-			if (lockSorting || sortingMap == null || _renderer == null)
+			if (lockSorting || sortingMap == null)
 			{
 				return;
 			}
-			
-			#if UNITY_EDITOR
-			if (!Application.isPlaying && !livePreview && sortingMap != null && sortingMap.affectScale)
+
+			if (affectChildren)
 			{
-				if (GetComponentInParent <Char>() != null && GetComponentInParent <Char>().spriteChild != null)
+				if (renderers == null || renderers.Length == 0)
 				{
-					GetComponentInParent <Char>().transform.localScale = Vector3.one;
 					return;
 				}
 			}
-			#endif
-			
-			sortingMap.UpdateSimilarFollowers (this);
+			else
+			{
+				if (_renderer == null)
+				{
+					return;
+				}
+			}
 
 			if (sortingMap.sortingAreas.Count > 0)
 			{
@@ -312,7 +334,6 @@ namespace AC
 				if (sortingMap.mapType == SortingMapType.OrderInLayer)
 				{
 					sortingOrder = sortingMap.sortingAreas [sortingMap.sortingAreas.Count-1].order;
-					sortingOrderString = sortingOrder.ToString ();
 				}
 				else if (sortingMap.mapType == SortingMapType.SortingLayer)
 				{
@@ -327,7 +348,6 @@ namespace AC
 						if (sortingMap.mapType == SortingMapType.OrderInLayer)
 						{
 							sortingOrder = sortingMap.sortingAreas [i].order;
-							sortingOrderString = sortingOrder.ToString ();
 						}
 						else if (sortingMap.mapType == SortingMapType.SortingLayer)
 						{

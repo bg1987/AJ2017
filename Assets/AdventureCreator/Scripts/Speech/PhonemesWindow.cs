@@ -14,6 +14,7 @@ namespace AC
 	{
 
 		private SpeechManager speechManager;
+		private Vector2 scrollPos;
 
 
 		/**
@@ -21,9 +22,9 @@ namespace AC
 		 */
 		public static void Init ()
 		{
-			PhonemesWindow window = (PhonemesWindow) EditorWindow.GetWindow (typeof (PhonemesWindow));
-			UnityVersionHandler.SetWindowTitle (window, "Phonemes Editor");
-			window.position = new Rect (300, 200, 450, 400);
+			PhonemesWindow window = EditorWindow.GetWindowWithRect <PhonemesWindow> (new Rect (0, 0, 450, 270), true, "Phonemes editor", true);
+			UnityVersionHandler.SetWindowTitle (window, "Phonemes editor");
+			window.position = new Rect (300, 200, 450, 270);
 		}
 
 
@@ -55,44 +56,35 @@ namespace AC
 		private List<string> ShowPhonemesGUI (List<string> phonemes, LipSyncMode mode)
 		{
 			EditorGUILayout.HelpBox ("Sort letters or phoneme sounds into groups below, with each group representing a different animation frame.  Separate sounds with a forward slash (/).\nThe first frame will be considered the default.", MessageType.Info);
+			EditorGUILayout.Space ();
 
-			int numOptions = phonemes.Count;
-			numOptions = EditorGUILayout.IntField ("Number of frames:", phonemes.Count);
-			if (phonemes.Count < 0)
-			{
-				phonemes = SetDefaults (mode);
-				numOptions = phonemes.Count;
-			}
-			if (numOptions < 1)
-			{
-				numOptions = 1;
-			}
-			
-			if (numOptions < phonemes.Count)
-			{
-				phonemes.RemoveRange (numOptions, phonemes.Count - numOptions);
-			}
-			else if (numOptions > phonemes.Count)
-			{
-				if(numOptions > phonemes.Capacity)
-				{
-					phonemes.Capacity = numOptions;
-				}
-				for (int i=phonemes.Count; i<numOptions; i++)
-				{
-					phonemes.Add ("");
-				}
-			}
-			
+			scrollPos = EditorGUILayout.BeginScrollView (scrollPos);
+
 			for (int i=0; i<phonemes.Count; i++)
 			{
+				EditorGUILayout.BeginHorizontal ();
 				phonemes [i] = EditorGUILayout.TextField ("Frame #" + i.ToString () + ":", phonemes [i]);
+				if (GUILayout.Button (Resource.CogIcon, GUILayout.Width (20f), GUILayout.Height (15f)))
+				{
+					PhonemeSideMenu (i);
+				}
+				EditorGUILayout.EndHorizontal ();
 			}
 
+			EditorGUILayout.Space ();
+			EditorGUILayout.EndScrollView ();
+
+			EditorGUILayout.BeginHorizontal ();
+			if (GUILayout.Button ("Create new frame"))
+			{
+				phonemes.Add ("");
+			}
 			if (GUILayout.Button ("Revert to defaults"))
 			{
+				Undo.RecordObject (speechManager, "Revert phonemes");
 				phonemes = SetDefaults (mode);
 			}
+			EditorGUILayout.EndHorizontal ();
 
 			return phonemes;
 		}
@@ -124,6 +116,65 @@ namespace AC
 			}
 
 			return phonemes;
+		}
+
+
+		private void PhonemeSideMenu (int i)
+		{
+			GUI.SetNextControlName ("");
+			GUI.FocusControl ("");
+
+			selectedFrameIndex = i;
+			GenericMenu menu = new GenericMenu ();
+			
+			menu.AddItem (new GUIContent ("Insert after"), false, Callback, "Insert after");
+			menu.AddItem (new GUIContent ("Delete"), false, Callback, "Delete");
+
+			if (i > 0)
+			{
+				menu.AddItem (new GUIContent ("Re-arrange/Move up"), false, Callback, "Move up");
+			}
+			if (i < speechManager.phonemes.Count-1)
+			{
+				menu.AddItem (new GUIContent ("Re-arrange/Move down"), false, Callback, "Move down");
+			}
+			
+			menu.ShowAsContext ();
+		}
+
+
+		private int selectedFrameIndex;
+		private void Callback (object obj)
+		{
+			int i = selectedFrameIndex;
+			string oldFrame = speechManager.phonemes[i];
+				
+			switch (obj.ToString ())
+			{
+			case "Insert after":
+				Undo.RecordObject (speechManager, "Add phoneme frame");
+				speechManager.phonemes.Insert (i+1, "");
+				break;
+				
+			case "Delete":
+				Undo.RecordObject (speechManager, "Delete phoneme frame");
+				speechManager.phonemes.RemoveAt (i);
+				break;
+				
+			case "Move up":
+				Undo.RecordObject (speechManager, "Move phoneme frame up");
+				speechManager.phonemes.RemoveAt (i);
+				speechManager.phonemes.Insert (i-1, oldFrame);
+				break;
+				
+			case "Move down":
+				Undo.RecordObject (speechManager, "Move phoneme frame down");
+				speechManager.phonemes.RemoveAt (i);
+				speechManager.phonemes.Insert (i+1, oldFrame);
+				break;
+			}
+
+			EditorUtility.SetDirty (speechManager);
 		}
 
 	}

@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2017
+ *	by Chris Burton, 2013-2018
  *	
  *	"MenuSlider.cs"
  * 
@@ -61,7 +61,6 @@ namespace AC
 		public UISelectableHideStyle uiSelectableHideStyle = UISelectableHideStyle.DisableObject;
 
 		private float visualAmount;
-		private Rect sliderRect;
 		private string fullText;
 
 
@@ -95,23 +94,26 @@ namespace AC
 		}
 
 
-		/**
-		 * <summary>Creates and returns a new MenuSlider that has the same values as itself.</summary>
-		 * <param name = "fromEditor">If True, the duplication was done within the Menu Manager and not as part of the gameplay initialisation.</param>
-		 * <returns>A new MenuSlider with the same values as itself</returns>
-		 */
-		public override MenuElement DuplicateSelf (bool fromEditor)
+		public override MenuElement DuplicateSelf (bool fromEditor, bool ignoreUnityUI)
 		{
 			MenuSlider newElement = CreateInstance <MenuSlider>();
 			newElement.Declare ();
-			newElement.CopySlider (this);
+			newElement.CopySlider (this, ignoreUnityUI);
 			return newElement;
 		}
 		
 		
-		private void CopySlider (MenuSlider _element)
+		private void CopySlider (MenuSlider _element, bool ignoreUnityUI)
 		{
-			uiSlider = _element.uiSlider;
+			if (ignoreUnityUI)
+			{
+				uiSlider = null;
+			}
+			else
+			{
+				uiSlider = _element.uiSlider;
+			}
+
 			label = _element.label;
 			isClickable = _element.isClickable;
 			textEffects = _element.textEffects;
@@ -138,9 +140,9 @@ namespace AC
 		 * <summary>Initialises the linked Unity UI GameObject.</summary>
 		 * <param name = "_menu">The element's parent Menu</param>
 		 */
-		public override void LoadUnityUI (AC.Menu _menu)
+		public override void LoadUnityUI (AC.Menu _menu, Canvas canvas)
 		{
-			uiSlider = LinkUIElement <Slider>();
+			uiSlider = LinkUIElement <Slider> (canvas);
 			if (uiSlider)
 			{
 				uiSlider.interactable = isClickable;
@@ -154,11 +156,7 @@ namespace AC
 		}
 
 
-		/**
-		 * <summary>Gets the linked Unity UI GameObject associated with this element.</summary>
-		 * <returns>The Unity UI GameObject associated with the element</returns>
-		 */
-		public override GameObject GetObjectToSelect ()
+		public override GameObject GetObjectToSelect (int slotIndex = 0)
 		{
 			if (uiSlider)
 			{
@@ -201,44 +199,13 @@ namespace AC
 			MenuSource source = menu.menuSource;
 			EditorGUILayout.BeginVertical ("Button");
 
+			sliderType = (AC_SliderType) CustomGUILayout.EnumPopup ("Slider affects:", sliderType, apiPrefix + ".sliderType");
+
 			if (source == MenuSource.AdventureCreator)
 			{
 				label = CustomGUILayout.TextField ("Label text:", label, apiPrefix + ".label");
-				anchor = (TextAnchor) CustomGUILayout.EnumPopup ("Text alignment:", anchor, apiPrefix + ".anchor");
-				textEffects = (TextEffects) CustomGUILayout.EnumPopup ("Text effect:", textEffects, apiPrefix + ".textEffects");
-				if (textEffects != TextEffects.None)
-				{
-					outlineSize = CustomGUILayout.Slider ("Effect size:", outlineSize, 1f, 5f, apiPrefix + ".outlineSize");
-				}
-				useFullWidth = CustomGUILayout.Toggle ("Use full width?", useFullWidth, apiPrefix + ".useFullWidth");
-				sliderDisplayType = (SliderDisplayType) CustomGUILayout.EnumPopup ("Display type:", sliderDisplayType, apiPrefix + ".sliderDisplayType");
-				
-				EditorGUILayout.BeginHorizontal ();
-				if (sliderDisplayType == SliderDisplayType.FillBar)
-				{
-					EditorGUILayout.LabelField ("Fill-bar texture:", GUILayout.Width (145f));
-				}
-				else if (sliderDisplayType == SliderDisplayType.MoveableBlock)
-				{
-					EditorGUILayout.LabelField ("Movable block texture:", GUILayout.Width (145f));
-				}
-				sliderTexture = (Texture2D) EditorGUILayout.ObjectField (sliderTexture, typeof (Texture2D), false, GUILayout.Width (70f), GUILayout.Height (30f));
-				EditorGUILayout.EndHorizontal ();
-				
-				if (sliderDisplayType == SliderDisplayType.MoveableBlock)
-				{
-					blockSize = EditorGUILayout.Vector2Field ("Block size:", blockSize);
-				}
 			}
-			else
-			{
-				uiSlider = LinkedUiGUI <Slider> (uiSlider, "Linked Slider:", source);
-				uiSelectableHideStyle = (UISelectableHideStyle) CustomGUILayout.EnumPopup ("When invisible:", uiSelectableHideStyle, apiPrefix + ".uiSelectableHideStyle");
-				EditorGUILayout.EndVertical ();
-				EditorGUILayout.BeginVertical ("Button");
-			}
-			
-			sliderType = (AC_SliderType) CustomGUILayout.EnumPopup ("Slider affects:", sliderType, apiPrefix + ".sliderType");
+
 			if (sliderType == AC_SliderType.CustomScript)
 			{
 				ShowClipHelp ();
@@ -246,15 +213,7 @@ namespace AC
 			}
 			else if (sliderType == AC_SliderType.FloatVariable)
 			{
-				varID = AdvGame.GlobalVariableGUI ("Global float var:", varID);
-				if (varID >= 0 && AdvGame.GetReferences () && AdvGame.GetReferences ().variablesManager)
-				{
-					GVar _var = AdvGame.GetReferences ().variablesManager.GetVariable (varID);
-					if (_var != null && _var.type != VariableType.Float)
-					{
-						EditorGUILayout.HelpBox ("The chosen Variable must be a Float.", MessageType.Warning);
-					}
-				}
+				varID = AdvGame.GlobalVariableGUI ("Global float var:", varID, VariableType.Float);
 			}
 			if (sliderType == AC_SliderType.CustomScript || sliderType == AC_SliderType.FloatVariable)
 			{
@@ -277,11 +236,70 @@ namespace AC
 			{
 				numberOfSteps = CustomGUILayout.IntField ("Number of steps:", numberOfSteps, apiPrefix + ".numberOfSteps");
 			}
+
+			if (source == MenuSource.AdventureCreator)
+			{
+				useFullWidth = CustomGUILayout.Toggle ("Use full width?", useFullWidth, apiPrefix + ".useFullWidth");
+				sliderDisplayType = (SliderDisplayType) CustomGUILayout.EnumPopup ("Display type:", sliderDisplayType, apiPrefix + ".sliderDisplayType");
+				
+				if (sliderDisplayType == SliderDisplayType.MoveableBlock)
+				{
+					blockSize = EditorGUILayout.Vector2Field ("Block size:", blockSize);
+				}
+			}
+			else
+			{
+				uiSlider = LinkedUiGUI <Slider> (uiSlider, "Linked Slider:", source);
+				uiSelectableHideStyle = (UISelectableHideStyle) CustomGUILayout.EnumPopup ("When invisible:", uiSelectableHideStyle, apiPrefix + ".uiSelectableHideStyle");
+				EditorGUILayout.EndVertical ();
+				EditorGUILayout.BeginVertical ("Button");
+			}
+			
+
 			isClickable = CustomGUILayout.Toggle ("User can change value?", isClickable, apiPrefix + ".isClickable");
 
 			EditorGUILayout.EndVertical ();
 			
 			base.ShowGUI (menu);
+		}
+
+
+		protected override void ShowTextGUI (string apiPrefix)
+		{
+			anchor = (TextAnchor) CustomGUILayout.EnumPopup ("Text alignment:", anchor, apiPrefix + ".anchor");
+			textEffects = (TextEffects) CustomGUILayout.EnumPopup ("Text effect:", textEffects, apiPrefix + ".textEffects");
+			if (textEffects != TextEffects.None)
+			{
+				outlineSize = CustomGUILayout.Slider ("Effect size:", outlineSize, 1f, 5f, apiPrefix + ".outlineSize");
+			}
+		}
+
+
+		protected override void ShowTextureGUI (string apiPrefix)
+		{
+			EditorGUILayout.BeginHorizontal ();
+			if (sliderDisplayType == SliderDisplayType.FillBar)
+			{
+				EditorGUILayout.LabelField ("Fill-bar texture:", GUILayout.Width (145f));
+			}
+			else if (sliderDisplayType == SliderDisplayType.MoveableBlock)
+			{
+				EditorGUILayout.LabelField ("Movable block texture:", GUILayout.Width (145f));
+			}
+			sliderTexture = (Texture2D) EditorGUILayout.ObjectField (sliderTexture, typeof (Texture2D), false, GUILayout.Width (70f), GUILayout.Height (30f));
+			EditorGUILayout.EndHorizontal ();
+		}
+
+
+		public override bool CheckConvertGlobalVariableToLocal (int oldGlobalID, int newLocalID)
+		{
+			if (sliderType == AC_SliderType.FloatVariable && varID == oldGlobalID)
+			{
+				return true;
+			}
+
+			string newLabel = AdvGame.ConvertGlobalVariableTokenToLocal (label, oldGlobalID, newLocalID);
+			return (label != newLabel);
 		}
 		
 		#endif
@@ -297,7 +315,7 @@ namespace AC
 		{
 			CalculateValue ();
 
-			fullText = TranslateLabel (label, languageNumber);
+			fullText = AdvGame.ConvertTokens (TranslateLabel (label, languageNumber));
 
 			if (uiSlider)
 			{
@@ -345,7 +363,8 @@ namespace AC
 		
 		private void DrawSlider (float zoom)
 		{
-			sliderRect = relativeRect;
+			Rect sliderRect = relativeRect;
+
 			if (sliderDisplayType == SliderDisplayType.FillBar)
 			{
 				if (useFullWidth)
@@ -372,19 +391,15 @@ namespace AC
 				
 				if (useFullWidth)
 				{
-					sliderRect.x = slotSize.x * visualAmount + relativeRect.x - (sliderRect.width / 2f);
+					sliderRect.x += (relativeRect.width - sliderRect.width) * visualAmount;
 				}
 				else
 				{
-					sliderRect.x = slotSize.x * visualAmount * 0.5f + relativeRect.x + (relativeRect.width / 2) - (sliderRect.width / 2f);
-				}
-				
-				if (sizeType != AC_SizeType.AbsolutePixels)
-				{
-					sliderRect.x *= AdvGame.GetMainGameViewSize (true).x / 100f;
+					sliderRect.x += (relativeRect.width - sliderRect.width) / 2f;
+					sliderRect.x += (relativeRect.width - sliderRect.width) * visualAmount / 2f;
 				}
 			}
-			
+
 			GUI.DrawTexture (ZoomRect (sliderRect, zoom), sliderTexture, ScaleMode.StretchToFill, true, 0f);
 		}
 		
@@ -397,7 +412,7 @@ namespace AC
 		 */
 		public override string GetLabel (int slot, int languageNumber)
 		{
-			return TranslateLabel (label, languageNumber);
+			return AdvGame.ConvertTokens (TranslateLabel (label, languageNumber));
 		}
 
 
@@ -413,14 +428,14 @@ namespace AC
 		
 		private void Change ()
 		{
-			visualAmount += 0.02f; 
+			/*visualAmount += 0.02f; 
 			
 			if (visualAmount > 1f)
 			{
 				visualAmount = 0f;
 			}
 			
-			UpdateValue ();
+			UpdateValue ();*/
 		}
 		
 		
@@ -477,7 +492,7 @@ namespace AC
 						KickStarter.options.SetVolume (SoundType.SFX, amount);
 					}
 
-					#if UNITY_5
+					#if UNITY_5 || UNITY_2017_1_OR_NEWER
 					if (sliderType == AC_SliderType.Speech)
 					{
 						AdvGame.SetMixerVolume (KickStarter.settingsManager.speechMixerGroup, KickStarter.settingsManager.speechAttentuationParameter, amount);
@@ -520,6 +535,7 @@ namespace AC
 		{
 			if (!Application.isPlaying)
 			{
+				visualAmount = 0.5f;
 				return;
 			}
 
@@ -565,7 +581,14 @@ namespace AC
 				}
 			}
 
-			visualAmount = (amount - minValue) / (maxValue - minValue);
+			if (uiSlider != null)
+			{
+				visualAmount = amount;
+			}
+			else
+			{
+				visualAmount = (amount - minValue) / (maxValue - minValue);
+			}
 		}
 
 
@@ -606,6 +629,24 @@ namespace AC
 
 			KickStarter.eventManager.Call_OnMenuElementClick (_menu, this, _slot, (int) _mouseState);
 		}
+
+
+		public bool KeyboardControl (Vector2 direction)
+		{
+			if (direction == Vector2.right)
+			{
+				visualAmount += 0.02f; 
+				UpdateValue ();	
+				return true;
+			}
+			else if (direction == Vector2.left)
+			{
+				visualAmount -= 0.02f;
+				UpdateValue ();
+				return true;
+			}
+			return false;
+		}
 		
 
 		/**
@@ -620,14 +661,23 @@ namespace AC
 				return;
 			}
 
-			if (KickStarter.settingsManager.inputMethod == InputMethod.KeyboardOrController)
+			if (uiSlider != null)
 			{
-				Change ();
+				visualAmount = uiSlider.value;
+				UpdateValue ();
 			}
 			else
 			{
-				Change (KickStarter.playerInput.GetMousePosition ().x - _menu.GetRect ().x);
+				if (KickStarter.settingsManager.inputMethod == InputMethod.KeyboardOrController)
+				{
+					Change ();
+				}
+				else
+				{
+					Change (KickStarter.playerInput.GetMousePosition ().x - _menu.GetRect ().x);
+				}
 			}
+
 			if (sliderType == AC_SliderType.CustomScript)
 			{
 				MenuSystem.OnElementClick (_menu, this, 0, (int) _mouseState);

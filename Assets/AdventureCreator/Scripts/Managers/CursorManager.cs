@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2016
+ *	by Chris Burton, 2013-2018
  *	
  *	"CursorManager.cs"
  * 
@@ -92,7 +92,7 @@ namespace AC
 		/** If True, the Hotspot clicked on to initiate unhandledCursorInteractions will be sent as a parameter to the ActionListAsset */
 		public bool passUnhandledHotspotAsParameter;
 
-		/** What to display when hovering over a Hotspot that has both a Use and Examine Interaction (DisplayUseIcon, DisplayBothSideBySide) */
+		/** What happens when hovering over a Hotspot that has both a Use and Examine Interaction (DisplayUseIcon, DisplayBothSideBySide, RightClickCyclesModes) */
 		public LookUseCursorAction lookUseCursorAction = LookUseCursorAction.DisplayBothSideBySide;
 		/** The ID number of the CursorIcon (in cursorIcons) that represents the "Examine" Interaction */
 		public int lookCursor_ID = 0;
@@ -117,14 +117,6 @@ namespace AC
 		
 		
 		#if UNITY_EDITOR
-		
-		private static GUIContent
-			insertContent = new GUIContent("+", "Insert variable"),
-			deleteContent = new GUIContent("-", "Delete variable");
-
-		private static GUILayoutOption
-			buttonWidth = GUILayout.MaxWidth (20f);
-
 
 		/**
 		 * Shows the GUI.
@@ -277,7 +269,46 @@ namespace AC
 				EditorUtility.SetDirty (this);
 			}
 		}
-		
+
+
+		private int iconSideMenu;
+		private void SideMenu (int i)
+		{
+			GenericMenu menu = new GenericMenu ();
+			iconSideMenu = i;
+
+			menu.AddItem (new GUIContent ("Insert after"), false, MenuCallback, "Insert after");
+			menu.AddItem (new GUIContent ("Delete"), false, MenuCallback, "Delete");
+
+			menu.ShowAsContext ();
+		}
+
+
+		private void MenuCallback (object obj)
+		{
+			if (iconSideMenu >= 0)
+			{
+				int i = iconSideMenu;
+
+				switch (obj.ToString ())
+				{
+				case "Insert after":
+					Undo.RecordObject (this, "Add icon");
+					cursorIcons.Insert (i+1, new CursorIcon (GetIDArray ()));
+					unhandledCursorInteractions.Insert (i+1, null);
+					break;
+
+				case "Delete":
+					Undo.RecordObject (this, "Delete icon");
+					cursorIcons.RemoveAt (i);
+					unhandledCursorInteractions.RemoveAt (i);
+					break;
+				}
+			}
+			
+			iconSideMenu = -1;
+		}
+
 		
 		private void IconsGUI ()
 		{
@@ -301,24 +332,17 @@ namespace AC
 				EditorGUILayout.LabelField ("Icon ID:", GUILayout.MaxWidth (145));
 				EditorGUILayout.LabelField (_cursorIcon.id.ToString (), GUILayout.MaxWidth (120));
 
-				if (GUILayout.Button (insertContent, EditorStyles.miniButtonLeft, buttonWidth))
+				GUILayout.FlexibleSpace ();
+
+				if (GUILayout.Button (Resource.CogIcon, GUILayout.Width (20f), GUILayout.Height (15f)))
 				{
-					Undo.RecordObject (this, "Add icon");
-					cursorIcons.Insert (i+1, new CursorIcon (GetIDArray ()));
-					unhandledCursorInteractions.Insert (i+1, null);
-					break;
+					SideMenu (i);
 				}
-				if (GUILayout.Button (deleteContent, EditorStyles.miniButtonRight, buttonWidth))
-				{
-					Undo.RecordObject (this, "Delete icon: " + _cursorIcon.label);
-					cursorIcons.Remove (_cursorIcon);
-					unhandledCursorInteractions.RemoveAt (i);
-					break;
-				}
+
 				EditorGUILayout.EndHorizontal ();
 
 				_cursorIcon.label = CustomGUILayout.TextField ("Label:", _cursorIcon.label, "AC.KickStarter.cursorManager.GetCursorIconFromID (" + i + ").label");
-				if (KickStarter.settingsManager.interactionMethod == AC_InteractionMethod.ChooseInteractionThenHotspot)
+				if (KickStarter.settingsManager != null && KickStarter.settingsManager.interactionMethod == AC_InteractionMethod.ChooseInteractionThenHotspot)
 				{
 					EditorGUILayout.LabelField ("Input button:", _cursorIcon.GetButtonName ());
 				}
@@ -354,16 +378,20 @@ namespace AC
 				lookCursor_int = CustomGUILayout.Popup ("Examine icon:", lookCursor_int, GetLabelsArray (), "AC.KickStarter.cursorManager.lookCursor_ID");
 				lookCursor_ID = cursorIcons[lookCursor_int].id;
 
-				if (cursorRendering == CursorRendering.Software)
+				EditorGUILayout.LabelField ("When Use and Examine interactions are both available:");
+				lookUseCursorAction = (LookUseCursorAction) CustomGUILayout.EnumPopup (" ", lookUseCursorAction, "AC.KickStarter.cursorManager.lookUseCursorAction");
+				if (cursorRendering == CursorRendering.Hardware && lookUseCursorAction == LookUseCursorAction.DisplayBothSideBySide)
 				{
-					EditorGUILayout.LabelField ("When Use and Examine interactions are both available:");
-					lookUseCursorAction = (LookUseCursorAction) CustomGUILayout.EnumPopup (" ", lookUseCursorAction, "AC.KickStarter.cursorManager.lookUseCursorAction");
+					EditorGUILayout.HelpBox ("This mode is not available with Hardward cursor rendering.", MessageType.Warning);
 				}
 
-				EditorGUILayout.BeginHorizontal ();
-				EditorGUILayout.LabelField ("Left-click to examine when no use interaction exists?", GUILayout.Width (300f));
-				leftClickExamine = CustomGUILayout.Toggle (leftClickExamine, "AC.KickStarter.cursorManager.leftClickExamine");
-				EditorGUILayout.EndHorizontal ();
+				if (lookUseCursorAction != LookUseCursorAction.RightClickCyclesModes)
+				{
+					EditorGUILayout.BeginHorizontal ();
+					EditorGUILayout.LabelField ("Left-click to examine when no use interaction exists?", GUILayout.Width (300f));
+					leftClickExamine = CustomGUILayout.Toggle (leftClickExamine, "AC.KickStarter.cursorManager.leftClickExamine");
+					EditorGUILayout.EndHorizontal ();
+				}
 			}
 		}
 
@@ -414,7 +442,7 @@ namespace AC
 				{
 					if (Application.isPlaying)
 					{
-						return (KickStarter.runtimeLanguages.GetTranslation (cursorIcon.label, cursorIcon.lineID, languageNumber) + " ");
+						return (KickStarter.runtimeLanguages.GetTranslation (cursorIcon.label, cursorIcon.lineID, languageNumber));
 					}
 					return cursorIcon.label;
 				}

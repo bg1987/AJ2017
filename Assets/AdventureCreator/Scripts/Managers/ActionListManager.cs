@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2016
+ *	by Chris Burton, 2013-2018
  *	
  *	"ActionListManager.cs"
  * 
@@ -60,9 +60,13 @@ namespace AC
 			{
 				playCutsceneOnVarChange = false;
 				
-				if (KickStarter.sceneSettings.cutsceneOnVarChange != null)
+				if (KickStarter.sceneSettings.actionListSource == ActionListSource.InScene && KickStarter.sceneSettings.cutsceneOnVarChange != null)
 				{
 					KickStarter.sceneSettings.cutsceneOnVarChange.Interact ();
+				}
+				else if (KickStarter.sceneSettings.actionListSource == ActionListSource.AssetFile && KickStarter.sceneSettings.actionListAssetOnVarChange != null)
+				{
+					KickStarter.sceneSettings.actionListAssetOnVarChange.Interact ();
 				}
 			}
 		}
@@ -74,7 +78,7 @@ namespace AC
 		 */
 		public void EndCutscene ()
 		{
-			if (!IsGameplayBlocked ())
+			if (!IsInSkippableCutscene ())
 			{
 				return;
 			}
@@ -151,6 +155,19 @@ namespace AC
 		 */
 		public bool IsListRunning (ActionList actionList)
 		{
+			if (actionList is RuntimeActionList)
+			{
+				RuntimeActionList runtimeActionList = (RuntimeActionList) actionList;
+				foreach (ActiveList activeList in KickStarter.actionListAssetManager.activeLists)
+				{
+					if (activeList.IsFor (runtimeActionList) && activeList.IsRunning ())
+					{
+						return true;
+					}
+				}
+				return false;
+			}
+
 			foreach (ActiveList activeList in activeLists)
 			{
 				if (activeList.IsFor (actionList) && activeList.IsRunning ())
@@ -207,8 +224,8 @@ namespace AC
 
 			return false;
 		}
-		
-		
+
+
 		/**
 		 * <summary>Checks if any currently-running ActionListAssets pause gameplay and unfreeze 'Pause' Menus.</summary>
 		 * <returns>True if any currently-running ActionListAssets pause gameplay and unfreeze 'Pause' Menus.</returns>
@@ -217,7 +234,7 @@ namespace AC
 		{
 			foreach (ActiveList activeList in activeLists)
 			{
-				if (activeList.CanUnfreezePauseMenus ())
+				if (activeList.CanUnfreezePauseMenus () && activeList.IsRunning ())
 				{
 					return true;
 				}
@@ -225,7 +242,7 @@ namespace AC
 
 			foreach (ActiveList activeList in KickStarter.actionListAssetManager.activeLists)
 			{
-				if (activeList.CanUnfreezePauseMenus ())
+				if (activeList.CanUnfreezePauseMenus () && activeList.IsRunning ())
 				{
 					return true;
 				}
@@ -239,6 +256,38 @@ namespace AC
 		 * <returns>True if any skippable ActionLists are currently running.</returns>
 		 */
 		public bool IsInSkippableCutscene ()
+		{
+			if (!IsGameplayBlocked ())
+			{
+				return false;
+			}
+
+			if (HasSkipQueue ())
+			{
+				return true;
+			}
+
+			foreach (ActiveList activeList in activeLists)
+			{
+				if (activeList.IsRunning () && activeList.actionList.IsSkippable ())
+				{
+					return true;
+				}
+			}
+
+			foreach (ActiveList activeList in KickStarter.actionListAssetManager.activeLists)
+			{
+				if (activeList.IsRunning () && activeList.actionListAsset != null && activeList.actionListAsset.IsSkippable ())
+				{
+					return true;
+				}
+			}
+			
+			return false;
+		}
+
+
+		private bool HasSkipQueue ()
 		{
 			foreach (ActiveList activeList in activeLists)
 			{
@@ -269,7 +318,7 @@ namespace AC
 			if (AdvGame.GetReferences () != null && AdvGame.GetReferences ().settingsManager != null && AdvGame.GetReferences ().settingsManager.showActiveActionLists)
 			{
 				debugWindowRect.height = 21f;
-				debugWindowRect = GUILayout.Window (0, debugWindowRect, StatusWindow, "AC status", GUILayout.Width (220));
+				debugWindowRect = GUILayout.Window (10, debugWindowRect, StatusWindow, "AC status", GUILayout.Width (220));
 			}
 		}
 
@@ -280,6 +329,22 @@ namespace AC
 			GUI.skin = testSkin;
 			
 			GUILayout.Label ("Current game state: " + KickStarter.stateHandler.gameState.ToString ());
+
+			if (KickStarter.mainCamera != null && KickStarter.mainCamera.attachedCamera != null && KickStarter.mainCamera.IsEnabled ())
+			{
+				if (GUILayout.Button ("Current camera: " + KickStarter.mainCamera.attachedCamera.gameObject.name))
+				{
+					UnityEditor.EditorGUIUtility.PingObject (KickStarter.mainCamera.attachedCamera.gameObject);
+				}
+			}
+
+			if (KickStarter.player != null)
+			{
+				if (GUILayout.Button ("Current player: " + KickStarter.player.gameObject.name))
+				{
+					UnityEditor.EditorGUIUtility.PingObject (KickStarter.player.gameObject);
+				}
+			}
 			
 			if (KickStarter.stateHandler.gameState == GameState.DialogOptions && KickStarter.playerInput.activeConversation != null)
 			{
@@ -336,6 +401,8 @@ namespace AC
 				GUILayout.Space (4f);
 				GUILayout.Label ("Gameplay is blocked");
 			}
+
+			GUI.DragWindow ();
 		}
 
 		#endif
@@ -357,14 +424,21 @@ namespace AC
 					activeLists.RemoveAt (i);
 				}
 			}
-
 			addToSkipQueue = CanAddToSkipQueue (actionList, addToSkipQueue);
 			activeLists.Add (new ActiveList (actionList, addToSkipQueue, _startIndex));
 
-			if (actionList is RuntimeActionList && actionList.actionListType == ActionListType.PauseGameplay && !actionList.unfreezePauseMenus && KickStarter.playerMenus.ArePauseMenusOn (null))
+			if (KickStarter.playerMenus.ArePauseMenusOn ())
 			{
-				// Don't affect the gamestate if we want to remain frozen
-				return;
+				if (actionList.actionListType == ActionListType.RunInBackground)
+				{
+					// Don't change gamestate if running in background
+					return;
+				}
+				if (actionList is RuntimeActionList && actionList.actionListType == ActionListType.PauseGameplay && !actionList.unfreezePauseMenus)
+				{
+					// Don't affect the gamestate if we want to remain frozen
+					return;
+				}
 			}
 
 			SetCorrectGameState ();
@@ -381,12 +455,12 @@ namespace AC
 			{
 				return;
 			}
-
 			for (int i=0; i<activeLists.Count; i++)
 			{
 				if (activeLists[i].IsFor (actionList))
 				{
 					EndList (activeLists[i]);
+					return;
 				}
 			}
 		}
@@ -414,14 +488,15 @@ namespace AC
 					{
 						ResetSkipVars ();
 					}
+					PurgeLists ();
 				}
 				else
 				{
 					SetCorrectGameStateEnd ();
 				}
 			}
-			
-			if (activeList.actionList.autosaveAfter)
+
+			/*if (activeList != null && activeList.actionList != null && activeList.actionList.autosaveAfter)
 			{
 				if (!IsGameplayBlocked ())
 				{
@@ -431,7 +506,7 @@ namespace AC
 				{
 					saveAfterCutscene = true;
 				}
-			}
+			}*/
 		}
 
 
@@ -485,8 +560,9 @@ namespace AC
 		{
 			if (KickStarter.stateHandler != null)
 			{
-				if (KickStarter.playerMenus.ArePauseMenusOn (null))
+				if (KickStarter.playerMenus.ArePauseMenusOn (null) && !IsGameplayBlockedAndUnfrozen ())
 				{
+					// Only pause the game again if no unfreezing ActionLists are running
 					KickStarter.mainCamera.PauseGame ();
 				}
 				else
@@ -503,17 +579,23 @@ namespace AC
 			{
 				ACDebug.LogWarning ("Could not set correct GameState!");
 			}
-
 			PurgeLists ();
 		}
 
 
 		private void PurgeLists ()
 		{
+			bool checkAutoSave = false;
+
 			for (int i=0; i<activeLists.Count; i++)
 			{
 				if (!activeLists[i].IsNecessary ())
 				{
+					if (!saveAfterCutscene && !checkAutoSave && activeLists[i].actionList != null && activeLists[i].actionList.autosaveAfter)
+					{
+						checkAutoSave = true;
+					}
+
 					activeLists.RemoveAt (i);
 					i--;
 				}
@@ -524,6 +606,18 @@ namespace AC
 				{
 					KickStarter.actionListAssetManager.activeLists.RemoveAt (i);
 					i--;
+				}
+			}
+
+			if (checkAutoSave)
+			{
+				if (!IsGameplayBlocked ())
+				{
+					SaveSystem.SaveAutoSave ();
+				}
+				else
+				{
+					saveAfterCutscene = true;
 				}
 			}
 		}
@@ -643,6 +737,33 @@ namespace AC
 
 
 		/**
+		 * Called when manually ending a Conversation by invoking the 'EndConversation' input
+		 */
+		public void OnEndConversation ()
+		{
+			for (int i=0; i<activeLists.Count; i++)
+			{
+				if (activeLists[i].IsConversationOverride ())
+				{
+					activeLists[i].Reset (true);
+					activeLists.RemoveAt (i);
+					i--;
+				}
+			}
+
+			for (int i=0; i<KickStarter.actionListAssetManager.activeLists.Count; i++)
+			{
+				if (KickStarter.actionListAssetManager.activeLists[i].IsConversationOverride ())
+				{
+					KickStarter.actionListAssetManager.activeLists[i].Reset (true);
+					KickStarter.actionListAssetManager.activeLists.RemoveAt (i);
+					i--;
+				}
+			}
+		}
+
+
+		/**
 		 * <summary>Checks if a given ActionList should be skipped when the 'EndCutscene' input is triggered.</summary>
 		 * <param name = "actionList">The ActionList to check</param>
 		 * <param name = "originalValue">If True, the user would like it to be skippable.</param>
@@ -654,7 +775,7 @@ namespace AC
 			{
 				return false;
 			}
-			else if (!KickStarter.actionListManager.IsInSkippableCutscene ())
+			else if (!KickStarter.actionListManager.HasSkipQueue ()) // was InSkippableCutscene
 			{
 				if (KickStarter.player)
 				{
@@ -747,7 +868,7 @@ namespace AC
 				activeLists.Clear ();
 			}
 
-			if (_dataString != null && _dataString.Length > 0)
+			if (!string.IsNullOrEmpty (_dataString))
 			{
 				string[] dataArray = _dataString.Split (SaveSystem.pipe[0]);
 				foreach (string chunk in dataArray)

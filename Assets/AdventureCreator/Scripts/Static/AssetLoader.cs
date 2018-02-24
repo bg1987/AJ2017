@@ -13,6 +13,14 @@
 using UnityEngine;
 using System.Collections;
 
+#if UNITY_2017_1_OR_NEWER
+using UnityEngine.Timeline;
+#endif
+
+#if UNITY_5_6_OR_NEWER
+using UnityEngine.Video;
+#endif
+
 namespace AC
 {
 
@@ -27,6 +35,12 @@ namespace AC
 		private static Object[] animationAssets;
 		private static Object[] materialAssets;
 		private static Object[] actionListAssets;
+		#if UNITY_2017_1_OR_NEWER
+		private static Object[] timelineAssets;
+		#endif
+		#if UNITY_5_6_OR_NEWER
+		private static Object[] videoAssets;
+		#endif
 
 
 		/**
@@ -48,7 +62,7 @@ namespace AC
 
 		/**
 		 * <summary>Retrieves an asset file.</summary>
-		 * <param name = "originalFile">The current asset used in the scene already</param>
+		 * <param name = "originalFile">The current asset used in the scene already. If this is null, the operation will not work and null will be returned</param>
 		 * <param name = "_name">A unique identifier for the asset file</param>
 		 * <returns>The asset file, or the current asset if it wasn't found</returns>
 		 */
@@ -64,69 +78,105 @@ namespace AC
 				return null;
 			}
 
-			Object[] assetFiles = null;
+			Object newFile = null;
 
-			if (originalFile is Texture2D)
+			if (originalFile is Texture)
 			{
-				if (textureAssets == null)
-				{
-					textureAssets = Resources.LoadAll ("SaveableData/Textures", typeof (T));
-				}
-				if (textureAssets == null || textureAssets.Length == 0)
-				{
-					textureAssets = Resources.LoadAll ("", typeof (T));
-				}
-				assetFiles = textureAssets;
+				newFile = RetrieveTextures (_name);
 			}
 			else if (originalFile is AudioClip)
 			{
-				if (audioAssets == null)
-				{
-					audioAssets = Resources.LoadAll ("SaveableData/Audio", typeof (T));
-				}
-				if (audioAssets == null || audioAssets.Length == 0)
-				{
-					audioAssets = Resources.LoadAll ("", typeof (T));
-				}
-				assetFiles = audioAssets;
+				newFile = RetrieveAudioClip (_name);
 			}
 			else if (originalFile is AnimationClip)
 			{
-				if (animationAssets == null)
-				{
-					animationAssets = Resources.LoadAll ("SaveableData/Animations", typeof (T));
-				}
-				if (animationAssets == null || animationAssets.Length == 0)
-				{
-					animationAssets = Resources.LoadAll ("", typeof (T));
-				}
-				assetFiles = animationAssets;
+				newFile = RetrieveAnimClips (_name);
 			}
 			else if (originalFile is Material)
 			{
-				if (materialAssets == null)
-				{
-					materialAssets = Resources.LoadAll ("SaveableData/Materials", typeof (T));
-				}
-				if (materialAssets == null || materialAssets.Length == 0)
-				{
-					materialAssets = Resources.LoadAll ("", typeof (T));
-				}
-				assetFiles = materialAssets;
+				newFile = RetrieveMaterials (_name);
 			}
 			else if (originalFile is ActionListAsset)
 			{
-				if (actionListAssets == null)
-				{
-					actionListAssets = Resources.LoadAll ("SaveableData/ActionLists", typeof (T));
-				}
-				if (actionListAssets == null || actionListAssets.Length == 0)
-				{
-					actionListAssets = Resources.LoadAll ("", typeof (T));
-				}
-				assetFiles = actionListAssets;
+				newFile = RetrieveActionListAssets (_name);
 			}
+			#if UNITY_2017_1_OR_NEWER
+			else if (originalFile is TimelineAsset)
+			{
+				newFile = RetrieveTimelines (_name);
+			}
+			#endif
+			#if UNITY_5_6_OR_NEWER
+			else if (originalFile is VideoClip)
+			{
+				newFile = RetrieveVideoClips (_name);
+			}
+			#endif
 
+			return (newFile != null) ? (T) newFile : originalFile;
+		}
+
+
+		private static Texture RetrieveTextures (string _name)
+		{
+			textureAssets = RetrieveAssetFiles <Texture> (textureAssets, "Textures");
+			return GetAssetFile <Texture> (textureAssets, _name);
+		}
+
+
+		/**
+		 * <summary>Retrieves an AudioClip asset file</summary>
+		 * <param name = "_name">A unique identifier for the AudioClipe</param>
+		 * <returns>The AudioClip, or null if it wasn't found</returns>
+		 */
+		public static AudioClip RetrieveAudioClip (string _name)
+		{
+			audioAssets = RetrieveAssetFiles <AudioClip> (audioAssets, "Audio");
+			return GetAssetFile <AudioClip> (audioAssets, _name);
+		}
+
+
+		private static AnimationClip RetrieveAnimClips (string _name)
+		{
+			animationAssets = RetrieveAssetFiles <AnimationClip> (animationAssets, "Animations");
+			return GetAssetFile <AnimationClip> (animationAssets, _name);
+		}
+
+
+		private static Material RetrieveMaterials (string _name)
+		{
+			materialAssets = RetrieveAssetFiles <Material> (materialAssets, "Materials");
+			return GetAssetFile <Material> (materialAssets, _name);
+		}
+
+
+		private static ActionListAsset RetrieveActionListAssets (string _name)
+		{
+			actionListAssets = RetrieveAssetFiles <ActionListAsset> (actionListAssets, "ActionLists");
+			return GetAssetFile <ActionListAsset> (actionListAssets, _name);
+		}
+
+
+		#if UNITY_2017_1_OR_NEWER
+		private static TimelineAsset RetrieveTimelines (string _name)
+		{
+			timelineAssets = RetrieveAssetFiles <TimelineAsset> (timelineAssets, "Timelines");
+			return GetAssetFile <TimelineAsset> (timelineAssets, _name);
+		}
+		#endif
+
+
+		#if UNITY_5_6_OR_NEWER
+		private static VideoClip RetrieveVideoClips (string _name)
+		{
+			videoAssets = RetrieveAssetFiles <VideoClip> (videoAssets, "VideoClips");
+			return GetAssetFile <VideoClip> (videoAssets, _name);
+		}
+		#endif
+
+
+		private static T GetAssetFile <T> (Object[] assetFiles, string _name) where T : Object
+		{
 			if (assetFiles != null && _name != null)
 			{
 				_name = _name.Replace (" (Instance)", "");
@@ -138,8 +188,23 @@ namespace AC
 					}
 				}
 			}
-			
-			return originalFile;
+
+			return null;
+		}
+
+
+		private static Object[] RetrieveAssetFiles <T> (Object[] assetFiles, string saveableFolderName) where T : Object
+		{
+			if (assetFiles == null)
+			{
+				assetFiles = Resources.LoadAll ("SaveableData/" + saveableFolderName, typeof (T));
+			}
+			if (assetFiles == null || assetFiles.Length == 0)
+			{
+				assetFiles = Resources.LoadAll ("", typeof (T));
+			}
+
+			return assetFiles;
 		}
 
 
@@ -153,6 +218,9 @@ namespace AC
 			animationAssets = null;
 			materialAssets = null;
 			actionListAssets = null;
+			#if UNITY_2017_1_OR_NEWER
+			timelineAssets = null;
+			#endif
 			Resources.UnloadUnusedAssets ();
 		}
 

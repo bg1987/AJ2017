@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2016
+ *	by Chris Burton, 2013-2018
  *	
  *	"ActiveList.cs"
  * 
@@ -97,12 +97,22 @@ namespace AC
 
 
 		/**
+		 * <summary>Checks whether the class is used to override a Conversation's dialogue options within its own ActionList.</summary>
+		 * <returns>True if the class is used to override a Conversation's dialogue options within its own ActionList.</returns>
+		 */
+		public bool IsConversationOverride ()
+		{
+			return isConversationOverride;
+		}
+
+
+		/**
 		 * <summary>Checks whether the class contains any useful information. If not, the ActionListManager will delete it.</summary>
 		 * <returns>True if the class contains any useful information</returns>
 		 */
 		public bool IsNecessary ()
 		{
-			if (isRunning || inSkipQueue || isConversationOverride || resumeIndices.Length > 0)
+			if (isRunning || isConversationOverride || inSkipQueue || resumeIndices.Length > 0)
 			{
 				return true;
 			}
@@ -211,7 +221,7 @@ namespace AC
 		 */
 		public bool CanUnfreezePauseMenus ()
 		{
-			if (actionList.actionListType == ActionListType.PauseGameplay && actionListAsset != null && actionList.unfreezePauseMenus)
+			if (actionListAsset != null && actionListAsset.unfreezePauseMenus && actionListAsset.actionListType == ActionListType.PauseGameplay)
 			{
 				return true;
 			}
@@ -301,7 +311,7 @@ namespace AC
 
 		/**
 		 * <summary>Resumes the associated ActionList, if it had previously been paused.</summary>
-		 * <param name = "runtimeActionListAsset">The RuntimeActionList to re-associate the class with</param>
+		 * <param name = "runtimeActionList">The RuntimeActionList to re-associate the class with</param>
 		 */
 		public void Resume (RuntimeActionList runtimeActionList = null)
 		{
@@ -425,7 +435,7 @@ namespace AC
 		 */
 		public bool LoadData (string dataString, SubScene subScene = null)
 		{
-			if (dataString.Length == 0) return false;
+			if (string.IsNullOrEmpty (dataString)) return false;
 
 			string[] dataArray = dataString.Split (SaveSystem.colon[0]);
 

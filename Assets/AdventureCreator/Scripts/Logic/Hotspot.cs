@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2016
+ *	by Chris Burton, 2013-2018
  *	
  *	"Hotspot.cs"
  * 
@@ -99,6 +99,12 @@ namespace AC
 		private SpriteRenderer iconRenderer = null;
 		private CursorIcon mainIcon;
 
+		private LerpUtils.FloatLerp iconAlphaLerp = new LerpUtils.FloatLerp (true);
+
+		private float manualShowIconSpeed = 5f;
+		private bool manuallyShowIcon = false;
+		private bool tooFarAway = false;
+
 		
 		private void Awake ()
 		{
@@ -121,6 +127,24 @@ namespace AC
 		}
 
 
+		private void OnEnable ()
+		{
+			if (KickStarter.stateHandler) KickStarter.stateHandler.Register (this);
+		}
+
+
+		private void Start ()
+		{
+			if (KickStarter.stateHandler) KickStarter.stateHandler.Register (this);
+		}
+
+
+		private void OnDisable ()
+		{
+			if (KickStarter.stateHandler) KickStarter.stateHandler.Unregister (this);
+		}
+
+
 		/**
 		 * <summary>Runs the Hotspot's 'Examine' interaction, if one is defined.</summary>
 		 */
@@ -128,7 +152,7 @@ namespace AC
 		{
 			if (lookButton != null)
 			{
-				KickStarter.playerInteraction.ClickButton (InteractionType.Examine, -1, -1, this);
+				KickStarter.playerInteraction.ExamineHotspot (this);
 			}
 		}
 
@@ -145,7 +169,7 @@ namespace AC
 			}
 
 			iconID = Mathf.Max (-1, iconID);
-			KickStarter.playerInteraction.ClickButton (InteractionType.Use, iconID, -1, this);
+			KickStarter.playerInteraction.UseHotspot (this, iconID);
 		}
 
 
@@ -157,9 +181,9 @@ namespace AC
 		{
 			if (invID < 0)
 			{
-				if (KickStarter.runtimeInventory.selectedItem != null)
+				if (KickStarter.runtimeInventory.SelectedItem != null)
 				{
-					invID = KickStarter.runtimeInventory.selectedItem.id;
+					invID = KickStarter.runtimeInventory.SelectedItem.id;
 				}
 				else
 				{
@@ -167,7 +191,35 @@ namespace AC
 				}
 			}
 
-			KickStarter.playerInteraction.ClickButton (InteractionType.Inventory, -1, invID);
+			KickStarter.playerInteraction.UseInventoryOnHotspot (this, invID);
+		}
+
+
+		/**
+		 * <summary>Runs one of the Hotspot's 'Inventory' interactions.</summary>
+		 * <param name = "invItem">The InvItem associated with the Button. If no item is supplied, that of the currently-selected inventory item will be used.</param>
+		 */
+		public void RunInventoryInteraction (InvItem invItem = null)
+		{
+			int invID = -1;
+
+			if (invItem != null)
+			{
+				invID = invItem.id;
+			}
+			else
+			{
+				if (KickStarter.runtimeInventory.SelectedItem != null)
+				{
+					invID = KickStarter.runtimeInventory.SelectedItem.id;
+				}
+				else
+				{
+					return;
+				}
+			}
+
+			KickStarter.playerInteraction.UseInventoryOnHotspot (this, invID);
 		}
 
 
@@ -266,11 +318,6 @@ namespace AC
 						iconRenderer = iconOb.AddComponent <SpriteRenderer>();
 						iconOb.transform.localScale = Vector3.one * (25f * KickStarter.settingsManager.hotspotIconSize);
 
-						if (GameObject.Find ("_Hotspots") && GameObject.Find ("_Hotspots").transform.eulerAngles == Vector3.zero)
-						{
-							iconOb.transform.parent = GameObject.Find ("_Hotspots").transform;
-						}
-
 						if (iconSortingLayer != "")
 						{
 							iconRenderer.GetComponent <SpriteRenderer>().sortingLayerName = iconSortingLayer;
@@ -341,21 +388,21 @@ namespace AC
 
 		/**
 		 * <summary>Gets the label to display when the cursor is over this Hotspot, with cursor names and active inventory item included if appropriate.</summary>
+		 * <param name = "languageNumber">The index number of the language to return the line in, where 0 = the game's original language.</param>
+		 * <param name = "cursorID">The ID number of the cursor icon (set in the Cursor Manager) to get the label for. If <0, the active cursor will be used.</param>
 		 * <returns>The label to display when the cursor is over this Hotspot, with cursor names and active inventory item included if appropriate.</returns>
 		 */
-		public string GetFullLabel (int languageNumber = 0)
+		public string GetFullLabel (int languageNumber = 0, int cursorID = -1)
 		{
-			string label = "";
-
 			if (KickStarter.stateHandler.gameState == GameState.DialogOptions && !KickStarter.settingsManager.allowInventoryInteractionsDuringConversations)
 			{
 				return "";
 			}
-
-			label = KickStarter.playerInteraction.GetLabelPrefix (this, null, languageNumber);
-			label += GetName (languageNumber);
-
-			return (label);	
+			return AdvGame.CombineLanguageString (
+							KickStarter.playerInteraction.GetLabelPrefix (this, null, languageNumber, cursorID),
+							GetName (languageNumber),
+							languageNumber
+							);
 		}
 
 		
@@ -367,7 +414,11 @@ namespace AC
 			CanDisplayHotspotIcon ();
 		}
 
-		private bool tooFarAway = false;
+
+		/**
+		 * <summary>Sets the layer of the Hotspot according to whether or not it is within the proximity of a Hotspot detector.</summary>
+		 * <param name = "detectHotspot">The DetectHotspots component to check the proximity against</param>
+		 */
 		public void UpdateProximity (DetectHotspots detectHotspots)
 		{
 			if (detectHotspots == null) return;
@@ -375,17 +426,46 @@ namespace AC
 			tooFarAway = !detectHotspots.IsHotspotInTrigger (this);
 			if (tooFarAway)
 			{
-				if (gameObject.layer == LayerMask.NameToLayer (KickStarter.settingsManager.hotspotLayer))
-				{
-					gameObject.layer = LayerMask.NameToLayer (KickStarter.settingsManager.distantHotspotLayer);
-				}
+				PlaceOnDistantLayer ();
 			}
 			else
 			{
-				if (gameObject.layer == LayerMask.NameToLayer (KickStarter.settingsManager.distantHotspotLayer))
-				{
-					gameObject.layer = LayerMask.NameToLayer (KickStarter.settingsManager.hotspotLayer);
-				}
+				PlaceOnHotspotLayer ();
+			}
+		}
+
+
+		/**
+		 * <summary>Sets the layer of the Hotspot according to whether or not it has a "Use" interaction for the currently-selected cursor</summary>
+		 * <returns>True if the Hotspot is on the default layer, False if not</returns>
+		 */
+		public bool UpdateUnhandledVisibility ()
+		{
+			if (!HasEnabledUseInteraction (KickStarter.playerCursor.GetSelectedCursorID ()))
+			{
+				PlaceOnDistantLayer ();
+				return false;
+			}
+
+			PlaceOnHotspotLayer ();
+			return true;
+		}
+
+
+		private void PlaceOnDistantLayer ()
+		{
+			if (gameObject.layer == LayerMask.NameToLayer (KickStarter.settingsManager.hotspotLayer))
+			{
+				gameObject.layer = LayerMask.NameToLayer (KickStarter.settingsManager.distantHotspotLayer);
+			}
+		}
+
+
+		private void PlaceOnHotspotLayer ()
+		{
+			if (gameObject.layer == LayerMask.NameToLayer (KickStarter.settingsManager.distantHotspotLayer))
+			{
+				gameObject.layer = LayerMask.NameToLayer (KickStarter.settingsManager.hotspotLayer);
 			}
 		}
 
@@ -401,7 +481,7 @@ namespace AC
 					return false;
 				}
 				
-				if (KickStarter.settingsManager.cameraPerspective != CameraPerspective.TwoD && KickStarter.settingsManager.occludeIcons)
+				if (SceneSettings.CameraPerspective != CameraPerspective.TwoD && KickStarter.settingsManager.occludeIcons)
 				{
 					// Is icon occluded?
 					Ray ray = new Ray (Camera.main.transform.position, GetIconPosition () - Camera.main.transform.position);
@@ -415,12 +495,13 @@ namespace AC
 						}
 					}
 				}
-				
+
 				if (KickStarter.playerMenus.IsInteractionMenuOn () && KickStarter.settingsManager.hideIconUnderInteractionMenu)
 				{
-					iconAlpha = Mathf.Lerp (iconAlpha, 0f, Time.deltaTime * 5f);
+					iconAlpha = iconAlphaLerp.Update (iconAlpha, 0f, 5f);
 				}
-				else if (KickStarter.settingsManager.hotspotIconDisplay == HotspotIconDisplay.OnlyWhenHighlighting ||
+				else if (KickStarter.settingsManager.hotspotIconDisplay == HotspotIconDisplay.ViaScriptOnly ||
+						KickStarter.settingsManager.hotspotIconDisplay == HotspotIconDisplay.OnlyWhenHighlighting ||
 				         KickStarter.settingsManager.hotspotIconDisplay == HotspotIconDisplay.OnlyWhenFlashing)
 				{
 					if (highlight)
@@ -428,6 +509,17 @@ namespace AC
 						if (KickStarter.settingsManager.hotspotIconDisplay == HotspotIconDisplay.OnlyWhenHighlighting)
 						{
 							iconAlpha = highlight.GetHighlightAlpha ();
+						}
+						else if (KickStarter.settingsManager.hotspotIconDisplay == HotspotIconDisplay.ViaScriptOnly)
+						{
+							if (manualShowIconSpeed > 0f)
+							{
+								iconAlpha = iconAlphaLerp.Update (iconAlpha, (manuallyShowIcon) ? 1f : 0f, manualShowIconSpeed);
+							}
+							else
+							{
+								iconAlpha = (manuallyShowIcon) ? 1f : 0f;
+							}
 						}
 						else
 						{
@@ -455,6 +547,18 @@ namespace AC
 				return false;
 			}
 		}
+
+
+		/**
+		 * <summary>Shows or hides the Hotspot's associated icon, provided that the Settings Manager's hotspotIconDisplay = HotspotIconDisplay.ViaScriptOnly</summary>
+		 * <param name = "makeVisible">If True, the icon will be shown. If false, the icon will be hidden</param>
+		 * <param name = "speed">The speed at which to show or hide the icon. If <=0, the transition will be instantaneous.</param>
+		 */
+		public void SetIconVisibility (bool makeVisible, float speed = 5f)
+		{
+			manuallyShowIcon = makeVisible;
+			manualShowIconSpeed = speed;
+		}
 		
 
 		/**
@@ -466,6 +570,59 @@ namespace AC
 			foreach (Button button in useButtons)
 			{
 				if (button != null && !button.isDisabled)
+				{
+					return button;
+				}
+			}
+			return null;
+		}
+
+
+		/**
+		 * <summary>Gets the ID of the icon that represents the first-available "Use" interaction.</summary>
+		 * <returns>The ID of the icon that represents the first-available "Use" interaction. If no appropriate interaction is found, -1 is returned</returns>
+		 */
+		public int GetFirstUseIcon ()
+		{
+			foreach (Button button in useButtons)
+			{
+				if (button != null && !button.isDisabled)
+				{
+					return button.iconID;
+				}
+			}
+			return -1;
+		}
+
+
+		/**
+		 * <summary>Gets the Button that represents the first-available "Use" interaction associated with a given interaction icon.</summary>
+		 * <param name = "iconID">The ID number of the associated interaction icon, as defined in the Cursor Manager.</param>
+		 * <returns>The Button that represents the first-available "Use" interaction associated with a given interaction ID.</returns>
+		 */
+		public Button GetUseButton (int iconID)
+		{
+			foreach (Button button in useButtons)
+			{
+				if (button != null && button.iconID == iconID)
+				{
+					return button;
+				}
+			}
+			return null;
+		}
+
+
+		/**
+		 * <summary>Gets the Button that represents the first-available "Inventory" interaction associated with a given inventory item.</summary>
+		 * <param name = "invID">The ID number of the associated inventory item, as defined in the Inventory Manager.</param>
+		 * <returns>The Button that represents the first-available "Inventory" interaction associated with a given inventory item.</returns>
+		 */
+		public Button GetInvButton (int invID)
+		{
+			foreach (Button button in invButtons)
+			{
+				if (button != null && button.invID == invID)
 				{
 					return button;
 				}
@@ -581,6 +738,8 @@ namespace AC
 		 */
 		public bool IsOn ()
 		{
+			if (this == null || gameObject == null) return false;
+
 			if (gameObject.layer == LayerMask.NameToLayer (KickStarter.settingsManager.deactivatedLayer) && !isOn)
 			{
 				return false;
@@ -594,10 +753,9 @@ namespace AC
 		 */
 		public void Select ()
 		{
-			KickStarter.playerMenus.AssignHotspotToMenu (this, null);
 			KickStarter.eventManager.Call_OnChangeHotspot (this, true);
 
-			if (highlight)
+			if (highlight != null && highlight.highlightWhenSelected)
 			{
 				highlight.HighlightOn ();
 			}
@@ -966,6 +1124,22 @@ namespace AC
 		}
 
 
+		private bool HasEnabledUseInteraction (int _iconID)
+		{
+			if (_iconID >= 0)
+			{
+				for (int i=0; i<useButtons.Count; i++)
+				{
+					if (useButtons[i].iconID == _iconID && !useButtons[i].isDisabled)
+					{
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+
 		/**
 		 * <summary>Checks if the Hotspot has an active interaction for a given inventory item, or a generic unhandled inventory interaction.</summary>
 		 * <param name = "invItem">The inventory item to check for</param>
@@ -984,7 +1158,7 @@ namespace AC
 				{
 					for (int i=0; i<invButtons.Count; i++)
 					{
-						if (!invButtons[0].isDisabled && invButtons[0].invID == invItem.id)
+						if (!invButtons[i].isDisabled && invButtons[i].invID == invItem.id)
 						{
 							return true;
 						}

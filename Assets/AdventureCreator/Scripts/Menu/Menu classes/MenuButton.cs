@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2017
+ *	by Chris Burton, 2013-2018
  *	
  *	"MenuButton.cs"
  * 
@@ -29,7 +29,7 @@ namespace AC
 
 		/** The Unity UI Button this is linked to (Unity UI Menus only) */
 		public UnityEngine.UI.Button uiButton;
-		/** What pointer state registers as a 'click' for Unity UI Menus (PointerClick, PointerDown) */
+		/** What pointer state registers as a 'click' for Unity UI Menus (PointerClick, PointerDown, PointerEnter) */
 		public UIPointerState uiPointerState = UIPointerState.PointerClick;
 
 		/** The text that's displayed on-screen */
@@ -87,6 +87,7 @@ namespace AC
 		private MenuElement elementToShift;
 		private float clickAlpha = 0f;
 		private string fullText;
+		private Menu parentMenu;
 
 
 		/**
@@ -113,7 +114,7 @@ namespace AC
 			doFade = false;
 			switchMenuTitle = "";
 			inventoryBoxTitle = "";
-			shiftInventory = AC_ShiftInventory.ShiftLeft;
+			shiftInventory = AC_ShiftInventory.ShiftPrevious;
 			loopJournal = false;
 			actionList = null;
 			inputAxis = "";
@@ -130,29 +131,29 @@ namespace AC
 		}
 
 
-		/**
-		 * <summary>Creates and returns a new MenuButton that has the same values as itself.</summary>
-		 * <param name = "fromEditor">If True, the duplication was done within the Menu Manager and not as part of the gameplay initialisation.</param>
-		 * <returns>A new MenuButton with the same values as itself</returns>
-		 */
-		public override MenuElement DuplicateSelf (bool fromEditor)
+		public override MenuElement DuplicateSelf (bool fromEditor, bool ignoreUnityUI)
 		{
 			MenuButton newElement = CreateInstance <MenuButton>();
 			newElement.Declare ();
-			newElement.CopyButton (this);
+			newElement.CopyButton (this, ignoreUnityUI);
 			return newElement;
 		}
 		
 
-		/**
-		 * <summary>Copies the values from another MenuButton instance.</summary>
-		 * <param name = "_element">The MenuButton to copy values from</param>
-		 */
-		public void CopyButton (MenuButton _element)
+		private void CopyButton (MenuButton _element, bool ignoreUnityUI)
 		{
-			uiButton = _element.uiButton;
+			if (ignoreUnityUI)
+			{
+				uiButton = null;
+				uiText = null;
+			}
+			else
+			{
+				uiButton = _element.uiButton;
+				uiText = _element.uiText;
+			}
 			uiPointerState = _element.uiPointerState;
-			uiText = _element.uiText;
+
 			label = _element.label;
 			hotspotLabel = _element.hotspotLabel;
 			hotspotLabelID = _element.hotspotLabelID;
@@ -188,6 +189,8 @@ namespace AC
 			{
 				elementToShift = _menu.GetElementWithName (inventoryBoxTitle);
 			}
+
+			parentMenu = _menu;
 		}
 
 
@@ -195,9 +198,9 @@ namespace AC
 		 * <summary>Initialises the linked Unity UI GameObject.</summary>
 		 * <param name = "_menu">The element's parent Menu</param>
 		 */
-		public override void LoadUnityUI (AC.Menu _menu)
+		public override void LoadUnityUI (AC.Menu _menu, Canvas canvas)
 		{
-			uiButton = LinkUIElement <UnityEngine.UI.Button>();
+			uiButton = LinkUIElement <UnityEngine.UI.Button> (canvas);
 			if (uiButton)
 			{
 				if (uiButton.GetComponentInChildren <Text>())
@@ -210,11 +213,7 @@ namespace AC
 		}
 
 
-		/**
-		 * <summary>Gets the linked Unity UI GameObject associated with this element.</summary>
-		 * <returns>The Unity UI GameObject associated with the element</returns>
-		 */
-		public override GameObject GetObjectToSelect ()
+		public override GameObject GetObjectToSelect (int slotIndex = 0)
 		{
 			if (uiButton)
 			{
@@ -267,29 +266,8 @@ namespace AC
 			}
 
 			label = CustomGUILayout.TextField ("Button text:", label, apiPrefix + ".label");
-
-			if (source == MenuSource.AdventureCreator)
-			{
-				anchor = (TextAnchor) CustomGUILayout.EnumPopup ("Text alignment:", anchor, apiPrefix + ".anchor");
-				textEffects = (TextEffects) CustomGUILayout.EnumPopup ("Text effect:", textEffects, apiPrefix + ".textEffects");
-				if (textEffects != TextEffects.None)
-				{
-					outlineSize = CustomGUILayout.Slider ("Effect size:", outlineSize, 1f, 5f, apiPrefix + ".outlineSize");
-				}
-			}
-
-			hotspotLabel = CustomGUILayout.TextField ("Hotspot label override:", hotspotLabel, apiPrefix + ".hotspotLabel");
-
-			if (source == MenuSource.AdventureCreator)
-			{
-				EditorGUILayout.BeginHorizontal ();
-				EditorGUILayout.LabelField ("Click texture:", GUILayout.Width (145f));
-				clickTexture = (Texture2D) EditorGUILayout.ObjectField (clickTexture, typeof (Texture2D), false, GUILayout.Width (70f), GUILayout.Height (30f));
-				EditorGUILayout.EndHorizontal ();
-			}
-
 			buttonClickType = (AC_ButtonClickType) CustomGUILayout.EnumPopup ("Click type:", buttonClickType, apiPrefix + ".buttonClickType");
-		
+
 			if (buttonClickType == AC_ButtonClickType.TurnOffMenu)
 			{
 				doFade = CustomGUILayout.Toggle ("Do transition?", doFade, apiPrefix + ".doFade");
@@ -332,11 +310,32 @@ namespace AC
 				}
 			}
 
+			hotspotLabel = CustomGUILayout.TextField ("Hotspot label override:", hotspotLabel, apiPrefix + ".hotspotLabel");
 			alternativeInputButton = CustomGUILayout.TextField ("Alternative input button:", alternativeInputButton, apiPrefix + ".alternativeInputButton");
 			ChangeCursorGUI (menu);
 			EditorGUILayout.EndVertical ();
 			
 			base.ShowGUI (menu);
+		}
+
+
+		protected override void ShowTextGUI (string apiPrefix)
+		{
+			anchor = (TextAnchor) CustomGUILayout.EnumPopup ("Text alignment:", anchor, apiPrefix + ".anchor");
+			textEffects = (TextEffects) CustomGUILayout.EnumPopup ("Text effect:", textEffects, apiPrefix + ".textEffects");
+			if (textEffects != TextEffects.None)
+			{
+				outlineSize = CustomGUILayout.Slider ("Effect size:", outlineSize, 1f, 5f, apiPrefix + ".outlineSize");
+			}
+		}
+
+
+		protected override void ShowTextureGUI (string apiPrefix)
+		{
+			EditorGUILayout.BeginHorizontal ();
+			EditorGUILayout.LabelField ("Click texture:", GUILayout.Width (145f));
+			clickTexture = (Texture2D) EditorGUILayout.ObjectField (clickTexture, typeof (Texture2D), false, GUILayout.Width (70f), GUILayout.Height (30f));
+			EditorGUILayout.EndHorizontal ();
 		}
 
 
@@ -362,6 +361,13 @@ namespace AC
 				EditorGUILayout.EndVertical ();
 			}
 		}
+
+
+		public override bool CheckConvertGlobalVariableToLocal (int oldGlobalID, int newLocalID)
+		{
+			string newLabel = AdvGame.ConvertGlobalVariableTokenToLocal (label, oldGlobalID, newLocalID);
+			return (label != newLabel);
+		}
 		
 		#endif
 
@@ -386,7 +392,10 @@ namespace AC
 		 */
 		public override void PreDisplay (int _slot, int languageNumber, bool isActive)
 		{
+			SetEffectiveVisibility (true);
+
 			fullText = TranslateLabel (label, languageNumber);
+			fullText = AdvGame.ConvertTokens (fullText, languageNumber);
 
 			if (uiButton != null)
 			{
@@ -396,7 +405,6 @@ namespace AC
 					uiText.text = fullText;
 				}
 			}
-
 		}
 		
 
@@ -491,19 +499,32 @@ namespace AC
 		 */
 		public override void RecalculateSize (MenuSource source)
 		{
+			SetEffectiveVisibility (false);
+
+			clickAlpha = 0f;
+			base.RecalculateSize (source);
+		}
+
+
+		private void SetEffectiveVisibility (bool fromPreDisplay)
+		{
 			if (buttonClickType == AC_ButtonClickType.OffsetElementSlot || buttonClickType == AC_ButtonClickType.OffsetJournal)
 			{
 				if (onlyShowWhenEffective && Application.isPlaying && elementToShift != null)
 				{
 					if (buttonClickType == AC_ButtonClickType.OffsetElementSlot || !loopJournal)
 					{
-						isVisible = elementToShift.CanBeShifted (shiftInventory);
+						bool newVisibleValue = elementToShift.CanBeShifted (shiftInventory);
+
+						if (fromPreDisplay && newVisibleValue != isVisible && parentMenu != null)
+						{
+							parentMenu.Recalculate ();
+						}
+
+						isVisible = newVisibleValue;
 					}
 				}
 			}
-
-			clickAlpha = 0f;
-			base.RecalculateSize (source);
 		}
 
 

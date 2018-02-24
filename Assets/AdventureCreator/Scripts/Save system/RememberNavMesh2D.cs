@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2016
+ *	by Chris Burton, 2013-2018
  *	
  *	"RememberNavMesh2D.cs"
  * 
@@ -36,7 +36,8 @@ namespace AC
 			NavMesh2DData navMesh2DData = new NavMesh2DData ();
 			
 			navMesh2DData.objectID = constantID;
-			
+			navMesh2DData.savePrevented = savePrevented;
+
 			if (GetComponent <NavigationMesh>())
 			{
 				NavigationMesh navMesh = GetComponent <NavigationMesh>();
@@ -69,6 +70,7 @@ namespace AC
 		{
 			NavMesh2DData data = Serializer.LoadScriptData <NavMesh2DData> (stringData);
 			if (data == null) return;
+			SavePrevented = data.savePrevented; if (savePrevented) return;
 
 			if (GetComponent <NavigationMesh>())
 			{
@@ -76,7 +78,7 @@ namespace AC
 				navMesh.polygonColliderHoles.Clear ();
 				KickStarter.navigationManager.navigationEngine.ResetHoles (navMesh);
 
-				if (data._linkedIDs.Length > 0)
+				if (!string.IsNullOrEmpty (data._linkedIDs))
 				{
 					int[] linkedIDs = StringToIntArray (data._linkedIDs);
 					for (int i=0; i<linkedIDs.Length; i++)

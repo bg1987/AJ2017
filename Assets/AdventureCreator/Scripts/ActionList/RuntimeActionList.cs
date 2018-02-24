@@ -15,6 +15,7 @@
 
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace AC
 {
@@ -44,11 +45,20 @@ namespace AC
 		 */
 		public void DownloadActions (ActionListAsset actionListAsset, Conversation endConversation, int i, bool doSkip, bool addToSkipQueue, bool dontRun = false)
 		{
-			this.name = actionListAsset.name;
+			//this.name = actionListAsset.name;
 			assetSource = actionListAsset;
-
 			useParameters = actionListAsset.useParameters;
-			parameters = actionListAsset.parameters;
+			//parameters = actionListAsset.parameters;
+
+			parameters = new List<ActionParameter>();
+			if (useParameters && actionListAsset.parameters != null)
+			{
+				foreach (ActionParameter assetParameter in actionListAsset.parameters)
+				{
+					parameters.Add (new ActionParameter (assetParameter, true));
+				}
+			}
+
 			unfreezePauseMenus = actionListAsset.unfreezePauseMenus;
 
 			actionListType = actionListAsset.actionListType;
@@ -112,6 +122,17 @@ namespace AC
 		}
 
 
+		protected override void AddResumeToManager (int startIndex)
+		{
+			if (KickStarter.actionListAssetManager == null)
+			{
+				ACDebug.LogWarning ("Cannot run " + this.name + " because no ActionListAssetManager was found.");
+				return;
+			}
+			KickStarter.actionListAssetManager.AddToList (this, assetSource, true, startIndex);
+		}
+
+
 		/**
 		 * Stops the Actions from running and sets the gameState in StateHandler to the correct value.
 		 */
@@ -121,7 +142,7 @@ namespace AC
 			StopCoroutine ("RunAction");
 			StopCoroutine ("EndCutscene");
 			
-			KickStarter.actionListAssetManager.EndAssetList (assetSource);
+			KickStarter.actionListAssetManager.EndAssetList (this);
 		}
 
 

@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2016
+ *	by Chris Burton, 2013-2018
  *	
  *	"ActionVarCopy.cs"
  * 
@@ -173,6 +173,10 @@ namespace AC
 				{
 					newVariableID = ShowVarGUI (localVariables.localVars, parameters, ParameterType.LocalVariable, newVariableID, newParameterID, true);
 				}
+				else
+				{
+					EditorGUILayout.HelpBox ("No 'Local Variables' component found in the scene. Please add an AC GameEngine object from the Scene Manager.", MessageType.Info);
+				}
 			}
 
 			// Types match?
@@ -296,6 +300,56 @@ namespace AC
 			}
 
 			return labelAdd;
+		}
+
+
+		public override bool ConvertLocalVariableToGlobal (int oldLocalID, int newGlobalID)
+		{
+			bool wasAmended = base.ConvertLocalVariableToGlobal (oldLocalID, newGlobalID);
+
+			if (oldLocation == VariableLocation.Local && oldVariableID == oldLocalID)
+			{
+				oldLocation = VariableLocation.Global;
+				oldVariableID = newGlobalID;
+				wasAmended = true;
+			}
+
+			if (newLocation == VariableLocation.Local && newVariableID == oldLocalID)
+			{
+				newLocation = VariableLocation.Global;
+				newVariableID = newGlobalID;
+				wasAmended = true;
+			}
+
+			return wasAmended;
+		}
+
+
+		public override bool ConvertGlobalVariableToLocal (int oldGlobalID, int newLocalID, bool isCorrectScene)
+		{
+			bool wasAmended = base.ConvertGlobalVariableToLocal (oldGlobalID, newLocalID, isCorrectScene);
+
+			if (oldLocation == VariableLocation.Global && oldVariableID == oldGlobalID)
+			{
+				wasAmended = true;
+				if (isCorrectScene)
+				{
+					oldLocation = VariableLocation.Local;
+					oldVariableID = newLocalID;
+				}
+			}
+
+			if (newLocation == VariableLocation.Global && newVariableID == oldGlobalID)
+			{
+				wasAmended = true;
+				if (isCorrectScene)
+				{
+					newLocation = VariableLocation.Local;
+					newVariableID = newLocalID;
+				}
+			}
+
+			return wasAmended;
 		}
 
 		#endif

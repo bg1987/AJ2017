@@ -26,7 +26,7 @@ namespace AC
 		public string label = "";
 		/** A unique identifier */
 		public int ID = 0;
-		/** The type of variable it overrides (GameObject, InventoryItem, GlobalVariable, LocalVariable, String, Float, Integer, Boolean) */
+		/** The type of variable it overrides (GameObject, InventoryItem, GlobalVariable, LocalVariable, String, Float, Integer, Boolean, Vector3) */
 		public ParameterType parameterType = ParameterType.GameObject;
 		/** The new value or ID number, if parameterType = ParameterType.Integer / Boolean / LocalVariable / GlobalVariable / InventoryItem.  If parameterType = ParameterType.GameObject, it is the ConstantID number of the GameObject if it is not currently accessible */
 		public int intValue = -1;
@@ -38,6 +38,8 @@ namespace AC
 		public GameObject gameObject;
 		/** The new value, if parameterType = ParameterType.UnityObject */
 		public Object objectValue;
+		/** The new value, if parameterType = ParameterType.Vector3 */
+		public Vector3 vector3Value;
 
 
 		/**
@@ -54,6 +56,7 @@ namespace AC
 			gameObject = null;
 			objectValue = null;
 			parameterType = ParameterType.GameObject;
+			vector3Value = Vector3.zero;
 			
 			// Update id based on array
 			foreach (int _id in idArray)
@@ -80,6 +83,7 @@ namespace AC
 			gameObject = null;
 			objectValue = null;
 			parameterType = ParameterType.GameObject;
+			vector3Value = Vector3.zero;
 			
 			label = "Parameter " + (ID + 1).ToString ();
 		}
@@ -88,17 +92,30 @@ namespace AC
 		/**
 		 * <summary>A Constructor that duplicates another ActionParameter.</summary>
 		 */
-		public ActionParameter (ActionParameter _actionParameter)
+		public ActionParameter (ActionParameter _actionParameter, bool alsoCopyValues = false)
 		{
 			label = _actionParameter.label;
 			ID = _actionParameter.ID;
 			parameterType = _actionParameter.parameterType;
 
-			intValue = -1;
-			floatValue = 0f;
-			stringValue = "";
-			gameObject = null;
-			objectValue = null;
+			if (alsoCopyValues)
+			{
+				intValue = _actionParameter.intValue;
+				floatValue = _actionParameter.floatValue;
+				stringValue = _actionParameter.stringValue;
+				gameObject = _actionParameter.gameObject;
+				objectValue = _actionParameter.objectValue;
+				vector3Value = _actionParameter.vector3Value;
+			}
+			else
+			{
+				intValue = -1;
+				floatValue = 0f;
+				stringValue = "";
+				gameObject = null;
+				objectValue = null;
+				vector3Value = Vector3.zero;
+			}
 		}
 
 
@@ -113,6 +130,7 @@ namespace AC
 			stringValue = otherParameter.stringValue;
 			gameObject = otherParameter.gameObject;
 			objectValue = otherParameter.objectValue;
+			vector3Value = otherParameter.vector3Value;
 		}
 
 
@@ -126,6 +144,7 @@ namespace AC
 			stringValue = "";
 			gameObject = null;
 			objectValue = null;
+			vector3Value = Vector3.zero;
 		}
 
 
@@ -159,6 +178,7 @@ namespace AC
 			stringValue = "";
 			gameObject = null;
 			objectValue = null;
+			vector3Value = Vector3.zero;
 		}
 
 
@@ -173,6 +193,7 @@ namespace AC
 			intValue = -1;
 			gameObject = null;
 			objectValue = null;
+			vector3Value = Vector3.zero;
 		}
 
 
@@ -187,6 +208,22 @@ namespace AC
 			intValue = -1;
 			gameObject = null;
 			objectValue = null;
+			vector3Value = Vector3.zero;
+		}
+
+
+		/**
+		 * <summary>Sets the vector3Value that the parameter assigns</summary>
+		 * <param name = "_value">The new value, if parameterType = ParameterType.Vector3</param>
+		 */
+		public void SetValue (Vector3 _value)
+		{
+			stringValue = "";
+			floatValue = 0f;
+			intValue = -1;
+			gameObject = null;
+			objectValue = null;
+			vector3Value = _value;
 		}
 
 
@@ -201,6 +238,7 @@ namespace AC
 			stringValue = "";
 			intValue = -1;
 			objectValue = null;
+			vector3Value = Vector3.zero;
 		}
 
 
@@ -215,6 +253,7 @@ namespace AC
 			stringValue = "";
 			intValue = -1;
 			objectValue = _object;
+			vector3Value = Vector3.zero;
 		}
 
 
@@ -230,9 +269,38 @@ namespace AC
 			stringValue = "";
 			intValue = _value;
 			objectValue = null;
+			vector3Value = Vector3.zero;
 		}
 
 
+		/**
+		 * <summary>Generates a label that represents the name of the parameter's value, if the parameterType = ParameterType.GameObject<summary>
+		 * <returns>A label that represents the name of the parameter's value, if the parameterType = ParameterType.GameObject<summary>
+		 */
+		public string GetLabel ()
+		{
+			if (parameterType == ParameterType.GameObject)
+			{
+				if (gameObject != null)
+				{
+					Hotspot _hotspot = gameObject.GetComponent <Hotspot>();
+					if (_hotspot) return _hotspot.GetName (Options.GetLanguage ());
+
+					Char _char = gameObject.GetComponent <Char>();
+					if (_char) return _char.GetName (Options.GetLanguage ());
+
+					return gameObject.name;
+				}
+				return "";
+			}
+			return GetSaveData ();
+		}
+
+
+		/**
+		 * <summary>Generates a string that represents the parameter's saveable data</summar>
+		 * <returns>The data string</returns>
+		 */
 		public string GetSaveData ()
 		{
 			if (parameterType == ParameterType.Float)
@@ -261,6 +329,12 @@ namespace AC
 					return objectValue.name;
 				}
 			}
+			else if (parameterType == ParameterType.Vector3)
+			{
+				string vector3Val = vector3Value.x.ToString () + "," + vector3Value.y.ToString () + "," + vector3Value.z.ToString ();
+				vector3Val = AdvGame.PrepareStringForSaving (vector3Val);
+				return vector3Val;
+			}
 			else
 			{
 				return intValue.ToString ();
@@ -269,6 +343,10 @@ namespace AC
 		}
 
 
+		/**
+		 * <summary>Restores data from a data string</summary>
+		 * <param name="dataString">The data</param>
+		 */
 		public void LoadData (string dataString)
 		{
 			if (parameterType == ParameterType.Float)
@@ -310,6 +388,31 @@ namespace AC
 							return;
 						}
 					}
+				}
+			}
+			else if (parameterType == ParameterType.Vector3)
+			{
+				if (!string.IsNullOrEmpty (dataString))
+				{
+					dataString = AdvGame.PrepareStringForLoading (dataString);
+
+					Vector3 _value = Vector3.zero;
+					string[] valuesArray = dataString.Split (","[0]);
+					if (valuesArray != null && valuesArray.Length == 3)
+					{
+						float xValue = 0f;
+						float.TryParse (valuesArray[0], out xValue);
+
+						float yValue = 0f;
+						float.TryParse (valuesArray[1], out yValue);
+
+						float zValue = 0f;
+						float.TryParse (valuesArray[2], out zValue);
+
+						_value = new Vector3 (xValue, yValue, zValue);
+					}
+
+					vector3Value = _value;
 				}
 			}
 			else

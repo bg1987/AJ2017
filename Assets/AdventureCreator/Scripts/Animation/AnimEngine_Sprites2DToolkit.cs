@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2016
+ *	by Chris Burton, 2013-2018
  *	
  *	"AnimEngine_Sprites2DToolkit.cs"
  * 
@@ -23,6 +23,11 @@ namespace AC
 
 	public class AnimEngine_Sprites2DToolkit : AnimEngine
 	{
+
+		#if UNITY_EDITOR
+		private bool listExpectedAnimations = false;
+		#endif
+
 
 		public override void Declare (AC.Char _character)
 		{
@@ -57,10 +62,29 @@ namespace AC
 				character.flipCustomAnims = EditorGUILayout.Toggle ("Flip custom animations?", character.flipCustomAnims);
 			}
 
-			if (KickStarter.settingsManager != null && KickStarter.settingsManager.cameraPerspective != CameraPerspective.TwoD)
+			if (SceneSettings.CameraPerspective != CameraPerspective.TwoD)
 			{
 				character.rotateSprite3D = (RotateSprite3D) EditorGUILayout.EnumPopup ("Rotate sprite to:", character.rotateSprite3D);
 			}
+
+			EditorGUILayout.BeginHorizontal ();
+			EditorGUILayout.LabelField (" ", GUILayout.Width (9));
+			listExpectedAnimations = EditorGUILayout.Foldout (listExpectedAnimations, "List expected animations?");
+			EditorGUILayout.EndHorizontal ();
+			if (listExpectedAnimations)
+			{
+				string result = "\n";
+				result = ShowExpected (character, character.idleAnimSprite, result);
+				result = ShowExpected (character, character.walkAnimSprite, result);
+				result = ShowExpected (character, character.runAnimSprite, result);
+				if (character.talkingAnimation == TalkingAnimation.Standard)
+				{
+					result = ShowExpected (character, character.talkAnimSprite, result);
+				}
+				
+				EditorGUILayout.HelpBox ("The following animations are required, based on the settings above:" + result, MessageType.Info);
+			}
+
 			EditorGUILayout.EndVertical ();
 
 			if (GUI.changed)
@@ -137,6 +161,64 @@ namespace AC
 			}
 
 			#endif
+		}
+
+
+		private string ShowExpected (AC.Char character, string animName, string result)
+		{
+			if (character == null || animName == "")
+			{
+				return result;
+			}
+			
+			if (character.doDirections)
+			{
+				result += "\n- " + animName + "_U";
+				result += "\n- " + animName + "_D";
+				
+				if (character.frameFlipping == AC_2DFrameFlipping.LeftMirrorsRight)
+				{
+					result += "\n- " + animName + "_R";
+				}
+				else if (character.frameFlipping == AC_2DFrameFlipping.RightMirrorsLeft)
+				{
+					result += "\n- " + animName + "_L";
+				}
+				else
+				{
+					result += "\n- " + animName + "_L";
+					result += "\n- " + animName + "_R";
+				}
+				
+				if (character.doDiagonals)
+				{
+					if (character.frameFlipping == AC_2DFrameFlipping.LeftMirrorsRight)
+					{
+						result += "\n- " + animName + "_UR";
+						result += "\n- " + animName + "_DR";
+					}
+					else if (character.frameFlipping == AC_2DFrameFlipping.RightMirrorsLeft)
+					{
+						result += "\n- " + animName + "_UL";
+						result += "\n- " + animName + "_DL";
+					}
+					else
+					{
+						result += "\n- " + animName + "_UL";
+						result += "\n- " + animName + "_DL";
+						result += "\n- " + animName + "_DR";
+						result += "\n- " + animName + "_UR";
+					}
+				}
+				
+				result += "\n";
+			}
+			else
+			{
+				result += "\n- " + animName;
+			}
+			
+			return result;
 		}
 
 

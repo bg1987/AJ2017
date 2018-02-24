@@ -20,10 +20,11 @@ namespace AC
 	public class Resource
 	{
 
+		private const string mainFolderPath = "AdventureCreator";
+
 		// Main Reference resource
 		public const string references = "References";
-		public const string managersDirectory = "AdventureCreator/Managers";
-		
+
 		// Created by Kickstarter on Awake
 		public const string persistentEngine = "PersistentEngine";
 
@@ -32,6 +33,16 @@ namespace AC
 
 		// Created by StateHandler on Awake
 		public const string musicEngine = "MusicEngine";
+		public const string ambienceEngine = "AmbienceEngine";
+
+		// Created by BackgroundImageUI singleton
+		public const string backgroundImageUI = "BackgroundImageUI";
+
+		// Used by DragTracks
+		public const string dragCollider = "DragCollider";
+
+		// Used by UISlot
+		public const string emptySlot = "EmptySlot";
 
 		// External links
 		public const string manualLink = "http://www.adventurecreator.org/files/Manual.pdf";
@@ -41,12 +52,14 @@ namespace AC
 		public const string downloadsLink = "http://www.adventurecreator.org/downloads/";
 		public const string forumLink = "http://www.adventurecreator.org/forum/";
 		public const string scriptingGuideLink = "http://www.adventurecreator.org/scripting-guide/";
+		public const string wikiLink = "http://adventure-creator.wikia.com/wiki/Adventure_Creator_Wikia";
 
 
 		#if UNITY_EDITOR
 
 		private static Texture2D acLogo;
 		private static Texture2D cogIcon;
+		private static Texture2D greyTexture;
 		private static GUISkin nodeSkin;
 
 
@@ -56,10 +69,10 @@ namespace AC
 			{
 				if (acLogo == null)
 				{
-					acLogo = (Texture2D) AssetDatabase.LoadAssetAtPath ("Assets/AdventureCreator/Graphics/Textures/logo.png", typeof (Texture2D));
+					acLogo = (Texture2D) AssetDatabase.LoadAssetAtPath (MainFolderPath + "/Graphics/Textures/logo.png", typeof (Texture2D));
 					if (acLogo == null)
 					{
-						ACDebug.LogWarning ("Cannot find Texture asset file 'Assets/AdventureCreator/Graphics/Textures/logo.png'");
+						ACDebug.LogWarning ("Cannot find Texture asset file '" + MainFolderPath + "/Graphics/Textures/logo.png'");
 					}
 				}
 				return acLogo;
@@ -73,13 +86,30 @@ namespace AC
 			{
 				if (cogIcon == null)
 				{
-					cogIcon = (Texture2D) AssetDatabase.LoadAssetAtPath ("Assets/AdventureCreator/Graphics/Textures/inspector-use.png", typeof (Texture2D));
+					cogIcon = (Texture2D) AssetDatabase.LoadAssetAtPath (MainFolderPath + "/Graphics/Textures/inspector-use.png", typeof (Texture2D));
 					if (cogIcon == null)
 					{
-						ACDebug.LogWarning ("Cannot find Texture asset file 'Assets/AdventureCreator/Graphics/Textures/inspector-use.png'");
+						ACDebug.LogWarning ("Cannot find Texture asset file '" + MainFolderPath + "/Graphics/Textures/inspector-use.png'");
 					}
 				}
 				return cogIcon;
+			}
+		}
+
+
+		public static Texture2D GreyTexture
+		{
+			get
+			{
+				if (greyTexture == null)
+				{
+					greyTexture = (Texture2D) AssetDatabase.LoadAssetAtPath (MainFolderPath + "/Graphics/Textures/grey.png", typeof (Texture2D));
+					if (greyTexture == null)
+					{
+						ACDebug.LogWarning ("Cannot find Texture asset file '" + MainFolderPath + "/Graphics/Textures/grey.png'");
+					}
+				}
+				return greyTexture;
 			}
 		}
 
@@ -90,13 +120,33 @@ namespace AC
 			{
 				if (nodeSkin == null)
 				{
-					nodeSkin = (GUISkin) AssetDatabase.LoadAssetAtPath ("Assets/AdventureCreator/Graphics/Skins/ACNodeSkin.guiskin", typeof (GUISkin));
+					nodeSkin = (GUISkin) AssetDatabase.LoadAssetAtPath (MainFolderPath + "/Graphics/Skins/ACNodeSkin.guiskin", typeof (GUISkin));
 					if (nodeSkin == null)
 					{
-						ACDebug.LogWarning ("Cannot find GUISkin asset file 'Assets/AdventureCreator/Graphics/Skins/ACNodeSkin.guiskin'");
+						ACDebug.LogWarning ("Cannot find GUISkin asset file '" + MainFolderPath + "/Graphics/Skins/ACNodeSkin.guiskin'");
 					}
 				}
 				return nodeSkin;
+			}
+		}
+
+
+		// Path to root AC folder
+		public static string MainFolderPath
+		{
+			get
+			{
+				return "Assets/" + mainFolderPath;
+			}
+		}
+
+
+		// Path to root AC folder, relateive to the Assets directory
+		public static string MainFolderPathRelativeToAssets
+		{
+			get
+			{
+				return mainFolderPath;
 			}
 		}
 

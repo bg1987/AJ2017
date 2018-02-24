@@ -29,7 +29,10 @@ namespace AC
 		public int variableID;
 		public int variableNumber;
 		public bool doLoop = false;
-		
+
+		public bool saveToVariable = true;
+		private int ownVarValue = 0;
+
 		public VariableLocation location = VariableLocation.Global;
 
 		
@@ -54,6 +57,25 @@ namespace AC
 			{
 				ACDebug.LogWarning ("Could not compute Random check because no values were possible!");
 				return GenerateStopActionEnd ();
+			}
+
+			if (!saveToVariable)
+			{
+				int value = ownVarValue;
+				ownVarValue ++;
+				if (ownVarValue >= numSockets)
+				{
+					if (doLoop)
+					{
+						ownVarValue = 0;
+					}
+					else
+					{
+						ownVarValue = numSockets - 1;
+					}
+				}
+
+				return ProcessResult (value, actions);
 			}
 			
 			if (variableID == -1)
@@ -99,7 +121,7 @@ namespace AC
 				}
 				else
 				{
-					ACDebug.LogWarning ("Variable: Run sequence Action is referencing a Variable that does not exist!");
+					ACDebug.LogWarning ("'Variable: Run sequence' Action is referencing a Variable that does not exist or is not an Integer!");
 				}
 			}
 			
@@ -111,61 +133,68 @@ namespace AC
 		
 		override public void ShowGUI (List<ActionParameter> parameters)
 		{
-			if (isAssetFile)
-			{
-				location = VariableLocation.Global;
-			}
-			else
-			{
-				location = (VariableLocation) EditorGUILayout.EnumPopup ("Source:", location);
-			}
-			
-			if (location == VariableLocation.Global)
-			{
-				if (AdvGame.GetReferences ().variablesManager)
-				{
-					parameterID = Action.ChooseParameterGUI ("Integer variable:", parameters, parameterID, ParameterType.GlobalVariable);
-					if (parameterID >= 0)
-					{
-						variableID = ShowVarGUI (AdvGame.GetReferences ().variablesManager.vars, variableID, false);
-					}
-					else
-					{
-						EditorGUILayout.BeginHorizontal ();
-						variableID = ShowVarGUI (AdvGame.GetReferences ().variablesManager.vars, variableID, true);
-						if (GUILayout.Button (Resource.CogIcon, GUILayout.Width (20f), GUILayout.Height (15f)))
-						{
-							SideMenu ();
-						}
-						EditorGUILayout.EndHorizontal ();
-					}
-				}
-			}
-			
-			else if (location == VariableLocation.Local)
-			{
-				if (KickStarter.localVariables)
-				{
-					parameterID = Action.ChooseParameterGUI ("Integer variable:", parameters, parameterID, ParameterType.LocalVariable);
-					if (parameterID >= 0)
-					{
-						variableID = ShowVarGUI (KickStarter.localVariables.localVars, variableID, false);
-					}
-					else
-					{
-						EditorGUILayout.BeginHorizontal ();
-						variableID = ShowVarGUI (KickStarter.localVariables.localVars, variableID, true);
-						if (GUILayout.Button (Resource.CogIcon, GUILayout.Width (20f), GUILayout.Height (15f)))
-						{
-							SideMenu ();
-						}
-						EditorGUILayout.EndHorizontal ();
-					}
-				}
-			}
-
 			numSockets = EditorGUILayout.IntSlider ("# of possible values:", numSockets, 1, 20);
 			doLoop = EditorGUILayout.Toggle ("Run on a loop?", doLoop);
+
+			saveToVariable = EditorGUILayout.Toggle ("Save sequence value?", saveToVariable);
+			if (saveToVariable)
+			{
+				if (isAssetFile)
+				{
+					location = VariableLocation.Global;
+				}
+				else
+				{
+					location = (VariableLocation) EditorGUILayout.EnumPopup ("Source:", location);
+				}
+				
+				if (location == VariableLocation.Global)
+				{
+					if (AdvGame.GetReferences ().variablesManager)
+					{
+						parameterID = Action.ChooseParameterGUI ("Integer variable:", parameters, parameterID, ParameterType.GlobalVariable);
+						if (parameterID >= 0)
+						{
+							variableID = ShowVarGUI (AdvGame.GetReferences ().variablesManager.vars, variableID, false);
+						}
+						else
+						{
+							EditorGUILayout.BeginHorizontal ();
+							variableID = ShowVarGUI (AdvGame.GetReferences ().variablesManager.vars, variableID, true);
+							if (GUILayout.Button (Resource.CogIcon, GUILayout.Width (20f), GUILayout.Height (15f)))
+							{
+								SideMenu ();
+							}
+							EditorGUILayout.EndHorizontal ();
+						}
+					}
+				}
+				else if (location == VariableLocation.Local)
+				{
+					if (KickStarter.localVariables)
+					{
+						parameterID = Action.ChooseParameterGUI ("Integer variable:", parameters, parameterID, ParameterType.LocalVariable);
+						if (parameterID >= 0)
+						{
+							variableID = ShowVarGUI (KickStarter.localVariables.localVars, variableID, false);
+						}
+						else
+						{
+							EditorGUILayout.BeginHorizontal ();
+							variableID = ShowVarGUI (KickStarter.localVariables.localVars, variableID, true);
+							if (GUILayout.Button (Resource.CogIcon, GUILayout.Width (20f), GUILayout.Height (15f)))
+							{
+								SideMenu ();
+							}
+							EditorGUILayout.EndHorizontal ();
+						}
+					}
+					else
+					{
+						EditorGUILayout.HelpBox ("No 'Local Variables' component found in the scene. Please add an AC GameEngine object from the Scene Manager.", MessageType.Info);
+					}
+				}
+			}
 		}
 
 
@@ -174,12 +203,6 @@ namespace AC
 			GenericMenu menu = new GenericMenu ();
 
 			menu.AddItem (new GUIContent ("Auto-create " + location.ToString () + " variable"), false, Callback, "AutoCreate");
-
-			if (variableID >= 0)
-			{
-			//	menu.AddItem (new GUIContent ("Show in Variables Manager"), false, Callback, "Show");
-			}
-
 			menu.ShowAsContext ();
 		}
 		
@@ -303,6 +326,37 @@ namespace AC
 			}
 			
 			return labelAdd;
+		}
+
+
+		public override bool ConvertLocalVariableToGlobal (int oldLocalID, int newGlobalID)
+		{
+			bool wasAmended = base.ConvertLocalVariableToGlobal (oldLocalID, newGlobalID);
+
+			if (saveToVariable && location == VariableLocation.Local && variableID == oldLocalID)
+			{
+				location = VariableLocation.Global;
+				variableID = newGlobalID;
+				wasAmended = true;
+			}
+			return wasAmended;
+		}
+
+
+		public override bool ConvertGlobalVariableToLocal (int oldGlobalID, int newLocalID, bool isCorrectScene)
+		{
+			bool wasAmended = base.ConvertGlobalVariableToLocal (oldGlobalID, newLocalID, isCorrectScene);
+
+			if (saveToVariable && location == VariableLocation.Global && variableID == oldGlobalID)
+			{
+				wasAmended = true;
+				if (isCorrectScene)
+				{
+					location = VariableLocation.Local;
+					variableID = newLocalID;
+				}
+			}
+			return wasAmended;
 		}
 		
 		#endif

@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2017
+ *	by Chris Burton, 2013-2018
  *	
  *	"UnityVersionHandler.cs"
  * 
@@ -45,7 +45,7 @@ namespace AC
 			filter.useTriggers = true;
 			filter.SetLayerMask (layerMask);
 			filter.ClearDepth ();
-			Physics2D.Raycast (origin, Vector2.zero, filter, hits, length);
+			Physics2D.Raycast (origin, direction, filter, hits, length);
 			return hits[0];
 			#else
 			return Physics2D.Raycast (origin, direction, length, layerMask);
@@ -67,7 +67,7 @@ namespace AC
 			ContactFilter2D filter = new ContactFilter2D();
 			filter.useTriggers = true;
 			filter.ClearDepth ();
-			Physics2D.Raycast (origin, Vector2.zero, filter, hits, length);
+			Physics2D.Raycast (origin, direction, filter, hits, length);
 			return hits[0];
 			#else
 			return Physics2D.Raycast (origin, direction, length);
@@ -128,7 +128,7 @@ namespace AC
 		 */
 		public static Vector3 Get2DHotspotOffset (BoxCollider2D _boxCollider2D, Transform transform)
 		{
-			#if UNITY_5
+			#if UNITY_5 || UNITY_2017_1_OR_NEWER
 			return new Vector3 (_boxCollider2D.offset.x, _boxCollider2D.offset.y * transform.localScale.y, 0f);
 			#else
 			return new Vector3 (_boxCollider2D.center.x, _boxCollider2D.center.y * transform.localScale.y, 0f);
@@ -149,7 +149,7 @@ namespace AC
 			}
 			#endif
 
-			#if UNITY_5
+			#if UNITY_5 || UNITY_2017_1_OR_NEWER
 			Cursor.visible = state;
 			#else
 			Screen.showCursor = state;
@@ -164,7 +164,7 @@ namespace AC
 		{
 			get
 			{
-				#if UNITY_5
+				#if UNITY_5 || UNITY_2017_1_OR_NEWER
 				return (Cursor.lockState == CursorLockMode.Locked) ? true : false;
 				#else
 				return Screen.lockCursor;
@@ -177,7 +177,7 @@ namespace AC
 					return;
 				}
 
-				#if UNITY_5
+				#if UNITY_5 || UNITY_2017_1_OR_NEWER
 				if (value)
 				{
 					Cursor.lockState = CursorLockMode.Locked;
@@ -334,7 +334,7 @@ namespace AC
 		 */
 		public static void OpenScene (string sceneName, bool forceReload = false, bool loadAdditively = false)
 		{
-			if (sceneName == "" || sceneName.Length == 0) return;
+			if (string.IsNullOrEmpty (sceneName)) return;
 
 			if (forceReload || GetCurrentSceneName () != sceneName)
 			{
@@ -405,7 +405,7 @@ namespace AC
 		 */
 		public static bool CloseScene (string sceneName)
 		{
-			if (sceneName == "" || sceneName.Length == 0) return false;
+			if (string.IsNullOrEmpty (sceneName)) return false;
 
 			if (GetCurrentSceneName () != sceneName)
 			{
@@ -576,7 +576,7 @@ namespace AC
 
 		public static Vector2 GetBoxCollider2DCentre (BoxCollider2D _boxCollider2D)
 		{
-			#if UNITY_5
+			#if UNITY_5 || UNITY_2017_1_OR_NEWER
 			return _boxCollider2D.offset;
 			#else
 			return _boxCollider2D.center;
@@ -586,7 +586,7 @@ namespace AC
 
 		public static void SetBoxCollider2DCentre (BoxCollider2D _boxCollider2D, Vector2 offset)
 		{
-			#if UNITY_5
+			#if UNITY_5 || UNITY_2017_1_OR_NEWER
 			_boxCollider2D.offset = offset;
 			#else
 			_boxCollider2D.center = offset;
@@ -624,7 +624,7 @@ namespace AC
 		 */
 		public static bool ObjectIsInActiveScene (string gameObjectName)
 		{
-			if (gameObjectName == null || gameObjectName.Length == 0 || !GameObject.Find (gameObjectName))
+			if (string.IsNullOrEmpty (gameObjectName) || !GameObject.Find (gameObjectName))
 			{
 				return false;
 			}
@@ -681,8 +681,8 @@ namespace AC
 		public static string GetCurrentSceneFilepath ()
 		{
 			string sceneName = GetCurrentSceneName ();
-			
-			if (sceneName != null && sceneName.Length > 0)
+
+			if (!string.IsNullOrEmpty (sceneName))
 			{
 				foreach (UnityEditor.EditorBuildSettingsScene S in UnityEditor.EditorBuildSettings.scenes)
 				{

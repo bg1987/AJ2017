@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2016
+ *	by Chris Burton, 2013-2018
  *	
  *	"InvItem.cs"
  * 
@@ -47,11 +47,11 @@ namespace AC
 		/** If True, and canCarryMultiple = True, then multiple instances of the same item will be listed in separate MenuInventoryBox slots */
 		public bool useSeparateSlots;
 		/** The item's main graphic */
-		public Texture2D tex;
+		public Texture tex;
 		/** The item's 'highlighted' graphic */
-		public Texture2D activeTex;
+		public Texture activeTex;
 		/** The item's 'selected' graphic (if SettingsManager's selectInventoryDisplay = SelectInventoryDisplay.ShowSelectedGraphic) */
-		public Texture2D selectedTex;
+		public Texture selectedTex;
 		/** A GameObject that can be associated with the item, for the creation of e.g. 3D inventory items (through scripting only) */
 		public GameObject linkedPrefab;
 		/** A CursorIcon instance that, if assigned, will be used in place of the 'tex' Texture when the item is selected on the cursor */
@@ -133,6 +133,40 @@ namespace AC
 			label = "Inventory item " + (id + 1).ToString ();
 			altLabel = "";
 		}
+
+
+		/**
+		 * <summary>A Constructor in which the id is explicitly set.</summary>
+		 * <param name = "_id">The ID number to assign</param>
+		 */
+		public InvItem (int _id)
+		{
+			count = 0;
+			tex = null;
+			activeTex = null;
+			selectedTex = null;
+			cursorIcon = new CursorIcon ();
+			id = _id;
+			binID = -1;
+			recipeSlot = -1;
+			useSeparateSlots = false;
+			carryOnStartNotDefault = false;
+			vars = new List<InvVar>();
+			canBeAnimated = false;
+			linkedPrefab = null;
+
+			interactions = new List<InvInteraction>();
+
+			combineActionList = new List<ActionListAsset>();
+			combineID = new List<int>();
+
+			overrideUseSyntax = false;
+			hotspotPrefix1 = new HotspotPrefix ("Use");
+			hotspotPrefix2 = new HotspotPrefix ("on");
+
+			label = "Inventory item " + (id + 1).ToString ();
+			altLabel = "";
+		}
 		
 
 		/**
@@ -145,7 +179,11 @@ namespace AC
 			tex = assetItem.tex;
 			activeTex = assetItem.activeTex;
 			selectedTex = assetItem.selectedTex;
-			cursorIcon = assetItem.cursorIcon;
+
+			//cursorIcon = assetItem.cursorIcon;
+			cursorIcon = new CursorIcon ();
+			cursorIcon.Copy (assetItem.cursorIcon);
+
 			carryOnStart = assetItem.carryOnStart;
 			carryOnStartNotDefault = assetItem.carryOnStartNotDefault;
 			carryOnStartID = assetItem.carryOnStartID;
@@ -222,6 +260,66 @@ namespace AC
 		}
 
 
+		/**
+		 * <summary>Runs one of the item's 'Use' interactions.</summary>
+		 * <param name = "iconID">The ID number of the CursorIcon associated with the use interaction. If no number is supplied, the default use interaction will be run.</param>
+		 */
+		public void RunUseInteraction (int iconID = -1)
+		{
+			if (iconID < 0)
+			{
+				KickStarter.runtimeInventory.Use (this);
+			}
+			else
+			{
+				KickStarter.runtimeInventory.RunInteraction (iconID, this);
+			}
+		}
+
+
+		/**
+		 * <summary>Runs the item's 'Examine' interaction, if one is defined.</summary>
+		 */
+		public void RunExamineInteraction ()
+		{
+			KickStarter.runtimeInventory.Look (this);
+		}
+
+
+		/**
+		 * <summary>Combines the item with another.</summary>
+		 * <param name = "otherItemID">The ID number of the inventory item to combine with</param>
+		 */
+		public void CombineWithItem (int otherItemID)
+		{
+			KickStarter.runtimeInventory.Combine (this, otherItemID);
+		}
+
+
+		/**
+		 * <summary>Combines the item with another.</summary>
+		 * <param name = "otherItem">The inventory item to combine with</param>
+		 */
+		public void CombineWithItem (InvItem otherItem)
+		{
+			KickStarter.runtimeInventory.Combine (this, otherItem);
+		}
+
+
+		/**
+		 * <summary>Selects the item.</summary>
+		 */
+		public void Select ()
+		{
+			KickStarter.runtimeInventory.SelectItem (this);
+		}
+
+
+		/**
+		 * <summary>Gets the items's display name, with prefix.</summary>
+		 * <param name = "languageNumber">The index of the current language, as set in SpeechManager</param>
+		 * <returns>The item's display name, with prefix</returns>
+		 */
 		public string GetFullLabel (int languageNumber = 0)
 		{
 			string label = "";
@@ -233,11 +331,13 @@ namespace AC
 
 			if (KickStarter.runtimeInventory.showHoverLabel)
 			{
-				label = KickStarter.playerInteraction.GetLabelPrefix (null, this, languageNumber);
-
-				if (KickStarter.runtimeInventory.selectedItem == null || this != KickStarter.runtimeInventory.selectedItem)
+				if (KickStarter.runtimeInventory.SelectedItem == null || this != KickStarter.runtimeInventory.SelectedItem || KickStarter.settingsManager.ShowHoverInteractionInHotspotLabel ())
 				{
-					label += GetLabel (languageNumber);
+					label = AdvGame.CombineLanguageString (
+								KickStarter.playerInteraction.GetLabelPrefix (null, this, languageNumber),
+								GetLabel (languageNumber),
+								languageNumber
+								);
 				}
 				else
 				{

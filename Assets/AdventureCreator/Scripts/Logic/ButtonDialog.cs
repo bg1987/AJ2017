@@ -89,6 +89,82 @@ namespace AC
 
 
 		/**
+		 * <summary>A constructor for a scene-based Conversation's dialogue option.</summary>
+		 * <param name = "_ID">An ID number unique to this instance of ButtonDialog within a Conversation</param>
+		 * <param name = "_label">The option's display text</param>
+		 * <param name = "_startEnabled">If True, the option will be enabled by default</param>
+		 * <param name = "_dialogueOption">The DialogueOption to run when the option is chosen</param>
+		 * <param name = "_endsConversation">If True, the Conversation will end after the DialogueOption has finished running</param>
+		 */
+		public ButtonDialog (int _ID, string _label, bool _startEnabled, DialogueOption _dialogueOption, bool _endsConversation)
+		{
+			label = _label;
+			icon = null;
+			isOn = _startEnabled;
+			isLocked = false;
+
+			conversationAction = (_endsConversation) ? ConversationAction.Stop : ConversationAction.ReturnToConversation;
+
+			assetFile = null;
+			newConversation = null;
+			dialogueOption = _dialogueOption;
+			lineID = -1;
+			ID = _ID;
+			isEditing = false;
+		}
+
+
+		/**
+		 * <summary>A constructor for an asset-based Conversation's dialogue option.</summary>
+		 * <param name = "_ID">An ID number unique to this instance of ButtonDialog within a Conversation</param>
+		 * <param name = "_label">The option's display text</param>
+		 * <param name = "_startEnabled">If True, the option will be enabled by default</param>
+		 * <param name = "_actionListAsset">The ActionListAsset to run when the option is chosen</param>
+		 * <param name = "_endsConversation">If True, the Conversation will end after the ActionListAsset has finished running</param>
+		 */
+		public ButtonDialog (int _ID, string _label, bool _startEnabled, ActionListAsset _actionListAsset, bool _endsConversation)
+		{
+			label = _label;
+			icon = null;
+			isOn = _startEnabled;
+			isLocked = false;
+
+			conversationAction = (_endsConversation) ? ConversationAction.Stop : ConversationAction.ReturnToConversation;
+
+			assetFile = _actionListAsset;
+			newConversation = null;
+			dialogueOption = null;
+			lineID = -1;
+			ID = _ID;
+			isEditing = false;
+		}
+
+
+		/**
+		 * <summary>A constructor for a runtime-generated Conversation's dialogue option.</summary>
+		 * <param name = "_ID">An ID number unique to this instance of ButtonDialog within a Conversation</param>
+		 * <param name = "_label">The option's display text</param>
+		 * <param name = "_isOn">If True, the option will be enabled</param>
+		 */
+		public ButtonDialog (int _ID, string _label, bool _isOn)
+		{
+			label = _label;
+			icon = null;
+			isOn = _isOn;
+			isLocked = false;
+
+			conversationAction = ConversationAction.Stop;
+
+			assetFile = null;
+			newConversation = null;
+			dialogueOption = null;
+			lineID = -1;
+			ID = _ID;
+			isEditing = false;
+		}
+
+
+		/**
 		 * <summary>Checks if the dialogue option can be currently shown.</summary>
 		 * <returns>True if the dialogue option can be currently shown</returns>
 		 */

@@ -75,7 +75,6 @@ namespace AC
 			if (linkedConversation)
 			{
 				optionID = ShowOptionGUI (linkedConversation.options, optionID);
-
 				newLabel = EditorGUILayout.TextField ("New label text:", newLabel);
 			}
 
@@ -140,6 +139,37 @@ namespace AC
 				AddSaveScript <RememberConversation> (linkedConversation);
 			}
 			AssignConstantID <Conversation> (linkedConversation, constantID, 0);
+		}
+
+
+		public override bool ConvertLocalVariableToGlobal (int oldLocalID, int newGlobalID)
+		{
+			bool wasAmended = base.ConvertLocalVariableToGlobal (oldLocalID, newGlobalID);
+
+			string updatedLabel = AdvGame.ConvertLocalVariableTokenToGlobal (newLabel, oldLocalID, newGlobalID);
+			if (newLabel != updatedLabel)
+			{
+				wasAmended = true;
+				newLabel = updatedLabel;
+			}
+			return wasAmended;
+		}
+
+
+		public override bool ConvertGlobalVariableToLocal (int oldGlobalID, int newLocalID, bool isCorrectScene)
+		{
+			bool isAffected = base.ConvertGlobalVariableToLocal (oldGlobalID, newLocalID, isCorrectScene);
+
+			string updatedLabel = AdvGame.ConvertGlobalVariableTokenToLocal (newLabel, oldGlobalID, newLocalID);
+			if (newLabel != updatedLabel)
+			{
+				isAffected = true;
+				if (isCorrectScene)
+				{
+					newLabel = updatedLabel;
+				}
+			}
+			return isAffected;
 		}
 		
 		#endif

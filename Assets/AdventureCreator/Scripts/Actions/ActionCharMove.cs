@@ -40,7 +40,8 @@ namespace AC
 		public Char charToMove;
 		public bool doTeleport;
 		public bool doStop;
-		
+
+
 		
 		public ActionCharMove ()
 		{
@@ -109,7 +110,7 @@ namespace AC
 					if (movePathMethod == MovePathMethod.StopMoving)
 					{
 						charToMove.EndPath ();
-						if (charToMove is Player && KickStarter.playerInteraction.GetHotspotMovingTo () != null)
+						if (charToMove.IsPlayer && KickStarter.playerInteraction.GetHotspotMovingTo () != null)
 						{
 							KickStarter.playerInteraction.StopMovingToHotspot ();
 						}
@@ -175,6 +176,8 @@ namespace AC
 		{
 			if (charToMove)
 			{
+				charToMove.EndPath (movePath);
+
 				if (charToMove is NPC)
 				{
 					NPC npcToMove = (NPC) charToMove;

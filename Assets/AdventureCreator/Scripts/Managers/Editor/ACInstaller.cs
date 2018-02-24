@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2016
+ *	by Chris Burton, 2013-2018
  *	
  *	"ACInstaller.cs"
  * 
@@ -82,6 +82,9 @@ namespace AC
 				{
 					DefineInputs ();
 					DefineLayers ();
+
+					//Want to have this open, but Unity 2017.1 has a bug
+					//AboutWindow.Init ();
 				}
 			}
 		}
@@ -230,7 +233,7 @@ namespace AC
 		private static bool IsLayerDefined (string layerName, bool addIfUndefined = false)
 		{
 			SerializedObject tagManager = new SerializedObject(AssetDatabase.LoadAllAssetsAtPath ("ProjectSettings/TagManager.asset")[0]);
-			#if UNITY_5
+			#if UNITY_5 || UNITY_2017_1_OR_NEWER
 			SerializedProperty allLayers = tagManager.FindProperty ("layers");
 			if (allLayers == null || !allLayers.isArray)
 			{
@@ -242,7 +245,7 @@ namespace AC
 			bool foundLayer = false;
 			for (int i = 0; i <= 31; i++)
 			{
-				#if UNITY_5
+				#if UNITY_5 || UNITY_2017_1_OR_NEWER
 				SerializedProperty sp = allLayers.GetArrayElementAtIndex (i);
 				#else
 				string nm = "User Layer " + i;
@@ -270,7 +273,7 @@ namespace AC
 			SerializedProperty slot = null;
 			for (int i = 8; i <= 31; i++)
 			{
-				#if UNITY_5
+				#if UNITY_5 || UNITY_2017_1_OR_NEWER
 				SerializedProperty sp = allLayers.GetArrayElementAtIndex (i);
 				#else
 				string nm = "User Layer " + i;
@@ -291,6 +294,7 @@ namespace AC
 			else
 			{
 				ACDebug.LogError ("Could not find an open Layer Slot for: " + layerName);
+				return false;
 			}
 
 			tagManager.ApplyModifiedProperties ();

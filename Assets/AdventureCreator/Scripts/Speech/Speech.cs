@@ -31,8 +31,6 @@ namespace AC
 		public string displayText;
 		/** True if the line should play in the backround, and not interrupt Actions or gameplay. */
 		public bool isBackground;
-		/** How long the line should be active for */
-		public float displayDuration;
 		/** True if the line is active */
 		public bool isAlive;
 		/** If True, the speech line has an AudioClip supplied */
@@ -46,7 +44,6 @@ namespace AC
 		private float endTime;
 		private float continueTime;
 		private float minSkipTime;
-		private bool runActionListInBackground;
 
 		private AC.Char speaker;
 		private bool isSkippable;
@@ -58,6 +55,8 @@ namespace AC
 		private bool pauseIsIndefinite = false;
 		private AudioSource audioSource = null;
 
+		private bool isRTL = false;
+
 		// Rich text
 		private int boldTagIndex = -1;
 		private int italicTagIndex = -1;
@@ -66,14 +65,19 @@ namespace AC
 
 		private const string openBoldTag = "<b>";
 		private const string openItalicTag = "<i>";
-		private const string openSizeTag = "<size";
-		private const string openColorTag = "<color";
+		private const string openSizeTag = "<size=";
+		private const string openColorTag = "<color=";
 
 		private const string closeBoldTag = "</b>";
 		private const string closeItalicTag = "</i>";
 		private const string closeSizeTag = "</size>";
 		private const string closeColorTag = "</color>";
 		private string closingTags = "";
+
+		private string activeOpenSizeTag;
+		private string activeOpenColorTag;
+
+		private float minDisplayTime;
 
 
 		/**
@@ -84,23 +88,24 @@ namespace AC
 		 * <param name = "_language">The currently-selected language</param>
 		 * <param name = "_isBackground">True if the line should play in the background, and not interrupt Actions or gameplay</param>
 		 * <param name = "_noAnimation">True if the speaking character should not play a talking animation</param>
-		 * <param name = "_runActionListInBackground">True if the ActionList that contains the call is set to Run In Background</param>
 		 */
-		public Speech (Char _speaker, string _message, int lineID, string _language, bool _isBackground, bool _noAnimation, bool _runActionListInBackground = false)
+		public Speech (Char _speaker, string _message, int lineID, string _language, bool _isBackground, bool _noAnimation)
 		{
+			isRTL = KickStarter.runtimeLanguages.LanguageReadsRightToLeft (_language);
+
 			// Clear rich text
 			boldTagIndex = italicTagIndex = sizeTagIndex = colorTagIndex = -1;
 			closingTags = "";
 
 			log.Clear ();
 			isBackground = _isBackground;
-			runActionListInBackground = _runActionListInBackground;
-			
+
+			string realName = "";
 			if (_speaker)
 			{
 				speaker = _speaker;
 				speaker.isTalking = !_noAnimation;
-				log.speakerName = _speaker.name;
+				log.speakerName = realName = _speaker.name;
 				
 				if (_speaker.GetComponent <Player>())
 				{
@@ -114,7 +119,7 @@ namespace AC
 				{
 					if (_speaker.GetComponent <Hotspot>().hotspotName != "")
 					{
-						log.speakerName = _speaker.GetComponent <Hotspot>().hotspotName;
+						log.speakerName = realName = _speaker.GetComponent <Hotspot>().hotspotName;
 					}
 				}
 
@@ -128,7 +133,9 @@ namespace AC
 					}
 					else if (KickStarter.speechManager.lipSyncMode == LipSyncMode.Salsa2D || KickStarter.speechManager.lipSyncMode == LipSyncMode.FromSpeechText || KickStarter.speechManager.lipSyncMode == LipSyncMode.ReadPamelaFile || KickStarter.speechManager.lipSyncMode == LipSyncMode.ReadSapiFile || KickStarter.speechManager.lipSyncMode == LipSyncMode.ReadPapagayoFile)
 					{
-						speaker.StartLipSync (KickStarter.dialog.GenerateLipSyncShapes (KickStarter.speechManager.lipSyncMode, lineID, speaker.name, _language, _message));
+						string filename = KickStarter.speechManager.GetLineFilename (lineID, speaker.name);
+						speaker.StartLipSync (KickStarter.dialog.GenerateLipSyncShapes (KickStarter.speechManager.lipSyncMode, lineID, filename, _language, _message));
+						//speaker.StartLipSync (KickStarter.dialog.GenerateLipSyncShapes (KickStarter.speechManager.lipSyncMode, lineID, speaker.name, _language, _message));
 					}
 					else if (KickStarter.speechManager.lipSyncMode == LipSyncMode.RogoLipSync)
 					{
@@ -143,21 +150,15 @@ namespace AC
 					speaker.isTalking = false;
 				}
 				speaker = null;			
-				log.speakerName = "Narrator";
+				log.speakerName = realName = "Narrator";
 			}
 			
 			_message = DetermineGaps (_message);
+			_message = FindSpeakerTag (_message, realName);
+
 			if (speechGaps.Count > 0)
 			{
 				gapIndex = 0;
-
-				/*foreach (SpeechGap gap in speechGaps)
-				{
-					if (gap.expressionID < 0)
-					{
-						displayDuration += (float) gap.waitTime;
-					}
-				}*/
 			}
 			else
 			{
@@ -170,14 +171,14 @@ namespace AC
 			}
 
 			// Play sound and time displayDuration to it
-			if (lineID > -1 && log.speakerName != "" && KickStarter.speechManager.searchAudioFiles)
+			if (lineID > -1 && !string.IsNullOrEmpty (log.speakerName) && KickStarter.speechManager.searchAudioFiles)
 			{
 				AudioClip clipObj = null;
 
 				if (KickStarter.speechManager.autoNameSpeechFiles)
 				{
 					string fullFilename = "Speech/";
-					string filename = KickStarter.speechManager.GetLineFilename (lineID);
+					string filename = KickStarter.speechManager.GetLineFilename (lineID, (speaker != null) ? _speaker.name : "");
 					if (_language != "" && KickStarter.speechManager.translateAudio)
 					{
 						// Not in original language
@@ -204,7 +205,7 @@ namespace AC
 
 					if (clipObj == null)
 					{
-						ACDebug.Log ("Cannot find audio file: " + fullFilename);
+						ACDebug.LogWarning ("Audio file 'Resources/" + fullFilename + "' not found.");
 					}
 				}
 				else
@@ -241,11 +242,6 @@ namespace AC
 							ACDebug.LogWarning (_speaker.name + " has no audio source component!");
 						}
 					}
-					/*else if (KickStarter.player && KickStarter.player.speechAudioSource)
-					{
-						KickStarter.player.SetSpeechVolume (Options.optionsData.speechVolume);
-						audioSource = KickStarter.player.speechAudioSource;
-					}*/
 					else
 					{
 						audioSource = KickStarter.dialog.GetNarratorAudioSource ();
@@ -260,24 +256,33 @@ namespace AC
 					{
 						audioSource.clip = clipObj;
 						audioSource.loop = false;
-						audioSource.Play();
+						audioSource.Play ();
 						hasAudio = true;
 					}
-					
-					displayDuration = clipObj.length;
 				}
-				else
+			}
+
+			float displayDuration = 0f;
+			if (hasAudio)
+			{
+				displayDuration = KickStarter.speechManager.screenTimeFactor * 5f;
+			}
+			else if (!CanScroll () || KickStarter.speechManager.scrollingTextFactorsLength)
+			{
+				float totalWaitTime = GetLengthWithoutRichText (_message) - GetTotalWaitTokenDuration ();
+				if (totalWaitTime < 0f)
 				{
-					displayDuration += KickStarter.speechManager.screenTimeFactor * GetLengthWithoutRichText (_message);
-					displayDuration = Mathf.Max (displayDuration, KickStarter.speechManager.minimumDisplayTime);
+					totalWaitTime = 0.1f;
 				}
+
+				displayDuration = KickStarter.speechManager.screenTimeFactor * totalWaitTime;
 			}
 			else
 			{
-				displayDuration += KickStarter.speechManager.screenTimeFactor * GetLengthWithoutRichText (_message);
-				displayDuration = Mathf.Max (displayDuration, KickStarter.speechManager.minimumDisplayTime);
+				displayDuration = KickStarter.speechManager.screenTimeFactor * 5f;
 			}
-			
+
+			displayDuration = Mathf.Max (displayDuration, 0.1f);
 			log.fullText = _message;
 			KickStarter.eventManager.Call_OnStartSpeech (_speaker, log.fullText, lineID);
 
@@ -307,19 +312,41 @@ namespace AC
 			isSkippable = true;
 			pauseGap = false;
 			endTime = displayDuration;
+
 			minSkipTime = KickStarter.speechManager.skipThresholdTime;
+			minDisplayTime = Mathf.Max (0f, KickStarter.speechManager.minimumDisplayTime);
+
+			if (endTime == 0f)
+			{
+				EndMessage ();
+			}
+		}
+
+
+		/**
+		 * <summary>A special-case Constructor purely used to display text without tags when exporting script-sheets.</summary>
+		 * <param name = "_message">The subtitle text to display</param>
+		 */
+		public Speech (string _message)
+		{
+			displayText = DetermineGaps (_message);
 		}
 
 
 		/**
 		 * Updates the state of the line.
-		 * This is called every FixedUpdate call by StateHandler.
+		 * This is called every LateUpdate call by StateHandler.
 		 */
-		public void _FixedUpdate ()
+		public void UpdateDisplay ()
 		{
 			if (minSkipTime > 0f)
 			{
 				minSkipTime -= Time.deltaTime;
+			}
+
+			if (minDisplayTime > 0f)
+			{
+				minDisplayTime -= Time.deltaTime;
 			}
 
 			if (pauseEndTime > 0f)
@@ -340,9 +367,22 @@ namespace AC
 			}
 			else
 			{
-				if (endTime > 0f)
+				if (hasAudio && !audioSource.isPlaying)
 				{
-					endTime -= Time.deltaTime;
+					if (endTime > 0f)
+					{
+						endTime -= Time.deltaTime;
+					}
+				}
+				else if (!hasAudio)
+				{
+					if (!CanScroll () || scrollAmount >= 1f)
+					{
+						if (endTime > 0f)
+						{
+							endTime -= Time.deltaTime;
+						}
+					}
 				}
 			}
 
@@ -352,22 +392,21 @@ namespace AC
 				{
 					if (!pauseGap)
 					{
-						//scrollAmount += KickStarter.speechManager.textScrollSpeed / 100f / log.fullText.Length;
-						scrollAmount += KickStarter.speechManager.textScrollSpeed * Time.fixedDeltaTime / 2f / log.fullText.Length;
+						scrollAmount += KickStarter.speechManager.textScrollSpeed * Time.deltaTime / 2f / log.fullText.Length;
 
-						if (scrollAmount >= 1f) // was >
+						if (scrollAmount >= 1f)
 						{
 							StopScrolling ();
 						}
-						
-						int currentCharIndex = (int) (scrollAmount * log.fullText.Length);
-						if (gapIndex > 0)
+
+						int currentCharIndex = 0;
+						if (isRTL)
 						{
-							currentCharIndex += speechGaps[gapIndex-1].characterIndex;
-							if (currentCharIndex > log.fullText.Length)
-							{
-								currentCharIndex = log.fullText.Length;
-							}
+							currentCharIndex = (int) ((1f - scrollAmount) * log.fullText.Length);
+						}
+						else
+						{
+							currentCharIndex = (int) (scrollAmount * log.fullText.Length);
 						}
 
 						string newText = GetTextPortion (log.fullText, currentCharIndex);
@@ -380,7 +419,7 @@ namespace AC
 						displayText = newText;
 						if (gapIndex >= 0 && speechGaps.Count > gapIndex)
 						{
-							if (currentCharIndex >= speechGaps [gapIndex].characterIndex) // was ==
+							if (HasPassedIndex (currentCharIndex, speechGaps[gapIndex].characterIndex))
 							{
 								SetPauseGap ();
 								return;
@@ -389,7 +428,7 @@ namespace AC
 
 						if (continueIndex >= 0)
 						{
-							if (currentCharIndex >= continueIndex)
+							if (HasPassedIndex (currentCharIndex, continueIndex))
 							{
 								continueIndex = -1;
 								continueFromSpeech = true;
@@ -411,12 +450,22 @@ namespace AC
 					else
 					{
 						float waitTime = (float) speechGaps[gapIndex].waitTime;
-						displayText = log.fullText.Substring (0, speechGaps[gapIndex].characterIndex);
-						
+
+						if (isRTL)
+						{
+							displayText = log.fullText.Substring (speechGaps[gapIndex].characterIndex);
+						}
+						else
+						{
+							displayText = log.fullText.Substring (0, speechGaps[gapIndex].characterIndex);
+						}
+
 						if (waitTime >= 0)
 						{
 							pauseEndTime = waitTime;
 							pauseGap = true;
+
+							speechGaps[gapIndex].CallEvent (speaker, log.lineID);
 						}
 						else if (speechGaps[gapIndex].expressionID >= 0)
 						{
@@ -444,14 +493,45 @@ namespace AC
 				}
 			}
 
-			if (endTime < 0f)
+			if (endTime < 0f && minDisplayTime < 0f)
 			{
-				if ((KickStarter.speechManager.displayForever && isBackground)
-				 || !KickStarter.speechManager.displayForever)
+				if (KickStarter.speechManager.displayForever)
 				{
-					EndMessage ();
+					if (isBackground)
+					{
+						EndMessage ();
+					}
+					else
+					{
+						if (!hasAudio || !audioSource.isPlaying)
+						{
+							if (!KickStarter.speechManager.playAnimationForever && speaker != null && speaker.isTalking)
+							{
+								speaker.StopSpeaking ();
+							}
+						}
+					}
+				}
+				else
+				{
+					if (speaker == null && KickStarter.speechManager.displayNarrationForever)
+					{}
+					else
+					{
+						EndMessage ();
+					}
 				}
 			}
+		}
+
+
+		private bool HasPassedIndex (int currentCharIndex, int indexToCheck)
+		{
+			if (isRTL)
+			{
+				return (currentCharIndex <= indexToCheck);
+			}
+			return (currentCharIndex >= indexToCheck);
 		}
 
 
@@ -464,12 +544,60 @@ namespace AC
 			pauseGap = false;
 			pauseIsIndefinite = false;
 			gapIndex ++;
-			scrollAmount = 0f;
+			//scrollAmount = 0f;
 
 			if (CanScroll ())
 			{
 				KickStarter.eventManager.Call_OnStartSpeechScroll (speaker, log.fullText, log.lineID);
 			}
+		}
+
+
+		/**
+		 * <summary>Checks if the speech line matches certain conditions.</summary>
+		 * <param name = "speechMenuLimit">What kind of speech has to play for this Menu to enable (All, BlockingOnly, BackgroundOnly)</param>
+		 * <param name = "speechMenuType">What kind of speaker has to be speaking for this Menu to enable (All, CharactersOnly, NarrationOnly, SpecificCharactersOnly)</param>
+		 * <param name = "limitToCharacters>A list of character names that this Menu will show for, if speechMenuType = SpeechMenuType.SpecificCharactersOnly</param>
+		 * <returns>True if the speech line matches the conditions</returns>
+		 */
+		public bool HasConditions (SpeechMenuLimit speechMenuLimit, SpeechMenuType speechMenuType, string limitToCharacters)
+		{
+			if (speechMenuLimit == SpeechMenuLimit.All ||
+			    (speechMenuLimit == SpeechMenuLimit.BlockingOnly && !isBackground) ||
+			    (speechMenuLimit == SpeechMenuLimit.BackgroundOnly && isBackground))
+			{
+				if (speechMenuType == SpeechMenuType.All ||
+				    (speechMenuType == SpeechMenuType.CharactersOnly && speaker != null) ||
+				    (speechMenuType == SpeechMenuType.NarrationOnly && speaker == null))
+			    {
+			    	return true;
+			    }
+				else if (speechMenuType == SpeechMenuType.SpecificCharactersOnly && speaker != null)
+				{
+					if (limitToCharacters.Contains (GetSpeaker ()))
+					{
+						return true;
+					}
+					else if (limitToCharacters.Contains ("Player") && speaker != null && speaker.IsPlayer)
+					{
+						return true;
+					}
+				}
+				else if (speechMenuType == SpeechMenuType.AllExceptSpecificCharacters && GetSpeakingCharacter () != null)
+				{
+					if (limitToCharacters.Contains (GetSpeaker ()))
+					{
+						return false;
+					}
+					else if (limitToCharacters.Contains ("Player") && speaker != null && speaker.IsPlayer)
+					{
+						return false;
+					}
+					return true;
+				}
+			}
+			    
+			return false;
 		}
 
 
@@ -549,7 +677,8 @@ namespace AC
 					}
 				}
 				
-				else if (KickStarter.speechManager.displayForever && !IsBackgroundSpeech ())
+				else if ((KickStarter.speechManager.displayForever && !IsBackgroundSpeech ()) ||
+						 (KickStarter.speechManager.displayNarrationForever && !IsBackgroundSpeech () && speaker == null))
 				{
 					if (SkipSpeechInput ())
 					{
@@ -568,15 +697,24 @@ namespace AC
 								// Stop scrolling
 								StopScrolling ();
 
-								// Find last non-encountered expression
 								if (speechGaps != null && speechGaps.Count > gapIndex)
 								{
+									// Call events
+									for (int i=gapIndex; i<speechGaps.Count; i++)
+									{
+										if (gapIndex >= 0)
+										{
+											speechGaps[i].CallEvent (speaker, log.lineID);
+										}
+									}
+
+									// Find last non-encountered expression
 									for (int i=speechGaps.Count-1; i>=gapIndex; i--)
 									{
 										if (i >= 0 && speechGaps[i].expressionID >= 0)
 										{
 											speaker.SetExpression (speechGaps[i].expressionID);
-											return;
+											break; // was return
 										}
 									}
 								}
@@ -595,6 +733,10 @@ namespace AC
 								EndMessage (true);
 							}
 						}
+						else
+						{
+							ACDebug.LogWarning ("Cannot skip the line " + log.fullText + " because it is not background speech but the gameState is not a Cutscene! Either mark it as background speech, or initiate a scripted cutscene with AC.KickStarter.stateHandler.StartCutscene ();");
+						}
 					}
 				}
 				
@@ -602,7 +744,8 @@ namespace AC
 				{
 					if ((KickStarter.speechManager.allowSpeechSkipping && !IsBackgroundSpeech ()) ||
 						(KickStarter.speechManager.allowSpeechSkipping && KickStarter.speechManager.allowGameplaySpeechSkipping && IsBackgroundSpeech ()) ||
-						(KickStarter.speechManager.displayForever && KickStarter.speechManager.allowGameplaySpeechSkipping && IsBackgroundSpeech ()))
+						(KickStarter.speechManager.displayForever && KickStarter.speechManager.allowGameplaySpeechSkipping && IsBackgroundSpeech ()) ||
+						(KickStarter.speechManager.displayNarrationForever && speaker == null && KickStarter.speechManager.allowGameplaySpeechSkipping && IsBackgroundSpeech ()))
 					{
 						KickStarter.playerInput.ResetMouseClick ();
 						
@@ -615,22 +758,33 @@ namespace AC
 								{
 									while (gapIndex < speechGaps.Count && speechGaps[gapIndex].waitTime >= 0)
 									{
+										speechGaps[gapIndex].CallEvent (speaker, log.lineID);
+
 										// Find next wait
 										gapIndex ++;
 									}
 									
 									if (gapIndex == speechGaps.Count)
 									{
+										ExtendTime ();
 										StopScrolling ();
 									}
 									else
 									{
-										displayText = log.fullText.Substring (0, speechGaps[gapIndex].characterIndex);
+										if (isRTL)
+										{
+											displayText = log.fullText.Substring (speechGaps[gapIndex].characterIndex);
+										}
+										else
+										{
+											displayText = log.fullText.Substring (0, speechGaps[gapIndex].characterIndex);
+										}
 										SetPauseGap ();
 									}
 								}
 								else
 								{
+									ExtendTime ();
 									StopScrolling ();
 								}
 							}
@@ -645,6 +799,17 @@ namespace AC
 		}
 
 
+		private void ExtendTime ()
+		{
+			if (CanScroll () && !KickStarter.speechManager.scrollingTextFactorsLength && !hasAudio)
+			{
+				// Extend length of speech display, since its been skipped prematurely
+				float timeExtension = (1f - scrollAmount) * KickStarter.speechManager.screenTimeFactor * GetLengthWithoutRichText (log.fullText);
+				endTime = Mathf.Max (endTime, timeExtension);
+			}
+		}
+
+
 		private void StopScrolling ()
 		{
 			scrollAmount = 1f;
@@ -652,7 +817,6 @@ namespace AC
 			
 			if (holdForever)
 			{
-				//EndMessage ();
 				continueFromSpeech = true;
 			}
 
@@ -664,9 +828,16 @@ namespace AC
 
 		private void SetPauseGap ()
 		{
+			scrollAmount = (float) speechGaps [gapIndex].characterIndex / (float) log.fullText.Length;
+			if (isRTL)
+			{
+				scrollAmount = 1f - scrollAmount;
+			}
+
 			float waitTime = speechGaps [gapIndex].waitTime;
 			pauseGap = true;
 			pauseIsIndefinite = false;
+
 			if (speechGaps [gapIndex].pauseIsIndefinite)
 			{
 				pauseEndTime = 0f;
@@ -675,6 +846,7 @@ namespace AC
 			else if (waitTime >= 0f)
 			{
 				pauseEndTime = waitTime;
+				speechGaps[gapIndex].CallEvent (speaker, log.lineID);
 			}
 			else if (speechGaps [gapIndex].expressionID >= 0)
 			{
@@ -734,10 +906,33 @@ namespace AC
 						}
 					}
 				}
-				
+
+				string[] eventKeys = KickStarter.dialog.SpeechEventTokenKeys;
+				if (eventKeys != null)
+				{
+					foreach (string eventKey in eventKeys)
+					{
+						if (string.IsNullOrEmpty (eventKey)) continue;
+
+						string keyStart = "[" + eventKey + ":";
+						if (_text.Contains (keyStart))
+						{
+							while (_text.Contains (keyStart))
+							{
+								int startIndex = _text.IndexOf (keyStart);
+								int endIndex = _text.IndexOf ("]", startIndex);
+								string eventValue = _text.Substring (startIndex + keyStart.Length, endIndex - startIndex - keyStart.Length);
+								speechGaps.Add (new SpeechGap (startIndex, eventKey, eventValue));
+								_text = _text.Substring (0, startIndex) + _text.Substring (endIndex + 1);
+							}
+						}
+					}
+				}
+
 				if (_text.Contains ("[continue]"))
 				{
 					continueIndex = _text.IndexOf ("[continue]");
+
 					_text = _text.Replace ("[continue]", "");
 					CorrectPreviousGaps (continueIndex, 10);
 				}
@@ -748,6 +943,7 @@ namespace AC
 					{
 						continueIndex = _text.IndexOf ("[hold]");
 					}
+
 					_text = _text.Replace ("[hold]", "");
 					holdForever = true;
 					CorrectPreviousGaps (continueIndex, 6);
@@ -757,10 +953,30 @@ namespace AC
 			// Sort speechGaps
 			if (speechGaps.Count > 1)
 			{
-				speechGaps.Sort (delegate (SpeechGap a, SpeechGap b) {return a.characterIndex.CompareTo (b.characterIndex);});
+				if (isRTL)
+				{
+					speechGaps.Sort (delegate (SpeechGap b, SpeechGap a) {return a.characterIndex.CompareTo (b.characterIndex);});
+				}
+				else
+				{
+					speechGaps.Sort (delegate (SpeechGap a, SpeechGap b) {return a.characterIndex.CompareTo (b.characterIndex);});
+				}
 			}
 			
 			return _text;
+		}
+
+
+		private string FindSpeakerTag (string _message, string _speakerName)
+		{
+			if (!string.IsNullOrEmpty (_message))
+			{
+				if (_message.Contains ("[speaker]"))
+				{
+					_message = _message.Replace ("[speaker]", _speakerName);
+				}
+			}
+			return _message;
 		}
 
 
@@ -794,7 +1010,7 @@ namespace AC
 
 		private bool IsBackgroundSpeech ()
 		{
-			return runActionListInBackground;
+			return isBackground;
 		}
 
 
@@ -877,20 +1093,6 @@ namespace AC
 
 
 		/**
-		 * <summary>Checks if the line has any pause gaps.</summary>
-		 * <returns>True if there are any line gaps</returns>
-		 */
-		public bool HasPausing ()
-		{
-			if (speechGaps.Count > 0)
-			{
-				return true;
-			}
-			return false;
-		}
-
-
-		/**
 		 * <summary>Gets a Sprite based on the portrait graphic of the speaking character.
 		 * If lipsincing is enabled, the sprite will be based on the current phoneme.</summary>
 		 * <returns>The speaking character's portrait sprite</returns>
@@ -928,7 +1130,7 @@ namespace AC
 		 * <summary>Gets the portrait graphic of the speaking character.</summary>
 		 * <returns>The speaking character's portrait graphic</returns>
 		 */
-		public Texture2D GetPortrait ()
+		public Texture GetPortrait ()
 		{
 			if (speaker && speaker.GetPortrait ().texture)
 			{
@@ -995,128 +1197,223 @@ namespace AC
 		 */
 		public bool MenuCanShow (Menu menu)
 		{
-			if (menu.speechMenuLimit == SpeechMenuLimit.All ||
-			    (menu.speechMenuLimit == SpeechMenuLimit.BlockingOnly && !isBackground) ||
-			    (menu.speechMenuLimit == SpeechMenuLimit.BackgroundOnly && isBackground))
+			if (menu != null)
 			{
-				if (menu.speechMenuType == SpeechMenuType.All ||
-				    (menu.speechMenuType == SpeechMenuType.CharactersOnly && speaker != null) ||
-				    (menu.speechMenuType == SpeechMenuType.NarrationOnly && speaker == null))
-			    {
-			    	return true;
-			    }
-				else if (menu.speechMenuType == SpeechMenuType.SpecificCharactersOnly && GetSpeakingCharacter () != null)
-				{
-					if (menu.limitToCharacters.Contains (GetSpeaker ()))
-					{
-						return true;
-					}
-					else if (menu.limitToCharacters.Contains ("Player") && GetSpeakingCharacter () is Player)
-					{
-						return true;
-					}
-				}
-				else if (menu.speechMenuType == SpeechMenuType.AllExceptSpecificCharacters && GetSpeakingCharacter () != null)
-				{
-					if (menu.limitToCharacters.Contains (GetSpeaker ()))
-					{
-						return false;
-					}
-					else if (menu.limitToCharacters.Contains ("Player") && GetSpeakingCharacter () is Player)
-					{
-						return false;
-					}
-					return true;
-				}
+				return HasConditions (menu.speechMenuLimit, menu.speechMenuType, menu.limitToCharacters);
 			}
-			    
 			return false;
 		}
 
 
 		private string GetTextPortion (string fullText, int originalIndex)
 		{
+			if (isRTL)
+			{
+				if (fullText.Length < originalIndex)
+				{
+					return "";
+				}
+				else if (originalIndex == 0)
+				{
+					return fullText;;
+				}
+			}
+			else
+			{
+				if (fullText.Length < originalIndex)
+				{
+					return "";
+				}
+				else if (fullText.Length == originalIndex)
+				{
+					return fullText;
+				}
+			}
+		
 			int newIndex = originalIndex;
 
-			if (fullText.Length < newIndex)
+			bool hasTag = false;
+			if (isRTL)
 			{
-				return "";
+				hasTag = (fullText[newIndex].ToString () == ">") ? true : false;
 			}
-			else if (fullText.Length == newIndex)
+			else
 			{
-				return fullText.Substring (0, newIndex);
+				hasTag = (fullText[newIndex].ToString () == "<") ? true : false;
 			}
 
-			bool hasTag = (fullText[newIndex].ToString () == "<") ? true : false;
 			if (!hasTag && boldTagIndex == -1 && italicTagIndex == -1 && sizeTagIndex == -1 && colorTagIndex == -1)
 			{
 				// No rich tags right now, so don't do anything complicated
+
+				if (isRTL)
+				{
+					return fullText.Substring (newIndex);
+				}
 				return fullText.Substring (0, newIndex);
 			}
 
-			string stringFromIndex = fullText.Substring (newIndex);
-
 			if (hasTag)
 			{
-				// Check for opening
-				if (stringFromIndex.StartsWith (openBoldTag))
+				if (isRTL)
 				{
-					boldTagIndex = stringFromIndex.IndexOf (closeBoldTag) + newIndex;
-					newIndex += openBoldTag.Length;
-					closingTags = closeBoldTag + closingTags;
-				}
-				else if (stringFromIndex.StartsWith (openItalicTag))
-				{
-					italicTagIndex = stringFromIndex.IndexOf (closeItalicTag) + italicTagIndex;
-					newIndex += openItalicTag.Length;
-					closingTags = closeItalicTag + closingTags;
-				}
-				else if (stringFromIndex.StartsWith (openSizeTag))
-				{
-					sizeTagIndex = stringFromIndex.IndexOf (closeSizeTag) + sizeTagIndex;
-					int closeBracketIndex = stringFromIndex.IndexOf (">") + 1;
-					newIndex += closeBracketIndex;
-					closingTags = closeSizeTag + closingTags;
-				}
-				else if (stringFromIndex.StartsWith (openColorTag))
-				{
-					colorTagIndex = stringFromIndex.IndexOf (closeColorTag) + colorTagIndex;
-					int closeBracketIndex = stringFromIndex.IndexOf (">") + 1;
-					newIndex += closeBracketIndex;
-					closingTags = closeColorTag + closingTags;
-				}
+					string stringFromIndex = fullText.Substring (0, newIndex+1);
 
-				// Check for closing
-				if (stringFromIndex.StartsWith (closeBoldTag))
-				{
-					boldTagIndex = -1;
-					newIndex += closeBoldTag.Length;
-					closingTags = closingTags.Replace (closeBoldTag, "");
-				}
-				else if (stringFromIndex.StartsWith (closeItalicTag))
-				{
-					italicTagIndex = -1;
-					newIndex += closeItalicTag.Length;
-					closingTags = closingTags.Replace (closeItalicTag, "");
-				}
-				else if (stringFromIndex.StartsWith (closeSizeTag))
-				{
-					sizeTagIndex = -1;
-					newIndex += closeSizeTag.Length;
-					closingTags = closingTags.Replace (closeSizeTag, "");
-				}
-				else if (stringFromIndex.StartsWith (closeColorTag))
-				{
-					colorTagIndex = -1;
-					newIndex += closeColorTag.Length;
-					closingTags = closingTags.Replace (closeColorTag, "");
-				}
+					// Check for closing
+					if (stringFromIndex.EndsWith (closeBoldTag))
+					{
+						boldTagIndex = -stringFromIndex.IndexOf (openBoldTag) + newIndex;
+						newIndex -= closeBoldTag.Length;
+						closingTags = closingTags + openBoldTag;
+					}
+					else if (stringFromIndex.EndsWith (closeItalicTag))
+					{
+						italicTagIndex = -stringFromIndex.IndexOf (openItalicTag) + italicTagIndex;
+						newIndex -= closeItalicTag.Length;
+						closingTags = closingTags + openItalicTag;
+					}
+					else if (stringFromIndex.EndsWith (closeSizeTag))
+					{
+						int lastSizeIndex = stringFromIndex.LastIndexOf (openSizeTag);
+						if (lastSizeIndex >= 0)
+						{
+							int lastSizeIndexEnd = stringFromIndex.IndexOf (">", lastSizeIndex);
+							if (lastSizeIndexEnd >= 0 && lastSizeIndexEnd > lastSizeIndex)
+							{
+								string detectedSizeParameter = stringFromIndex.Substring (lastSizeIndex + openSizeTag.Length, lastSizeIndexEnd - lastSizeIndex - openSizeTag.Length);
+								if (!string.IsNullOrEmpty (detectedSizeParameter))
+								{
+									activeOpenSizeTag = openSizeTag + detectedSizeParameter + ">";
+									closingTags = closingTags + activeOpenSizeTag;
 
-				// Modified currentCharIndex, so convert back to scrollAmount
-				// NOTE! Only increase, don't set explicitly - otherwise errors with wait tokens
-				scrollAmount += (float) (newIndex - originalIndex) / (float) fullText.Length;
+									sizeTagIndex = -stringFromIndex.IndexOf (openSizeTag) + sizeTagIndex;
+									newIndex -= closeSizeTag.Length;
+								}
+							}
+						}
+					}
+					else if (stringFromIndex.EndsWith (closeColorTag))
+					{
+						int lastColorIndex = stringFromIndex.LastIndexOf (openColorTag);
+						if (lastColorIndex >= 0)
+						{
+							int lastColorIndexEnd = stringFromIndex.IndexOf (">", lastColorIndex);
+							if (lastColorIndexEnd >= 0 && lastColorIndexEnd > lastColorIndex)
+							{
+								string detectedColorParameter = stringFromIndex.Substring (lastColorIndex + openColorTag.Length, lastColorIndexEnd - lastColorIndex - openColorTag.Length);
+								if (!string.IsNullOrEmpty (detectedColorParameter))
+								{
+									activeOpenColorTag = openColorTag + detectedColorParameter + ">";
+									closingTags = closingTags + activeOpenColorTag;
+
+									colorTagIndex = -stringFromIndex.IndexOf (openColorTag) + colorTagIndex;
+									newIndex -= closeColorTag.Length;
+								}
+							}
+						}
+					}
+					
+
+					// Check for opening
+					if (stringFromIndex.EndsWith (openBoldTag))
+					{
+						boldTagIndex = -1;
+						newIndex -= openBoldTag.Length;
+						closingTags = closingTags.Replace (openBoldTag, "");
+					}
+					else if (stringFromIndex.EndsWith (openItalicTag))
+					{
+						italicTagIndex = -1;
+						newIndex -= openItalicTag.Length;
+						closingTags = closingTags.Replace (openItalicTag, "");
+					}
+					else if (!string.IsNullOrEmpty (activeOpenSizeTag) && stringFromIndex.EndsWith (activeOpenSizeTag))
+					{
+						sizeTagIndex = -1;
+						newIndex -= activeOpenSizeTag.Length;
+						closingTags = closingTags.Replace (activeOpenSizeTag, "");
+						activeOpenSizeTag = "";
+					}
+					else if (!string.IsNullOrEmpty (activeOpenColorTag) && stringFromIndex.EndsWith (activeOpenColorTag))
+					{
+						colorTagIndex = -1;
+						newIndex -= activeOpenColorTag.Length;
+						closingTags = closingTags.Replace (activeOpenColorTag, "");
+						activeOpenColorTag = "";
+					}
+
+					// Modified currentCharIndex, so convert back to scrollAmount
+					// NOTE! Only increase, don't set explicitly - otherwise errors with wait tokens
+					scrollAmount += (float) -(newIndex - originalIndex) / (float) fullText.Length;
+				}
+				else
+				{
+					string stringFromIndex = fullText.Substring (newIndex);
+
+					// Check for opening
+					if (stringFromIndex.StartsWith (openBoldTag))
+					{
+						boldTagIndex = stringFromIndex.IndexOf (closeBoldTag) + newIndex;
+						newIndex += openBoldTag.Length;
+						closingTags = closeBoldTag + closingTags;
+					}
+					else if (stringFromIndex.StartsWith (openItalicTag))
+					{
+						italicTagIndex = stringFromIndex.IndexOf (closeItalicTag) + italicTagIndex;
+						newIndex += openItalicTag.Length;
+						closingTags = closeItalicTag + closingTags;
+					}
+					else if (stringFromIndex.StartsWith (openSizeTag))
+					{
+						sizeTagIndex = stringFromIndex.IndexOf (closeSizeTag) + sizeTagIndex;
+						int closeBracketIndex = stringFromIndex.IndexOf (">") + 1;
+						newIndex += closeBracketIndex;
+						closingTags = closeSizeTag + closingTags;
+					}
+					else if (stringFromIndex.StartsWith (openColorTag))
+					{
+						colorTagIndex = stringFromIndex.IndexOf (closeColorTag) + colorTagIndex;
+						int closeBracketIndex = stringFromIndex.IndexOf (">") + 1;
+						newIndex += closeBracketIndex;
+						closingTags = closeColorTag + closingTags;
+					}
+
+					// Check for closing
+					if (stringFromIndex.StartsWith (closeBoldTag))
+					{
+						boldTagIndex = -1;
+						newIndex += closeBoldTag.Length;
+						closingTags = closingTags.Replace (closeBoldTag, "");
+					}
+					else if (stringFromIndex.StartsWith (closeItalicTag))
+					{
+						italicTagIndex = -1;
+						newIndex += closeItalicTag.Length;
+						closingTags = closingTags.Replace (closeItalicTag, "");
+					}
+					else if (stringFromIndex.StartsWith (closeSizeTag))
+					{
+						sizeTagIndex = -1;
+						newIndex += closeSizeTag.Length;
+						closingTags = closingTags.Replace (closeSizeTag, "");
+					}
+					else if (stringFromIndex.StartsWith (closeColorTag))
+					{
+						colorTagIndex = -1;
+						newIndex += closeColorTag.Length;
+						closingTags = closingTags.Replace (closeColorTag, "");
+					}
+
+					// Modified currentCharIndex, so convert back to scrollAmount
+					// NOTE! Only increase, don't set explicitly - otherwise errors with wait tokens
+					scrollAmount += (float) (newIndex - originalIndex) / (float) fullText.Length;
+				}
 			}
 
+			if (isRTL)
+			{
+				return closingTags + fullText.Substring (newIndex);
+			}
 			return fullText.Substring (0, newIndex) + closingTags;
 		}
 
@@ -1133,9 +1430,34 @@ namespace AC
 			_message = _message.Replace (closeSizeTag, "");
 			_message = _message.Replace (closeColorTag, "");
 
+			_message = _message.Replace ("[var:", "");
+			_message = _message.Replace ("[localvar:", "");
+			_message = _message.Replace ("[wait:", "");
+			_message = _message.Replace ("[continue:", "");
+			_message = _message.Replace ("[expression:", "");
+
 			return (float) _message.Length;
 		}
 
+
+		private float GetTotalWaitTokenDuration ()
+		{
+			if (speechGaps != null && speechGaps.Count > 0f)
+			{
+				float totalDuration = 0f;
+				foreach (SpeechGap speechGap in speechGaps)
+				{
+					if (speechGap.waitTime > 0f)
+					{
+						totalDuration += speechGap.waitTime;
+					}
+				}
+
+				return totalDuration;
+			}
+
+			return 0f;
+		}
 
 	}
 

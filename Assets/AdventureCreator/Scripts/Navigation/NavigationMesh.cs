@@ -111,7 +111,10 @@ namespace AC
 		 */
 		public void TurnOff ()
 		{
-			gameObject.layer = LayerMask.NameToLayer (KickStarter.settingsManager.deactivatedLayer);
+			if (KickStarter.settingsManager != null)
+			{
+				gameObject.layer = LayerMask.NameToLayer (KickStarter.settingsManager.deactivatedLayer);
+			}
 		}
 
 

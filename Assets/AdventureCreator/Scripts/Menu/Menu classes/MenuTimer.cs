@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2017
+ *	by Chris Burton, 2013-2018
  *	
  *	"MenuTimer.cs"
  * 
@@ -58,23 +58,26 @@ namespace AC
 		}
 
 
-		/**
-		 * <summary>Creates and returns a new MenuTimer that has the same values as itself.</summary>
-		 * <param name = "fromEditor">If True, the duplication was done within the Menu Manager and not as part of the gameplay initialisation.</param>
-		 * <returns>A new MenuTimer with the same values as itself</returns>
-		 */
-		public override MenuElement DuplicateSelf (bool fromEditor)
+		public override MenuElement DuplicateSelf (bool fromEditor, bool ignoreUnityUI)
 		{
 			MenuTimer newElement = CreateInstance <MenuTimer>();
 			newElement.Declare ();
-			newElement.CopyTimer (this);
+			newElement.CopyTimer (this, ignoreUnityUI);
 			return newElement;
 		}
 		
 		
-		private void CopyTimer (MenuTimer _element)
+		private void CopyTimer (MenuTimer _element, bool ignoreUnityUI)
 		{
-			uiSlider = _element.uiSlider;
+			if (ignoreUnityUI)
+			{
+				uiSlider = null;
+			}
+			else
+			{
+				uiSlider = _element.uiSlider;
+			}
+
 			doInvert = _element.doInvert;
 			timerTexture = _element.timerTexture;
 			timerType = _element.timerType;
@@ -88,10 +91,9 @@ namespace AC
 		 * <summary>Initialises the linked Unity UI GameObject.</summary>
 		 * <param name = "_menu">The element's parent Menu</param>
 		 */
-		public override void LoadUnityUI (AC.Menu _menu)
+		public override void LoadUnityUI (AC.Menu _menu, Canvas canvas)
 		{
-			uiSlider = LinkUIElement <Slider>();
-
+			uiSlider = LinkUIElement <Slider> (canvas);
 			if (uiSlider)
 			{
 				uiSlider.minValue = 0f;
@@ -153,7 +155,7 @@ namespace AC
 				EndGUI (apiPrefix);
 			}
 		}
-		
+
 		#endif
 		
 

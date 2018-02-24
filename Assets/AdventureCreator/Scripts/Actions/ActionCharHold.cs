@@ -52,7 +52,7 @@ namespace AC
 			_char = AssignFile <Char> (_charID, _char);
 			objectToHold = AssignFile (parameters, objectToHoldParameterID, objectToHoldID, objectToHold);
 
-			if (!objectToHold.activeInHierarchy)
+			if (objectToHold != null && !objectToHold.activeInHierarchy)
 			{
 				loadedObject = (GameObject) Instantiate (objectToHold);
 			}

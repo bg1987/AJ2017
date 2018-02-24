@@ -63,6 +63,7 @@ namespace AC
 				_target.spinAccleration = EditorGUILayout.FloatField ("Acceleration:", _target.spinAccleration);
 				_target.spinDeceleration = EditorGUILayout.FloatField ("Deceleration:", _target.spinDeceleration);
 				_target.isDragControlled = EditorGUILayout.Toggle ("Drag-controlled?", _target.isDragControlled);
+				_target.canRotateDuringConversations = EditorGUILayout.ToggleLeft ("Can rotate during Conversations?", _target.canRotateDuringConversations);
 				if (!_target.isDragControlled)
 				{
 					_target.spinAxis = EditorGUILayout.TextField ("Input axis:", _target.spinAxis);
@@ -101,6 +102,7 @@ namespace AC
 				_target.pitchAccleration = EditorGUILayout.FloatField ("Acceleration:", _target.pitchAccleration);
 				_target.pitchDeceleration = EditorGUILayout.FloatField ("Deceleration:", _target.pitchDeceleration);
 				_target.isDragControlled = EditorGUILayout.Toggle ("Drag-controlled?", _target.isDragControlled);
+				_target.canRotateDuringConversations = EditorGUILayout.ToggleLeft ("Can rotate during Conversations?", _target.canRotateDuringConversations);
 				if (!_target.isDragControlled)
 				{
 					_target.pitchAxis = EditorGUILayout.TextField ("Input axis:", _target.pitchAxis);

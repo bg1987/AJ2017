@@ -1,3 +1,4 @@
+
 /*
  *
  *	Adventure Creator
@@ -47,7 +48,6 @@ namespace AC
 		public int mouthLayer;
 		
 		public float waitTimeOffset = 0f;
-		private float endTime = 0f;
 		private bool stopAction = false;
 		
 		private int splitIndex = 0;
@@ -57,6 +57,7 @@ namespace AC
 		private Speech speech;
 		private LocalVariables localVariables;
 		private bool runActionListInBackground;
+		private List<ActionParameter> ownParameters = new List<ActionParameter>();
 
 		public static string[] stringSeparators = new string[] {"\n", "\\n"};
 
@@ -73,6 +74,8 @@ namespace AC
 		
 		override public void AssignValues (List<ActionParameter> parameters)
 		{
+			if (parameters != null) ownParameters = parameters;
+
 			runtimeSpeaker = AssignFile <Char> (parameters, parameterID, constantID, speaker);
 			messageText = AssignString (parameters, messageParameterID, messageText);
 			
@@ -104,7 +107,7 @@ namespace AC
 				ACDebug.Log ("No Speech Manager present");
 				return 0f;
 			}
-			
+
 			if (KickStarter.dialog && KickStarter.stateHandler)
 			{
 				if (!isRunning)
@@ -114,10 +117,19 @@ namespace AC
 					splitDelay = false;
 					splitIndex = 0;
 
-					endTime = Time.time + StartSpeech ();
+					StartSpeech ();
 
 					if (isBackground)
 					{
+						if (KickStarter.speechManager.separateLines)
+						{
+							string[] textArray = messageText.Split (stringSeparators, System.StringSplitOptions.None);
+							if (textArray != null && textArray.Length > 1)
+							{
+								ACDebug.LogWarning ("Cannot separate multiple speech lines when 'Is Background?' is checked - will only play '" + textArray[0] + "'");
+							}
+						}
+
 						isRunning = false;
 						return 0f;
 					}
@@ -129,9 +141,10 @@ namespace AC
 					{
 						speech.continueFromSpeech = false;
 						isRunning = false;
+
 						return 0;
 					}
-					
+
 					if (speech == null || !speech.isAlive)
 					{
 						if (KickStarter.speechManager.separateLines)
@@ -154,7 +167,7 @@ namespace AC
 									{
 										// Show next line
 										splitDelay = false;
-										endTime = Time.time + StartSpeech ();
+										StartSpeech ();
 										return defaultPauseTime;
 									}
 								}
@@ -164,7 +177,7 @@ namespace AC
 							{
 								// Show next line
 								splitDelay = false;
-								endTime = Time.time + StartSpeech ();
+								StartSpeech ();
 								return defaultPauseTime;
 							}
 						}
@@ -182,33 +195,11 @@ namespace AC
 					}
 					else
 					{
-						if ((!isBackground && KickStarter.speechManager.displayForever) || speech.IsPaused ())
-						{
-							return defaultPauseTime;
-						}
-						
-						if (KickStarter.speechManager.separateLines)
-						{
-							return defaultPauseTime;
-						}
-						
-						if (!speech.HasPausing ())
-						{
-							// Ignore this if we're using [wait] tokens
-							if (Time.time < endTime)
-							{
-								return defaultPauseTime;
-							}
-							else
-							{
-								isRunning = false;
-								return 0f;
-							}
-						}
+						return defaultPauseTime;
 					}
 				}
 			}
-			
+
 			return 0f;
 		}
 		
@@ -364,7 +355,7 @@ namespace AC
 			isBackground = EditorGUILayout.Toggle ("Play in background?", isBackground);
 			if (!isBackground)
 			{
-				waitTimeOffset = EditorGUILayout.Slider ("Wait time offset (s):", waitTimeOffset, -1f, 4f);
+				waitTimeOffset = EditorGUILayout.Slider ("Wait time offset (s):", waitTimeOffset, 0f, 4f);
 			}
 
 			AfterRunningOption ();
@@ -406,6 +397,37 @@ namespace AC
 			return "";
 		}
 
+
+		public override bool ConvertLocalVariableToGlobal (int oldLocalID, int newGlobalID)
+		{
+			bool wasAmended = base.ConvertLocalVariableToGlobal (oldLocalID, newGlobalID);
+
+			string newMessageText = AdvGame.ConvertLocalVariableTokenToGlobal (messageText, oldLocalID, newGlobalID);
+			if (messageText != newMessageText)
+			{
+				wasAmended = true;
+				messageText = newMessageText;
+			}
+			return wasAmended;
+		}
+
+
+		public override bool ConvertGlobalVariableToLocal (int oldGlobalID, int newLocalID, bool isCorrectScene)
+		{
+			bool isAffected = base.ConvertGlobalVariableToLocal (oldGlobalID, newLocalID, isCorrectScene);
+
+			string newMessageText = AdvGame.ConvertGlobalVariableTokenToLocal (messageText, oldGlobalID, newLocalID);
+			if (messageText != newMessageText)
+			{
+				isAffected = true;
+				if (isCorrectScene)
+				{
+					messageText = newMessageText;
+				}
+			}
+			return isAffected;
+		}
+
 		#endif
 
 
@@ -417,7 +439,7 @@ namespace AC
 		}
 		
 		
-		private float StartSpeech ()
+		private void StartSpeech ()
 		{
 			string _text = messageText;
 			int _lineID = lineID;
@@ -429,9 +451,6 @@ namespace AC
 				_text = KickStarter.runtimeLanguages.GetTranslation (_text, lineID, languageNumber);
 			}
 			
-			bool isSplittingLines = false;
-			bool isLastSplitLine = false;
-
 			_text = _text.Replace ("\\n", "\n");
 
 			if (KickStarter.speechManager.separateLines)
@@ -440,7 +459,6 @@ namespace AC
 				if (textArray.Length > 1)
 				{
 					_text = textArray [splitIndex];
-					isSplittingLines = true;
 
 					if (splitIndex > 0)
 					{
@@ -453,10 +471,6 @@ namespace AC
 							_lineID = -1;
 						}
 					}
-					if (textArray.Length > splitIndex)
-					{
-						isLastSplitLine = true;
-					}
 
 					if (languageNumber > 0)
 					{
@@ -467,10 +481,9 @@ namespace AC
 			
 			if (_text != "")
 			{
-				_text = AdvGame.ConvertTokens (_text, languageNumber, localVariables);
+				_text = AdvGame.ConvertTokens (_text, languageNumber, localVariables, ownParameters);
 			
-				speech = KickStarter.dialog.StartDialog (runtimeSpeaker, _text, isBackground, _lineID, noAnimation, runActionListInBackground);
-				float displayDuration = speech.displayDuration;
+				speech = KickStarter.dialog.StartDialog (runtimeSpeaker, _text, (isBackground || runActionListInBackground), _lineID, noAnimation);
 
 				if (runtimeSpeaker && !noAnimation)
 				{
@@ -479,24 +492,7 @@ namespace AC
 						runtimeSpeaker.GetAnimEngine ().ActionSpeechRun (this);
 					}
 				}
-				
-				if (isLastSplitLine)
-				{
-					return (displayDuration + waitTimeOffset);
-				}
-				
-				if (isSplittingLines)
-				{
-					return displayDuration;
-				}
-				
-				if (!isBackground)
-				{
-					return (displayDuration + waitTimeOffset);
-				}
 			}
-			
-			return 0f;
 		}
 
 	}

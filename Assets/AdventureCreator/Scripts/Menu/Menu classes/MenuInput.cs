@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2017
+ *	by Chris Burton, 2013-2018
  *	
  *	"MenuInput.cs"
  * 
@@ -35,7 +35,7 @@ namespace AC
 		public TextEffects textEffects;
 		/** The outline thickness, if textEffects != TextEffects.None */
 		public float outlineSize = 2f;
-		/** What kind of characters can be entered in by the player (AlphaNumeric, NumericOnly) */
+		/** What kind of characters can be entered in by the player (AlphaNumeric, NumericOnly, AllowSpecialCharacters) */
 		public AC_InputType inputType;
 		/** The character limit on text that can be entered */
 		public int characterLimit = 10;
@@ -73,23 +73,26 @@ namespace AC
 		}
 
 
-		/**
-		 * <summary>Creates and returns a new MenuInput that has the same values as itself.</summary>
-		 * <param name = "fromEditor">If True, the duplication was done within the Menu Manager and not as part of the gameplay initialisation.</param>
-		 * <returns>A new MenuInput with the same values as itself</returns>
-		 */
-		public override MenuElement DuplicateSelf (bool fromEditor)
+		public override MenuElement DuplicateSelf (bool fromEditor, bool ignoreUnityUI)
 		{
 			MenuInput newElement = CreateInstance <MenuInput>();
 			newElement.Declare ();
-			newElement.CopyInput (this);
+			newElement.CopyInput (this, ignoreUnityUI);
 			return newElement;
 		}
 		
 		
-		private void CopyInput (MenuInput _element)
+		private void CopyInput (MenuInput _element, bool ignoreUnityUI)
 		{
-			uiInput = _element.uiInput;
+			if (ignoreUnityUI)
+			{
+				uiInput = null;
+			}
+			else
+			{
+				uiInput = _element.uiInput;
+			}
+
 			label = _element.label;
 			anchor = _element.anchor;
 			textEffects = _element.textEffects;
@@ -108,9 +111,9 @@ namespace AC
 		 * <summary>Initialises the linked Unity UI GameObject.</summary>
 		 * <param name = "_menu The element's parent Menu</param>
 		 */
-		public override void LoadUnityUI (AC.Menu _menu)
+		public override void LoadUnityUI (AC.Menu _menu, Canvas canvas)
 		{
-			uiInput = LinkUIElement <InputField>();
+			uiInput = LinkUIElement <InputField> (canvas);
 		}
 		
 
@@ -148,19 +151,14 @@ namespace AC
 			EditorGUILayout.BeginVertical ("Button");
 			if (source == MenuSource.AdventureCreator)
 			{
-				label = EditorGUILayout.TextField ("Default text:", label);
 				inputType = (AC_InputType) CustomGUILayout.EnumPopup ("Input type:", inputType, apiPrefix + ".inputType");
+				label = EditorGUILayout.TextField ("Default text:", label);
 				if (inputType == AC_InputType.AlphaNumeric)
 				{
 					allowSpaces = CustomGUILayout.Toggle ("Allow spaces?", allowSpaces, apiPrefix + ".allowSpace");
 				}
 				characterLimit = CustomGUILayout.IntField ("Character limit:", characterLimit, apiPrefix + ".characterLimit");
-				anchor = (TextAnchor) CustomGUILayout.EnumPopup ("Text alignment:", anchor, apiPrefix + ".anchor");
-				textEffects = (TextEffects) CustomGUILayout.EnumPopup ("Text effect:", textEffects, apiPrefix + ".textEffects");
-				if (textEffects != TextEffects.None)
-				{
-					outlineSize = CustomGUILayout.Slider ("Effect size:", outlineSize, 1f, 5f, apiPrefix + ".outlineSize");
-				}
+
 				linkedButton = CustomGUILayout.TextField ("'Enter' key's linked Button:", linkedButton, apiPrefix + ".linkedPrefab");
 			}
 			else
@@ -171,6 +169,17 @@ namespace AC
 			EditorGUILayout.EndVertical ();
 			
 			base.ShowGUI (menu);
+		}
+
+
+		protected override void ShowTextGUI (string apiPrefix)
+		{
+			anchor = (TextAnchor) CustomGUILayout.EnumPopup ("Text alignment:", anchor, apiPrefix + ".anchor");
+			textEffects = (TextEffects) CustomGUILayout.EnumPopup ("Text effect:", textEffects, apiPrefix + ".textEffects");
+			if (textEffects != TextEffects.None)
+			{
+				outlineSize = CustomGUILayout.Slider ("Effect size:", outlineSize, 1f, 5f, apiPrefix + ".outlineSize");
+			}
 		}
 		
 		#endif
@@ -195,6 +204,21 @@ namespace AC
 			}
 
 			return label;
+		}
+
+
+		/**
+		 * <summary>Set the contents of the text box manually.</summary>
+		 * <param name = "_label">The new label for the text box.</param>
+		 */
+		public void SetLabel (string _label)
+		{
+			label = _label;
+
+			if (uiInput != null && uiInput.textComponent != null)
+			{
+				uiInput.text = _label;
+			}
 		}
 
 
@@ -225,16 +249,9 @@ namespace AC
 			base.Display (_style, _slot, zoom, isActive);
 
 			string fullText = label;
-			if (Application.isPlaying && (isSelected || isActive))
+			if (Application.isPlaying && inputType != AC_InputType.AllowSpecialCharacters && (isSelected || isActive))
 			{
-				if (Options.GetLanguageName () == "Arabic" || Options.GetLanguageName () == "Hebrew")
-				{
-					fullText = "|" + fullText;
-				}
-				else
-				{
-					fullText += "|";
-				}
+				fullText = AdvGame.CombineLanguageString (fullText, "|", Options.GetLanguage (), false);
 			}
 
 			_style.wordWrap = true;
@@ -250,7 +267,14 @@ namespace AC
 			}
 			else
 			{
-				GUI.Label (ZoomRect (relativeRect, zoom), fullText, _style);
+				if (inputType == AC_InputType.AllowSpecialCharacters)
+				{
+					label = GUI.TextField (ZoomRect (relativeRect, zoom), fullText, characterLimit, _style);
+				}
+				else
+				{
+					GUI.Label (ZoomRect (relativeRect, zoom), fullText, _style);
+				}
 			}
 		}
 
@@ -277,6 +301,18 @@ namespace AC
 		}
 
 
+		private void ProcessReturn (string input, string menuName)
+		{
+			if (input == "KeypadEnter" || input == "Return" || input == "Enter")
+			{
+				if (linkedButton != "" && menuName != "")
+				{
+					PlayerMenus.SimulateClick (menuName, PlayerMenus.GetElementWithName (menuName, linkedButton), 1);
+				}
+			}
+		}
+
+
 		/**
 		 * Processes input entered by the player, and applies it to the text box (OnGUI-based Menus only).
 		 */
@@ -286,12 +322,13 @@ namespace AC
 			{
 				return;
 			}
-
-			bool rightToLeft = false;
-			if (Options.GetLanguageName () == "Arabic" || Options.GetLanguageName () == "Hebrew")
+			if (inputType == AC_InputType.AllowSpecialCharacters)
 			{
-				rightToLeft = true;
+				ProcessReturn (input, menuName);
+				return;
 			}
+
+			bool rightToLeft = KickStarter.runtimeLanguages.LanguageReadsRightToLeft (Options.GetLanguage ());
 
 			isSelected = true;
 			if (input == "Backspace")
@@ -314,10 +351,7 @@ namespace AC
 			}
 			else if (input == "KeypadEnter" || input == "Return" || input == "Enter")
 			{
-				if (linkedButton != "" && menuName != "")
-				{
-					PlayerMenus.SimulateClick (menuName, PlayerMenus.GetElementWithName (menuName, linkedButton), 1);
-				}
+				ProcessReturn (input, menuName);
 			}
 			else if ((inputType == AC_InputType.AlphaNumeric && (input.Length == 1 || input.Contains ("Alpha"))) ||
 			         (inputType == AC_InputType.NumbericOnly && input.Contains ("Alpha")) ||

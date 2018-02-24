@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2016
+ *	by Chris Burton, 2013-2018
  *	
  *	"ActionMixerSnapshot.cs"
  * 
@@ -10,7 +10,7 @@
  */
 
 using UnityEngine;
-#if UNITY_5
+#if UNITY_5 || UNITY_2017_1_OR_NEWER
 using UnityEngine.Audio;
 #endif
 using System.Collections;
@@ -27,7 +27,7 @@ namespace AC
 	public class ActionMixerSnapshot : Action
 	{
 
-		#if UNITY_5
+		#if UNITY_5 || UNITY_2017_1_OR_NEWER
 		public int numSnapshots = 1;
 		public AudioMixer audioMixer = null;
 		public AudioMixerSnapshot snapshot = null;
@@ -46,7 +46,7 @@ namespace AC
 		
 		override public float Run ()
 		{
-			#if UNITY_5
+			#if UNITY_5 || UNITY_2017_1_OR_NEWER
 			if (!isRunning)
 			{
 				isRunning = true;
@@ -100,7 +100,7 @@ namespace AC
 		
 		override public void ShowGUI ()
 		{
-			#if UNITY_5
+			#if UNITY_5 || UNITY_2017_1_OR_NEWER
 			numSnapshots = EditorGUILayout.IntSlider ("Number of snapshots:", numSnapshots, 1, 10);
 			if (numSnapshots == 1)
 			{
@@ -148,7 +148,7 @@ namespace AC
 		
 		public override string SetLabel ()
 		{
-			#if UNITY_5
+			#if UNITY_5 || UNITY_2017_1_OR_NEWER
 			if (numSnapshots == 1 && snapshot != null)
 			{
 				return " (" + snapshot.name + ")";
@@ -166,7 +166,7 @@ namespace AC
 	}
 
 
-	#if UNITY_5
+	#if UNITY_5 || UNITY_2017_1_OR_NEWER
 	[System.Serializable]
 	public class SnapshotMix
 	{

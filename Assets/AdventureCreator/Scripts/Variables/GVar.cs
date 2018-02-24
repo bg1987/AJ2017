@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2016
+ *	by Chris Burton, 2013-2018
  *	
  *	"GVar.cs"
  * 
@@ -36,6 +36,8 @@ namespace AC
 		public string textVal;
 		/** An array of labels, if a popup. */
 		public string[] popUps;
+		/** Its value, if a Vector3 */
+		public Vector3 vector3Val;
 		/** What it links to.  A Variable can link to Options Data, or a PlayMaker Global Variable. */
 		public VarLink link = VarLink.None;
 		/** If linked to a PlayMaker Global Variable, the name of the PM variable. */
@@ -57,6 +59,10 @@ namespace AC
 
 		private string[] runtimeTranslations;
 
+		#if UNITY_EDITOR
+		public string description = "";
+		#endif
+
 
 		public GVar ()
 		{}
@@ -72,7 +78,6 @@ namespace AC
 			floatVal = 0f;
 			textVal = "";
 			type = VariableType.Boolean;
-			id = 0;
 			link = VarLink.None;
 			pmVar = "";
 			popUps = null;
@@ -82,17 +87,15 @@ namespace AC
 			textValLineID = -1;
 			popUpsLineID = -1;
 			canTranslate = true;
-			
-			// Update id based on array
-			foreach (int _id in idArray)
-			{
-				if (id == _id)
-				{
-					id ++;
-				}
-			}
-			
+			vector3Val = Vector3.zero;
+
+			AssignUniqueID (idArray);
+
 			label = "Variable " + (id + 1).ToString ();
+
+			#if UNITY_EDITOR
+			description = "";
+			#endif
 		}
 		
 
@@ -117,6 +120,34 @@ namespace AC
 			textValLineID = assetVar.textValLineID;
 			popUpsLineID = assetVar.popUpsLineID;
 			canTranslate = assetVar.canTranslate;
+			vector3Val = assetVar.vector3Val;
+
+			#if UNITY_EDITOR
+			description = assetVar.description;
+			#endif
+		}
+
+
+		/**
+		 * <summary>Sets the internal ID to a unique number based on an array of previously-used values</summary>
+		 * <param name = "idArray">An array of previously-used ID values</param>
+		 * <returns>The new ID number</returns>>
+		 */
+		public int AssignUniqueID (int[] idArray)
+		{
+			id = 0;
+
+			if (idArray != null)
+			{
+				foreach (int _id in idArray)
+				{
+					if (id == _id)
+					{
+						id ++;
+					}
+				}
+			}
+			return id;
 		}
 		
 		
@@ -156,6 +187,14 @@ namespace AC
 				{
 					SetFloatValue (PlayMakerIntegration.GetGlobalFloat (pmVar));
 				}
+				else if (type == VariableType.Vector3)
+				{
+					SetVector3Value (PlayMakerIntegration.GetGlobalVector3 (pmVar));
+				}
+			}
+			else if (link == VarLink.CustomScript)
+			{
+				KickStarter.eventManager.Call_OnDownloadVariable (this);
 			}
 		}
 		
@@ -195,10 +234,18 @@ namespace AC
 				{
 					PlayMakerIntegration.SetGlobalFloat (pmVar, floatVal);
 				}
+				else if (type == VariableType.Vector3)
+				{
+					PlayMakerIntegration.SetGlobalVector3 (pmVar, vector3Val);
+				}
 			}
 			else if (link == VarLink.OptionsData)
 			{
 				Options.SavePrefs ();
+			}
+			else if (link == VarLink.CustomScript)
+			{
+				KickStarter.eventManager.Call_OnUploadVariable (this);
 			}
 		}
 		
@@ -264,6 +311,22 @@ namespace AC
 			}
 
 			if (originalValue != floatVal)
+			{
+				KickStarter.eventManager.Call_OnVariableChange (this);
+			}
+		}
+
+
+		/**
+		 * <summary>Sets the value if its type is Vector3.</summary>
+		 * <param name = "newValue">The new Vector3 value</param>
+		 */
+		public void SetVector3Value (Vector3 newValue)
+		{
+			Vector3 originalValue = vector3Val;
+			vector3Val = newValue;
+
+			if (originalValue != newValue)
 			{
 				KickStarter.eventManager.Call_OnVariableChange (this);
 			}
@@ -419,6 +482,11 @@ namespace AC
 					runtimeTranslations = null;
 				}
 			}
+			else if (type == VariableType.Vector3)
+			{
+				Vector3 oldValue = oldVar.vector3Val;
+				vector3Val = oldValue;
+			}
 		}
 		
 		
@@ -472,6 +540,10 @@ namespace AC
 			{
 				return floatVal.ToString ();
 			}
+			else if (type == VariableType.Vector3)
+			{
+				return "(" + vector3Val.x.ToString () + ", " + vector3Val.y.ToString () + ", " + vector3Val.z.ToString () + ")";
+			}
 			else
 			{
 				if (val == 0)
@@ -517,7 +589,78 @@ namespace AC
 			}
 			return false;
 		}
-		
+
+
+		/** Its value, if an integer. */
+		public int IntegerValue
+		{
+			get
+			{
+				return val;
+			}
+			set
+			{
+				val = value;
+			}
+		}
+
+
+		/** Its value, if a boolean. */
+		public bool BooleanValue
+		{
+			get
+			{
+				return (val == 1);
+			}
+			set
+			{
+				val = (value) ? 1 : 0;
+			}
+		}
+
+
+		/** Its value, if a float. */
+		public float FloatValue
+		{
+			get
+			{
+				return floatVal;
+			}
+			set
+			{
+				floatVal = value;
+			}
+		}
+
+
+		/** Its value, if a string. */
+		public string TextValue
+		{
+			get
+			{
+				return textVal;
+			}
+			set
+			{
+				textVal = value;
+			}
+		}
+
+
+		/** Its value, if a Vector3. */
+		public Vector3 Vector3Value
+		{
+			get
+			{
+				return vector3Val;
+			}
+			set
+			{
+
+				vector3Val = value;
+			}
+		}
+
 	}
 
 }

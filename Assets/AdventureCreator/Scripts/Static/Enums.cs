@@ -21,7 +21,7 @@ namespace AC
 	public enum ActionListSource { InScene, AssetFile };
 	public enum InteractionSource { InScene, AssetFile, CustomScript };
 	
-	public enum AppearType { Manual, MouseOver, DuringConversation, OnInputKey, OnInteraction, OnHotspot, WhenSpeechPlays, DuringGameplay, OnContainer, WhileLoading, DuringCutscene, WhileInventorySelected };
+	public enum AppearType { Manual, MouseOver, DuringConversation, OnInputKey, OnInteraction, OnHotspot, WhenSpeechPlays, DuringGameplay, OnContainer, WhileLoading, DuringCutscene, WhileInventorySelected, ExceptWhenPaused };
 	public enum SpeechMenuType { All, CharactersOnly, NarrationOnly, SpecificCharactersOnly, AllExceptSpecificCharacters };
 	public enum SpeechMenuLimit { All, BlockingOnly, BackgroundOnly };
 	public enum MenuTransition { Fade, Pan, FadeAndPan, Zoom, None };
@@ -33,9 +33,9 @@ namespace AC
 	public enum AC_PositionType { Centred, Aligned, Manual, FollowCursor, AppearAtCursorAndFreeze, OnHotspot, AboveSpeakingCharacter, AbovePlayer };
 	public enum UIPositionType { Manual, FollowCursor, AppearAtCursorAndFreeze,  OnHotspot, AboveSpeakingCharacter, AbovePlayer };
 	public enum AC_PositionType2 { Aligned, AbsolutePixels, RelativeToMenuSize };
-	public enum AC_ShiftInventory { ShiftLeft, ShiftRight };
+	public enum AC_ShiftInventory { ShiftPrevious, ShiftNext };
 	public enum AC_SizeType { Automatic, Manual, AbsolutePixels };
-	public enum AC_InputType { AlphaNumeric, NumbericOnly };
+	public enum AC_InputType { AlphaNumeric, NumbericOnly, AllowSpecialCharacters };
 	public enum AC_LabelType { Normal, Hotspot, DialogueLine, DialogueSpeaker, GlobalVariable, ActiveSaveProfile, InventoryProperty };
 	public enum AC_GraphicType { Normal, DialoguePortrait };
 	public enum DragElementType { EntireMenu, SingleElement };
@@ -51,15 +51,15 @@ namespace AC
 	public enum CraftingElementType { Ingredients, Output };
 	public enum ConversationDisplayType { TextOnly, IconOnly, IconAndText };
 	public enum SliderDisplayType { FillBar, MoveableBlock };
-	public enum AC_DisplayType { IconOnly, TextOnly, IconAndText };		
+	public enum AC_DisplayType { IconOnly, TextOnly, IconAndText };
 
 	public enum AC_TextType { Speech, Hotspot, DialogueOption, InventoryItem, CursorIcon, MenuElement, HotspotPrefix, JournalEntry, InventoryItemProperty, Variable, Character };
 	public enum CursorDisplay { Always, OnlyWhenPaused, Never };
-	public enum LookUseCursorAction { DisplayBothSideBySide, DisplayUseIcon };
+	public enum LookUseCursorAction { DisplayBothSideBySide, DisplayUseIcon, RightClickCyclesModes };
 	
 	public enum InteractionType { Use, Examine, Inventory };
-	public enum AC_InteractionMethod { ContextSensitive, ChooseInteractionThenHotspot, ChooseHotspotThenInteraction };
-	public enum HotspotDetection { MouseOver, PlayerVicinity };
+	public enum AC_InteractionMethod { ContextSensitive, ChooseInteractionThenHotspot, ChooseHotspotThenInteraction, CustomScript };
+	public enum HotspotDetection { MouseOver, PlayerVicinity, CustomScript };
 	public enum HotspotsInVicinity { NearestOnly, CycleMultiple, ShowAll };
 	public enum PlayerAction { DoNothing, TurnToFace, WalkTo, WalkToMarker };
 	public enum CancelInteractions { CursorLeavesMenuOrHotspot, CursorLeavesMenu, ClickOffMenu, ViaScriptOnly };
@@ -107,12 +107,12 @@ namespace AC
 	public enum TransformType { Translate, Rotate, Scale, CopyMarker };
 	
 	public enum VariableLocation { Global, Local };
-	public enum VariableType { Boolean, Integer, String, Float, PopUp };
+	public enum VariableType { Boolean, Integer, String, Float, PopUp, Vector3 };
 	public enum BoolValue { True=1, False=0 };
 	public enum SetVarMethod { SetValue, IncreaseByValue, SetAsRandom, Formula };
 	public enum SetVarMethodString { EnteredHere=0, SetAsMenuElementText=1 };
 	public enum SetVarMethodIntBool { EnteredHere=0, SetAsMecanimParameter=1 };
-	public enum SetParamMethod { EnteredHere=0, CopiedFromGlobalVariable=1 };
+	public enum SetParamMethod { EnteredHere=0, CopiedFromGlobalVariable=1, Random=2, CopiedFromParameter=3 };
 	public enum GetVarMethod { EnteredValue, GlobalVariable, LocalVariable };
 	
 	public enum AC_Direction { None, Up, Down, Left, Right };
@@ -128,27 +128,26 @@ namespace AC
 	public enum NewPlayerPosition { ReplaceCurrentPlayer, ReplaceNPC, AppearAtMarker, AppearInOtherScene };
 	public enum OldPlayer { RemoveFromScene, ReplaceWithNPC };
 	
-	public enum SaveTimeDisplay { DateOnly, TimeAndDate, None };
+	public enum SaveTimeDisplay { DateOnly, TimeAndDate, None, CustomFormat };
 	public enum ConversationAction { ReturnToConversation, Stop, RunOtherConversation };
 	
 	public enum AutoManual { Automatic, Manual };
 	public enum SceneSetting { DefaultNavMesh, DefaultPlayerStart, SortingMap, OnStartCutscene, OnLoadCutscene, TintMap };
 	public enum AnimatedCameraType { PlayWhenActive, SyncWithTargetMovement };
-	public enum VarLink { None, PlaymakerGlobalVariable, OptionsData };
+	public enum VarLink { None, PlaymakerGlobalVariable, OptionsData, CustomScript };
 	
-	public enum HotspotIconDisplay { Never, Always, OnlyWhenHighlighting, OnlyWhenFlashing };
+	public enum HotspotIconDisplay { Never, Always, OnlyWhenHighlighting, OnlyWhenFlashing, ViaScriptOnly };
 	public enum HotspotIcon { Texture, UseIcon };
 	public enum OnCreateRecipe { JustMoveToInventory, SelectItem, RunActionList };
 	public enum HighlightState { None, Normal, Flash, Pulse, On };
 	public enum HighlightType { Enable, Disable, PulseOnce, PulseContinually };
 	
-	public enum SaveMethod { Binary, XML, Json };
 	public enum HeadFacing { None, Hotspot, Manual };
 	public enum CharFaceType { Body, Head };
 	public enum InputCheckType { Button, Axis, SingleTapOrClick, DoubleTapOrClick };
 	public enum IntCondition { EqualTo, NotEqualTo, LessThan, MoreThan };
 	public enum RightClickInventory { DeselectsItem, ExaminesItem };
-	public enum ParameterType { GameObject, InventoryItem, GlobalVariable, LocalVariable, String, Float, Integer, Boolean, UnityObject };
+	public enum ParameterType { GameObject, InventoryItem, GlobalVariable, LocalVariable, String, Float, Integer, Boolean, UnityObject, Vector3 };
 	
 	public enum ChangeNavMeshMethod { ChangeNavMesh, ChangeNumberOfHoles };
 	public enum InvAction { Add, Remove, Replace };
@@ -159,7 +158,7 @@ namespace AC
 	public enum AlignDragMovement { AlignToCamera, AlignToPlane };
 	public enum DragRotationType { None, Roll, Screw };
 	public enum TriggerDetects { Player, AnyObjectWithComponent, AnyObject, SetObject, AnyObjectWithTag };
-	public enum PositionRelativeTo { Nothing, RelativeToActiveCamera, RelativeToPlayer };
+	public enum PositionRelativeTo { Nothing, RelativeToActiveCamera, RelativeToPlayer, RelativeToGameObject, EnteredValue, VectorVariable };
 
 	public enum CursorRendering { Software, Hardware };
 	public enum SeeInteractions { ClickOnHotspot, CursorOverHotspot, ViaScriptOnly };
@@ -175,7 +174,7 @@ namespace AC
 	public enum ActionListEditorScrollWheel { PansWindow, ZoomsWindow };
 	public enum SelectItemMode { Use, Give };
 	public enum WizardMenu { Blank, DefaultAC, DefaultUnityUI };
-	public enum QTEType { SingleKeypress, HoldKey, ButtonMash };
+	public enum QTEType { SingleKeypress, HoldKey, ButtonMash, SingleAxis };
 	public enum QTEState { None, Win, Lose };
 
 	public enum FilterSpeechLine { Type, Text, Scene, Speaker, Description, ID, All };
@@ -185,10 +184,11 @@ namespace AC
 	public enum TurningStyle { Linear, Script, RootMotion };
 	public enum DoubleClickingHotspot { MakesPlayerRun, TriggersInteractionInstantly, DoesNothing };
 	public enum BoolCondition { EqualTo, NotEqualTo };
+	public enum VectorCondition { EqualTo, MagnitudeGreaterThan };
 
 	public enum ManageProfileType { CreateProfile, DeleteProfile, RenameProfile, SwitchActiveProfile };
 	public enum DeleteProfileType { ActiveProfile, SetSlotIndex, SlotIndexFromVariable, SetProfileID };
-	public enum SaveCheck { NumberOfSaveGames, NumberOfProfiles, IsSavingPossible, IsSlotEmpty, DoesProfileExist };
+	public enum SaveCheck { NumberOfSaveGames, NumberOfProfiles, IsSavingPossible, IsSlotEmpty, DoesProfileExist, DoesProfileNameExist };
 	public enum ManageSaveType { DeleteSave, RenameSave };
 	public enum SelectSaveType { Autosave, SetSlotIndex, SlotIndexFromVariable };
 	public enum SaveHandling { LoadGame, ContinueFromLastSave, OverwriteExistingSave, SaveNewGame };
@@ -198,13 +198,13 @@ namespace AC
 	public enum RootMotionType { None, TwoD, ThreeD };
 	public enum RotationLock { Free, Locked, Limited };
 
-	public enum FirstPersonTouchScreen { TouchControlsTurningOnly, OneTouchToMoveAndTurn, OneTouchToTurnAndTwoTouchesToMove };
+	public enum FirstPersonTouchScreen { TouchControlsTurningOnly, OneTouchToMoveAndTurn, OneTouchToTurnAndTwoTouchesToMove, CustomInput };
 	public enum TintMapMethod { ChangeTintMap, ChangeIntensity };
 	public enum VisState { Visible, Invisible };
 	public enum CheckVisState { InScene, InCamera };
 
 	public enum NavMeshSearchDirection { StraightDownFromCursor, RadiallyOutwardsFromCursor };
-	public enum MovieClipType { FullScreen, OnMaterial };
+	public enum MovieClipType { FullScreen, OnMaterial, VideoPlayer };
 	public enum SetJournalPage { FirstPage, LastPage, SetHere };
 	public enum InventoryPropertyType { SelectedItem, LastClickedItem, MouseOverItem };
 	public enum UIHideStyle { DisableObject, ClearContent };
@@ -217,7 +217,7 @@ namespace AC
 	public enum ShowDebugLogs { Always, OnlyWarningsOrErrors, Never };
 	public enum JournalType { NewJournal, DisplayExistingJournal };
 	public enum CharacterEvasion { None, OnlyStationaryCharacters, AllCharacters };
-	public enum UIPointerState { PointerClick, PointerDown };
+	public enum UIPointerState { PointerClick, PointerDown, PointerEnter };
 	public enum InventoryEventType { Add, Remove, Select, Deselect };
 	public enum CameraShakeEffect { Translate, Rotate, TranslateAndRotate };
 
@@ -229,5 +229,12 @@ namespace AC
 	public enum MovieMaterialMethod { PlayMovie, PauseMovie, StopMovie };
 	public enum FirstPersonHeadBobMethod { BuiltIn, CustomAnimation, CustomScript };
 	public enum ForceGameplayCursor { None, KeepLocked, KeepUnlocked };
+	public enum WhenReselectHotspot { RestoreHotspotIcon, ResetIcon };
+
+	public enum LinkUIGraphic { ImageComponent, ButtonTargetGraphic };
+	public enum AlignType { YAxisOnly, CopyFullRotation };
+	public enum DoubleClickMovement { MakesPlayerRun = 0, RequiredToWalk = 1, Disabled = 2 };
+	public enum MusicAction { Play, Stop, Crossfade, ResumeLastStopped };
+	public enum AngleSnapping { None=0, NinetyDegrees=1, FortyFiveDegrees=2 };
 
 }

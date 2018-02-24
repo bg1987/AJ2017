@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2016
+ *	by Chris Burton, 2013-2018
  *	
  *	"SceneChanger.cs"
  * 
@@ -40,6 +40,8 @@ namespace AC
 		private Texture2D textureOnTransition = null;
 		private bool isLoading = false;
 		private float loadingProgress = 0f;
+		
+		private int removeNPCID = 0;
 
 
 		public void OnAwake ()
@@ -79,11 +81,11 @@ namespace AC
 			else
 			{
 				relativePosition = KickStarter.player.transform.position - markerTransform.position;
-				if (KickStarter.settingsManager.IsUnity2D ())
+				if (SceneSettings.IsUnity2D ())
 				{
 					relativePosition.z = 0f;
 				}
-				else if (KickStarter.settingsManager.IsTopDown ())
+				else if (SceneSettings.IsTopDown ())
 				{
 					relativePosition.y = 0f;
 				}
@@ -143,18 +145,23 @@ namespace AC
 
 
 		/**
-		 * <summary>Loads a new scene.</summary>
+		 * <summary>Loads a new scene.  This method should be used instead of Unity's own scene-switching method, because this allows for AC objects to be saved beforehand</summary>
 		 * <param name = "nextSceneInfo">Info about the scene to load</param>
 		 * <param name = "sceneNumber">The number of the scene to load, if sceneName = ""</param>
 		 * <param name = "saveRoomData">If True, then the states of the current scene's Remember scripts will be recorded in LevelStorage</param>
 		 * <param name = "forceReload">If True, the scene will be re-loaded if it is already open.</param>
+		 * <param name = "_removeNPCID">If non-zero, then an NPC with a Constant ID of this number will be removed after the scene-change</param>
 		 */
-		public void ChangeScene (SceneInfo nextSceneInfo, bool saveRoomData, bool forceReload = false)
+		public void ChangeScene (SceneInfo nextSceneInfo, bool saveRoomData, bool forceReload = false, int _removeNPCID = 0)
 		{
+			removeNPCID = 0;
+
 			if (!isLoading)
 			{
 				if (!nextSceneInfo.Matches (thisSceneInfo) || forceReload)
 				{
+					removeNPCID = _removeNPCID;
+
 					PrepareSceneForExit (!KickStarter.settingsManager.useAsyncLoading, saveRoomData);
 					LoadLevel (nextSceneInfo, KickStarter.settingsManager.useLoadingScreen, KickStarter.settingsManager.useAsyncLoading, forceReload);
 				}
@@ -167,9 +174,13 @@ namespace AC
 		 */
 		public void LoadPreviousScene ()
 		{
-			if (previousSceneInfo != null)
+			if (previousSceneInfo != null && !previousSceneInfo.IsNull)
 			{
 				ChangeScene (previousSceneInfo, true);
+			}
+			else
+			{
+				ACDebug.LogWarning ("Cannot load previous scene - no scene data present!");
 			}
 		}
 
@@ -243,7 +254,6 @@ namespace AC
 		{
 			yield return new WaitForEndOfFrame ();
 			DestroyImmediate (_gameObject);
-			KickStarter.stateHandler.GatherObjects (true);
 		}
 
 
@@ -283,7 +293,14 @@ namespace AC
 			PrepareSceneForExit (true, false);
 			if (loadAsynchronously)
 			{
-				yield return new WaitForSeconds (KickStarter.settingsManager.loadingDelay);
+				if (KickStarter.settingsManager.loadingDelay > 0f)
+				{
+					float waitForTime = Time.realtimeSinceStartup + KickStarter.settingsManager.loadingDelay;
+					while (Time.realtimeSinceStartup < waitForTime)
+					{
+						yield return null;
+					}
+				}
 
 				AsyncOperation aSync = null;
 				if (nextSceneInfo.Matches (preloadSceneInfo))
@@ -306,7 +323,16 @@ namespace AC
 					}
 				
 					isLoading = false;
-					yield return new WaitForSeconds (KickStarter.settingsManager.loadingDelay);
+
+					if (KickStarter.settingsManager.loadingDelay > 0f)
+					{
+						float waitForTime = Time.realtimeSinceStartup + KickStarter.settingsManager.loadingDelay;
+						while (Time.realtimeSinceStartup < waitForTime)
+						{
+							yield return null;
+						}
+					}
+
 					aSync.allowSceneActivation = true;
 				}
 				else
@@ -317,7 +343,8 @@ namespace AC
 						yield return null;
 					}
 				}
-				KickStarter.stateHandler.GatherObjects ();
+
+				KickStarter.stateHandler.IgnoreNavMeshCollisions ();
 			}
 			else
 			{
@@ -329,10 +356,7 @@ namespace AC
 
 			preloadSceneInfo = new SceneInfo ("", -1);
 
-			if (KickStarter.eventManager != null)
-			{
-				KickStarter.eventManager.Call_OnAfterChangeScene ();
-			}
+			StartCoroutine (OnCompleteSceneChange ());
 		}
 
 
@@ -359,15 +383,12 @@ namespace AC
 				yield return null;
 			}
 
-			KickStarter.stateHandler.GatherObjects ();
+			KickStarter.stateHandler.IgnoreNavMeshCollisions ();
 			isLoading = false;
 			preloadAsync = null;
 			preloadSceneInfo = new SceneInfo ("", -1);
 
-			if (KickStarter.eventManager != null)
-			{
-				KickStarter.eventManager.Call_OnAfterChangeScene ();
-			}
+			StartCoroutine (OnCompleteSceneChange ());
 		}
 
 
@@ -408,10 +429,39 @@ namespace AC
 			nextSceneInfo.LoadLevel (forceReload);
 			isLoading = false;
 
+			StartCoroutine (OnCompleteSceneChange ());
+		}
+
+
+		private IEnumerator OnCompleteSceneChange ()
+		{
 			if (KickStarter.eventManager != null)
 			{
 				KickStarter.eventManager.Call_OnAfterChangeScene ();
 			}
+
+			int _removeNPCID = removeNPCID;
+			removeNPCID = 0;
+			yield return new WaitForEndOfFrame ();
+
+			if (_removeNPCID != 0)
+			{
+				NPC npcToRemove = Serializer.returnComponent <NPC> (_removeNPCID);
+				if (npcToRemove != null)
+				{
+					npcToRemove.transform.position += new Vector3 (100f, -100f, 100f);
+				}
+				_removeNPCID = 0;
+			}
+		}
+
+
+		/**
+		 * <summary>Saves the current scene objects, kills speech dialog etc.  This should if the scene is changed using a custom script, i.e. without using the provided 'Scene: Switch' Action.</summary>
+		 */
+		public void PrepareSceneForExit ()
+		{
+			PrepareSceneForExit (false, true);
 		}
 
 
@@ -434,8 +484,7 @@ namespace AC
 			{
 				sound.TryDestroy ();
 			}
-			KickStarter.stateHandler.GatherObjects ();
-			
+
 			KickStarter.playerMenus.ClearParents ();
 			if (KickStarter.dialog)
 			{
@@ -500,7 +549,7 @@ namespace AC
 				subScenes.Add (subScene);
 
 				KickStarter.levelStorage.ReturnSubSceneData (subScene, isLoading);
-				KickStarter.stateHandler.GatherObjects ();
+				KickStarter.stateHandler.IgnoreNavMeshCollisions ();
 			}
 		}
 
@@ -572,7 +621,6 @@ namespace AC
 
 			_sceneInfo.CloseLevel ();
 
-			KickStarter.stateHandler.GatherObjects (true);
 			KickStarter.stateHandler.RegisterWithGameEngine ();
 		}
 
@@ -629,7 +677,6 @@ namespace AC
 				}
 			}
 
-			KickStarter.stateHandler.GatherObjects (true);
 			KickStarter.stateHandler.RegisterWithGameEngine ();
 		}
 
@@ -667,6 +714,28 @@ namespace AC
 		{
 			number = _number;
 			name = _name;
+		}
+
+
+		/**
+		 * <summary>A Constructor where only the scene's name is defined.</summary>
+		 * <param name = "_name">The scene's name</param>
+		 */
+		public SceneInfo (string _name)
+		{
+			name = _name;
+			number = -1;
+		}
+
+
+		/**
+		 * <summary>A Constructor where only the scene's number is defined.</summary>
+		 * <param name = "_name">The scene's build index number</param>
+		 */
+		public SceneInfo (int _number)
+		{
+			number = _number;
+			name = "";
 		}
 
 
@@ -792,6 +861,22 @@ namespace AC
 		public AsyncOperation LoadLevelASync ()
 		{
 			return UnityVersionHandler.LoadLevelAsync (number, name);
+		}
+
+
+		/**
+		 * Returns True if the scene data is empty
+		 */
+		public bool IsNull
+		{
+			get
+			{
+				if (string.IsNullOrEmpty (name) && number == -1)
+				{
+					return true;
+				}
+				return false;
+			}
 		}
 
 	}

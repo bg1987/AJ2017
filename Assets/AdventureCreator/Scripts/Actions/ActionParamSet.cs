@@ -32,9 +32,10 @@ namespace AC
 
 		public bool changeOwn;
 		public int parameterID = -1;
+		public int parameterToCopyID = -1;
 		
-		public int intValue;
-		public float floatValue;
+		public int intValue, intValueMax;
+		public float floatValue, floatValueMax;
 		public string stringValue;
 
 		public GameObject gameobjectValue;
@@ -42,10 +43,15 @@ namespace AC
 
 		public Object unityObjectValue;
 
+		public Vector3 vector3Value;
+
 		public SetParamMethod setParamMethod = SetParamMethod.EnteredHere;
 		public int globalVariableID;
-		
+
+		public int ownParamID = -1;
+
 		private ActionParameter _parameter;
+		private ActionParameter _parameterToCopy;
 		#if UNITY_EDITOR
 		[SerializeField] private string parameterLabel = "";
 		#endif
@@ -61,7 +67,7 @@ namespace AC
 		
 		
 		override public void AssignValues (List<ActionParameter> parameters)
-		{
+		{	
 			if (!changeOwn)
 			{
 				if (actionListSource == ActionListSource.InScene)
@@ -74,15 +80,18 @@ namespace AC
 							if (actionList.syncParamValues && actionList.assetFile.useParameters)
 							{
 								_parameter = GetParameterWithID (actionList.assetFile.parameters, parameterID);
+								_parameterToCopy = GetParameterWithID (actionList.assetFile.parameters, parameterToCopyID);
 							}
 							else
 							{
 								_parameter = GetParameterWithID (actionList.parameters, parameterID);
+								_parameterToCopy = GetParameterWithID (actionList.parameters, parameterToCopyID);
 							}
 						}
 						else if (actionList.source == ActionListSource.InScene && actionList.useParameters)
 						{
 							_parameter = GetParameterWithID (actionList.parameters, parameterID);
+							_parameterToCopy = GetParameterWithID (actionList.parameters, parameterToCopyID);
 						}
 					}
 				}
@@ -91,6 +100,7 @@ namespace AC
 					if (actionListAsset != null)
 					{
 						_parameter = GetParameterWithID (actionListAsset.parameters, parameterID);
+						_parameterToCopy = GetParameterWithID (actionListAsset.parameters, parameterToCopyID);
 
 						if (_parameter.parameterType == ParameterType.GameObject && !isAssetFile && gameobjectValue != null && gameObjectConstantID == 0)
 						{
@@ -109,6 +119,7 @@ namespace AC
 			else
 			{
 				_parameter = GetParameterWithID (parameters, parameterID);
+				_parameterToCopy = GetParameterWithID (parameters, parameterToCopyID);
 
 				if (_parameter.parameterType == ParameterType.GameObject && isAssetFile && gameobjectValue != null && gameObjectConstantID == 0)
 				{
@@ -124,6 +135,51 @@ namespace AC
 			}
 
 			gameobjectValue = AssignFile (gameObjectConstantID, gameobjectValue);
+
+			if (setParamMethod == SetParamMethod.EnteredHere && _parameter != null)
+			{
+				switch (_parameter.parameterType)
+				{
+					case ParameterType.Boolean:
+						BoolValue boolValue = (intValue == 1) ? BoolValue.True : BoolValue.False; 
+						boolValue = AssignBoolean (parameters, ownParamID, boolValue);
+						intValue = (boolValue == BoolValue.True) ? 1 : 0;
+						break;
+
+					case ParameterType.Float:
+						floatValue = AssignFloat (parameters, ownParamID, floatValue);
+						break;
+
+					case ParameterType.GameObject:
+						gameobjectValue = AssignFile (parameters, ownParamID, gameObjectConstantID, gameobjectValue);
+						break;
+
+					case ParameterType.GlobalVariable:
+					case ParameterType.LocalVariable:
+						intValue = AssignVariableID (parameters, ownParamID, intValue);
+						break;
+
+					case ParameterType.Integer:
+						intValue = AssignInteger (parameters, ownParamID, intValue);
+						break;
+
+					case ParameterType.InventoryItem:
+						intValue = AssignInvItemID (parameters, ownParamID, intValue);
+						break;
+
+					case ParameterType.String:
+						stringValue = AssignString (parameters, ownParamID, stringValue);
+						break;
+
+					case ParameterType.UnityObject:
+						unityObjectValue = AssignObject <Object> (parameters, ownParamID, unityObjectValue);
+						break;
+
+					case ParameterType.Vector3:
+						vector3Value = AssignVector3 (parameters, ownParamID, vector3Value);
+						break;
+				}
+			}
 		}
 		
 		
@@ -148,6 +204,10 @@ namespace AC
 					else if (_parameter.parameterType == ParameterType.Float)
 					{
 						_parameter.floatValue = gVar.floatVal;
+					}
+					else if (_parameter.parameterType == ParameterType.Vector3)
+					{
+						_parameter.vector3Value = gVar.vector3Val;
 					}
 					else if (_parameter.parameterType == ParameterType.String)
 					{
@@ -182,6 +242,39 @@ namespace AC
 				{
 					_parameter.objectValue = unityObjectValue;
 				}
+				else if (_parameter.parameterType == ParameterType.Vector3)
+				{
+					_parameter.vector3Value = vector3Value;
+				}
+			}
+			else if (setParamMethod == SetParamMethod.Random)
+			{
+				if (_parameter.parameterType == ParameterType.Boolean)
+				{
+					_parameter.intValue = Random.Range (0, 2);
+				}
+				else if (_parameter.parameterType == ParameterType.Integer)
+				{
+					_parameter.intValue = Random.Range (intValue, intValueMax + 1);
+				}
+				else if (_parameter.parameterType == ParameterType.Float)
+				{
+					_parameter.floatValue = Random.Range (floatValue, floatValueMax);
+				}
+				else
+				{
+					ACDebug.LogWarning ("Parameters of type '" + _parameter.parameterType + "' cannot be set randomly.");
+				}
+			}
+			else if (setParamMethod == SetParamMethod.CopiedFromParameter)
+			{
+				if (_parameterToCopy == null)
+				{
+					ACDebug.LogWarning ("Cannot copy parameter value since it cannot be found!");
+					return 0f;
+				}
+
+				_parameter.CopyValues (_parameterToCopy);
 			}
 
 			return 0f;
@@ -220,7 +313,7 @@ namespace AC
 							if (actionList.useParameters && actionList.parameters.Count > 0)
 							{
 								parameterID = Action.ChooseParameterGUI (actionList.parameters, parameterID);
-								SetParamGUI (actionList.parameters);
+								SetParamGUI (actionList.parameters, parameters);
 							}
 							else
 							{
@@ -232,7 +325,7 @@ namespace AC
 							if (actionList.assetFile.useParameters && actionList.assetFile.parameters.Count > 0)
 							{
 								parameterID = Action.ChooseParameterGUI (actionList.assetFile.parameters, parameterID);
-								SetParamGUI (actionList.assetFile.parameters);
+								SetParamGUI (actionList.assetFile.parameters, parameters);
 							}
 							else
 							{
@@ -254,7 +347,7 @@ namespace AC
 						if (actionListAsset.useParameters && actionListAsset.parameters.Count > 0)
 						{
 							parameterID = Action.ChooseParameterGUI (actionListAsset.parameters, parameterID);
-							SetParamGUI (actionListAsset.parameters);
+							SetParamGUI (actionListAsset.parameters, parameters);
 						}
 						else
 						{
@@ -268,7 +361,7 @@ namespace AC
 		}
 		
 		
-		private void SetParamGUI (List<ActionParameter> parameters)
+		private void SetParamGUI (List<ActionParameter> parameters, List<ActionParameter> ownParameters = null)
 		{
 			if (parameters == null || parameters.Count == 0)
 			{
@@ -290,6 +383,15 @@ namespace AC
 
 			if (setParamMethod == SetParamMethod.EnteredHere)
 			{
+				if (ownParameters != null && ownParameters.Count > 0)
+				{
+					ownParamID = Action.ChooseParameterGUI ("Set as:", ownParameters, ownParamID, _parameter.parameterType);
+					if (ownParamID >= 0)
+					{
+						return;
+					}
+				}
+
 				if (_parameter.parameterType == ParameterType.Boolean)
 				{
 					bool boolValue = (intValue == 1) ? true : false;
@@ -349,21 +451,86 @@ namespace AC
 						intValue = ShowVarSelectorGUI (KickStarter.localVariables.localVars, intValue);
 					}
 				}
+				else if (_parameter.parameterType == ParameterType.Vector3)
+				{
+					vector3Value = EditorGUILayout.Vector3Field ("Set as:", vector3Value);
+				}
 			}
-			else
+			else if (setParamMethod == SetParamMethod.Random)
+			{
+				if (_parameter.parameterType == ParameterType.Boolean)
+				{}
+				else if (_parameter.parameterType == ParameterType.Integer)
+				{
+					intValue = EditorGUILayout.IntField ("Minimum:", intValue);
+					intValueMax = EditorGUILayout.IntField ("Maximum:", intValueMax);
+					if (intValueMax < intValue) intValueMax = intValue;
+				}
+				else if (_parameter.parameterType == ParameterType.Float)
+				{
+					floatValue = EditorGUILayout.FloatField ("Minimum:", floatValue);
+					floatValueMax = EditorGUILayout.FloatField ("Maximum:", floatValueMax);
+					if (floatValueMax < floatValue) floatValueMax = floatValue;
+				}
+				else
+				{
+					EditorGUILayout.HelpBox ("Parameters of type '" + _parameter.parameterType + "' cannot be set randomly.", MessageType.Warning);
+				}
+			}
+			else if (setParamMethod == SetParamMethod.CopiedFromGlobalVariable)
 			{
 				if (AdvGame.GetReferences () != null && AdvGame.GetReferences ().variablesManager != null && AdvGame.GetReferences ().variablesManager.vars != null && AdvGame.GetReferences ().variablesManager.vars.Count > 0)
 				{
-					globalVariableID = ShowVarSelectorGUI (AdvGame.GetReferences ().variablesManager.vars, globalVariableID);
-
-					if (_parameter.parameterType == ParameterType.GameObject || _parameter.parameterType == ParameterType.GlobalVariable || _parameter.parameterType == ParameterType.InventoryItem || _parameter.parameterType == ParameterType.LocalVariable || _parameter.parameterType == ParameterType.UnityObject)
+					if (_parameter.parameterType == ParameterType.Vector3)
+					{
+						globalVariableID = AdvGame.GlobalVariableGUI ("Vector3 variable:", globalVariableID, VariableType.Vector3);
+					}
+					else if (_parameter.parameterType == ParameterType.GameObject || _parameter.parameterType == ParameterType.GlobalVariable || _parameter.parameterType == ParameterType.InventoryItem || _parameter.parameterType == ParameterType.LocalVariable || _parameter.parameterType == ParameterType.UnityObject)
 					{
 						EditorGUILayout.HelpBox ("Parameters of type '" + _parameter.parameterType + "' cannot have values transferred from Global Variables.", MessageType.Warning);
+					}
+					else
+					{
+						globalVariableID = AdvGame.GlobalVariableGUI ("Variable:", globalVariableID);
 					}
 				}
 				else
 				{
 					EditorGUILayout.HelpBox ("No Global Variables found!", MessageType.Warning);
+				}
+			}
+			else if (setParamMethod == SetParamMethod.CopiedFromParameter)
+			{
+				if (changeOwn)
+				{
+					parameterToCopyID = Action.ChooseParameterGUI (parameters, parameterToCopyID);
+				}
+				else
+				{
+					if (actionListSource == ActionListSource.InScene && actionList != null)
+					{
+						if (actionList.source == ActionListSource.InScene)
+						{
+							if (actionList.useParameters && actionList.parameters.Count > 0)
+							{
+								parameterToCopyID = Action.ChooseParameterGUI (actionList.parameters, parameterToCopyID);
+							}
+						}
+						else if (actionList.source == ActionListSource.AssetFile && actionList.assetFile != null)
+						{
+							if (actionList.assetFile.useParameters && actionList.assetFile.parameters.Count > 0)
+							{
+								parameterToCopyID = Action.ChooseParameterGUI (actionList.assetFile.parameters, parameterToCopyID);
+							}
+						}
+					}
+					else if (actionListSource == ActionListSource.AssetFile && actionListAsset != null)
+					{
+						if (actionListAsset.useParameters && actionListAsset.parameters.Count > 0)
+						{
+							parameterToCopyID = Action.ChooseParameterGUI (actionListAsset.parameters, parameterToCopyID);
+						}
+					}
 				}
 			}
 		}

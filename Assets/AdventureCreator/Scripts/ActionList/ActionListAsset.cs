@@ -41,6 +41,8 @@ namespace AC
 		public bool unfreezePauseMenus = true;
 		/** If True, ActionParameters can be used to override values within the Action objects */
 		public bool useParameters = false;
+		/** If True, then multiple instances of this asset can be run simultaneously in the scene */
+		public bool canRunMultipleInstances = false;
 		/** A List of ActionParameter objects that can be used to override values within the Actions, if useParameters = True */
 		public List<ActionParameter> parameters = new List<ActionParameter>();
 		/** The ID of the associated SpeechTag */
@@ -156,6 +158,16 @@ namespace AC
 		public void Interact ()
 		{
 			AdvGame.RunActionListAsset (this);
+		}
+
+
+		/**
+		 * <summary>Runs the ActionList asset file from a set point.</summary>
+		 * <param name = "index">The index number of actions to start from</param>
+		 */
+		public void RunFromIndex (int index)
+		{
+			AdvGame.RunActionListAsset (this, index, true);
 		}
 
 

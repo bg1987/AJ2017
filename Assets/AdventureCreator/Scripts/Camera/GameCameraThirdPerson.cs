@@ -32,6 +32,9 @@ namespace AC
 		/** How pitch rotation is affected (Free, Limited, Locked) */
 		public RotationLock pitchLock = RotationLock.Locked;
 
+		/** If True, then spin and pitch can be altered when a Conversation is active */
+		public bool canRotateDuringConversations = false;
+
 		/** The horizontal position offset */
 		public float horizontalOffset = 0f;
 		/** The vertical position offset */
@@ -135,8 +138,10 @@ namespace AC
 		}
 
 
-		private void Start ()
+		protected override void Start ()
 		{
+			base.Start ();
+
 			ResetTarget ();
 
 			Vector3 angles = transform.eulerAngles;
@@ -187,19 +192,7 @@ namespace AC
 			UpdateTargets ();
 			DetectCollisions ();
 
-			if (!doFixedUpdate)
-			{
-				UpdateSelf ();
-			}
-		}
-
-
-		public override void _FixedUpdate ()
-		{
-			if (doFixedUpdate)
-			{
-				UpdateSelf ();
-			}
+			UpdateSelf ();
 		}
 
 
@@ -235,7 +228,8 @@ namespace AC
 					}
 				}
 			}
-			else if (KickStarter.stateHandler == null || KickStarter.stateHandler.gameState == AC.GameState.Normal || onStart)
+			else if (KickStarter.stateHandler == null || KickStarter.stateHandler.gameState == AC.GameState.Normal || onStart ||
+					(KickStarter.stateHandler.gameState == GameState.DialogOptions && canRotateDuringConversations))
 			{
 				if (allowMouseWheelZooming && minDistance < maxDistance)
 				{

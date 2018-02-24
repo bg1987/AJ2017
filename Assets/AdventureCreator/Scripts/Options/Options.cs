@@ -1,8 +1,7 @@
-
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2016
+ *	by Chris Burton, 2013-2018
  *	
  *	"Options.cs"
  * 
@@ -32,10 +31,17 @@ namespace AC
 
 		/** The maximum number of profiles that can be created */
 		public static int maxProfiles = 50;
-		
+
+		private static iOptionsFileHandler optionsFileHandlerOverride;
+
 		
 		public void OnStart ()
 		{
+			if (KickStarter.settingsManager == null)
+			{
+				return;
+			}
+
 			LoadPrefs ();
 
 			if (KickStarter.settingsManager.IsInLoadingScene ())
@@ -78,7 +84,8 @@ namespace AC
 
 		/**
 		 * <summary>Saves the current options to the active profile.</summary>
-		 * <param name = "updateVariables">If True, then the values of variables linked to options data will be updated in the options data</param> 		 */
+		 * <param name = "updateVariables">If True, then the values of variables linked to options data will be updated in the options data</param>
+		 */
 		public static void SavePrefs (bool updateVariables = true)
 		{
 			if (Application.isPlaying && updateVariables)
@@ -112,11 +119,7 @@ namespace AC
 			string optionsSerialized = Serializer.SerializeObject <OptionsData> (_optionsData, true);
 			if (optionsSerialized != "")
 			{
-				PlayerPrefs.SetString (GetPrefKeyName (ID), optionsSerialized);
-				if (showLog)
-				{
-					ACDebug.Log ("PlayerPrefs Key '" + GetPrefKeyName (ID) + "' saved");
-				}
+				OptionsFileHandler.SaveOptions (ID, optionsSerialized, showLog);
 			}
 		}
 		
@@ -132,21 +135,28 @@ namespace AC
 			}
 
 			optionsData = LoadPrefsFromID (GetActiveProfileID (), Application.isPlaying, true);
-			int numLanguages = (Application.isPlaying) ? KickStarter.runtimeLanguages.Languages.Count : AdvGame.GetReferences ().speechManager.languages.Count;
-			if (optionsData.language >= numLanguages)
+			if (optionsData == null)
 			{
-				if (numLanguages != 0)
-				{
-					ACDebug.LogWarning ("Language set to an invalid index - reverting to original language.");
-				}
-				optionsData.language = 0;
-				SavePrefs (false);
+				ACDebug.LogWarning ("No Options Data found!");
 			}
-			if (optionsData.language == 0 && KickStarter.speechManager && KickStarter.speechManager.ignoreOriginalText && KickStarter.speechManager.languages.Count > 1)
+			else
 			{
-				// Ignore original language
-				optionsData.language = 1;
-				SavePrefs (false);
+				int numLanguages = (Application.isPlaying) ? KickStarter.runtimeLanguages.Languages.Count : AdvGame.GetReferences ().speechManager.languages.Count;
+				if (optionsData.language >= numLanguages)
+				{
+					if (numLanguages != 0)
+					{
+						ACDebug.LogWarning ("Language set to an invalid index - reverting to original language.");
+					}
+					optionsData.language = 0;
+					SavePrefs (false);
+				}
+				if (optionsData.language == 0 && KickStarter.speechManager && KickStarter.speechManager.ignoreOriginalText && KickStarter.speechManager.languages.Count > 1)
+				{
+					// Ignore original language
+					optionsData.language = 1;
+					SavePrefs (false);
+				}
 			}
 			
 			if (Application.isPlaying)
@@ -155,7 +165,7 @@ namespace AC
 				KickStarter.playerMenus.RecalculateAll ();
 			}
 		}
-		
+
 
 		/**
 		 * <summary>Gets the options values associated with a specific profile.</summary>
@@ -168,18 +178,19 @@ namespace AC
 		{
 			if (DoesProfileIDExist (profileID))
 			{
-				string optionsSerialized = PlayerPrefs.GetString (GetPrefKeyName (profileID));
-				if (optionsSerialized != null && optionsSerialized.Length > 0)
+				string optionsSerialized = OptionsFileHandler.LoadOptions (profileID, showLog);
+				if (!string.IsNullOrEmpty (optionsSerialized))
 				{
-					if (showLog)
-					{
-						ACDebug.Log ("PlayerPrefs Key '" + GetPrefKeyName (profileID) + "' loaded");
-					}
 					return Serializer.DeserializeOptionsData (optionsSerialized);
 				}
 			}
 			
 			// No data exists, so create new
+			if (KickStarter.settingsManager == null)
+			{
+				return null;
+			}
+
 			OptionsData _optionsData = new OptionsData (KickStarter.settingsManager.defaultLanguage, KickStarter.settingsManager.defaultShowSubtitles, KickStarter.settingsManager.defaultSfxVolume, KickStarter.settingsManager.defaultMusicVolume, KickStarter.settingsManager.defaultSpeechVolume, profileID);
 			if (doSave)
 			{
@@ -248,9 +259,9 @@ namespace AC
 		 */
 		public static int GetActiveProfileID ()
 		{
-			if (KickStarter.settingsManager.useProfiles)
+			if (KickStarter.settingsManager != null && KickStarter.settingsManager.useProfiles)
 			{
-				return PlayerPrefs.GetInt ("AC_ActiveProfile", 0);
+				return OptionsFileHandler.GetActiveProfile ();
 			}
 			return 0;
 		}
@@ -258,11 +269,11 @@ namespace AC
 
 		/**
 		 * <summary>Sets the ID number of the active profile.</summary>
-		 * <param name = "ID">A unique identifier for the profile</param>
+		 * <param name = "profileID">A unique identifier for the profile</param>
 		 */
-		public static void SetActiveProfileID (int ID)
+		public static void SetActiveProfileID (int profileID)
 		{
-			PlayerPrefs.SetInt ("AC_ActiveProfile", ID);
+			OptionsFileHandler.SetActiveProfile (profileID);
 		}
 		
 		
@@ -316,7 +327,7 @@ namespace AC
 		 */
 		public void RenameProfile (string newProfileLabel, int profileIndex = -2, bool includeActive = true)
 		{
-			if (!KickStarter.settingsManager.useProfiles || newProfileLabel.Length == 0)
+			if (!KickStarter.settingsManager.useProfiles || string.IsNullOrEmpty (newProfileLabel))
 			{
 				return;
 			}
@@ -343,7 +354,7 @@ namespace AC
 		 */
 		public void RenameProfileID (string newProfileLabel, int profileID)
 		{
-			if (!KickStarter.settingsManager.useProfiles || newProfileLabel.Length == 0)
+			if (!KickStarter.settingsManager.useProfiles || string.IsNullOrEmpty (newProfileLabel))
 			{
 				return;
 			}
@@ -409,7 +420,7 @@ namespace AC
 
 			if (DoesProfileIDExist (profileID))
 			{
-				OptionsData tempOptionsData = LoadPrefsFromID (profileID, false);
+				OptionsData tempOptionsData = LoadPrefsFromID (profileID, false, false);
 				return tempOptionsData.label;
 			}
 			else
@@ -445,19 +456,14 @@ namespace AC
 
 		/**
 		 * <summary>Deletes the PlayerPrefs key associated with a specfic profile</summary>
-		 * <param name = "ID">The unique identifier of the profile to delete</param>
+		 * <param name = "profileID">The unique identifier of the profile to delete</param>
 		 */
-		public static void DeleteProfilePrefs (int ID)
+		public static void DeleteProfilePrefs (int profileID)
 		{
-			bool isDeletingCurrentProfile = false;
-			if (ID == GetActiveProfileID ())
-			{
-				isDeletingCurrentProfile = true;
-			}
+			bool isDeletingCurrentProfile = (profileID == GetActiveProfileID ());
 
-			ACDebug.Log ("PlayerPrefs Key '" + GetPrefKeyName (ID) + "' deleted");
-			PlayerPrefs.DeleteKey (GetPrefKeyName (ID));
-			
+			OptionsFileHandler.DeleteOptions (profileID);
+
 			if (isDeletingCurrentProfile)
 			{
 				for (int i=0; i<maxProfiles; i++)
@@ -497,12 +503,42 @@ namespace AC
 		 */
 		public static bool DoesProfileIDExist (int profileID)
 		{
-			if (!KickStarter.settingsManager.useProfiles)
+			if (KickStarter.settingsManager != null && !KickStarter.settingsManager.useProfiles)
 			{
 				profileID = 0;
 			}
 
-			return PlayerPrefs.HasKey (GetPrefKeyName (profileID));
+			return OptionsFileHandler.DoesProfileExist (profileID);
+		}
+
+
+		/**
+		 * <summary>Checks if a profile with a specific name exists</summary>
+		 * <param name = "label">The name of the profile to check for</param>
+		 * <returns>True if a profile with the supplied name exists</returns>
+		 */
+		public bool DoesProfileExist (string label)
+		{
+			if (string.IsNullOrEmpty (label))
+			{
+				return false;
+			}
+
+			if (KickStarter.settingsManager != null && !KickStarter.settingsManager.useProfiles)
+			{
+				return false;
+			}
+
+			for (int i=0; i<maxProfiles; i++)
+			{
+				string profileName = GetProfileName (i);
+				if (profileName == label)
+				{
+					return true;
+				}
+			}
+
+			return false;
 		}
 		
 
@@ -535,24 +571,6 @@ namespace AC
 		
 
 		/**
-		 * <summary>Gets the name of the PlayerPrefs key associated with a specific profile.</summary>
-		 * <param name = "ID">The unique identifier of the profile to find</param>
-		 * <returns>The name of the PlayerPrefs key associated with the profile</returns>
-		 */
-		public static string GetPrefKeyName (int ID)
-		{
-			string profileName = "Profile";
-			if (AdvGame.GetReferences ().settingsManager != null && AdvGame.GetReferences ().settingsManager.saveFileName != "")
-			{
-				profileName = AdvGame.GetReferences ().settingsManager.saveFileName;
-				profileName = profileName.Replace (" ", "_");
-			}
-
-			return ("AC_" + profileName + "_" + ID.ToString ());
-		}
-
-
-		/**
 		 * <summary>Updates the labels of all save files by storing them in the profile's OptionsData.</summary>
 		 * <param name = "foundSaveFiles">An array of SaveFile instances, that represent the found save game files found on disk</param>
 		 */
@@ -564,7 +582,7 @@ namespace AC
 			{
 				foreach (SaveFile saveFile in foundSaveFiles)
 				{
-					newSaveNameData.Append (saveFile.ID.ToString ());
+					newSaveNameData.Append (saveFile.saveID.ToString ());
 					newSaveNameData.Append (SaveSystem.colon);
 					newSaveNameData.Append (saveFile.GetSafeLabel ());
 					newSaveNameData.Append (SaveSystem.pipe);
@@ -603,7 +621,7 @@ namespace AC
 		{
 			yield return null;
 
-			#if UNITY_5
+			#if UNITY_5 || UNITY_2017_1_OR_NEWER
 			if (KickStarter.settingsManager.volumeControl == VolumeControl.AudioMixerGroups)
 			{
 				if (optionsData == null)
@@ -701,6 +719,36 @@ namespace AC
 				ACDebug.LogWarning ("Could not find Options data!");
 			}
 		}
+
+
+		/**
+		 * <summary>Sets the value of the 'SFX volume'.</summary>
+		 * <param name = "newVolume">The new value of the 'SFX volume'</param>
+		 */
+		public static void SetSFXVolume (float newVolume)
+		{
+			KickStarter.options.SetVolume (SoundType.SFX, newVolume);
+		}
+
+
+		/**
+		 * <summary>Sets the value of the 'Speech volume'.</summary>
+		 * <param name = "newVolume">The new value of the 'Speech volume'</param>
+		 */
+		public static void SetSpeechVolume (float newVolume)
+		{
+			KickStarter.options.SetVolume (SoundType.Speech, newVolume);
+		}
+
+
+		/**
+		 * <summary>Sets the value of the 'Music volume'.</summary>
+		 * <param name = "newVolume">The new value of the 'Music volume'</param>
+		 */
+		public static void SetMusicVolume (float newVolume)
+		{
+			KickStarter.options.SetVolume (SoundType.Music, newVolume);
+		}
 		
 
 		/**
@@ -728,6 +776,20 @@ namespace AC
 
 
 		/**
+		 * <summary>Checks if subtitles are enabled</summary>
+		 * <returns>True if subtitles are enabled</returns>
+		 */
+		public static bool AreSubtitlesOn ()
+		{
+			if (Application.isPlaying && optionsData != null)
+			{
+				return optionsData.showSubtitles;
+			}
+			return false;
+		}
+
+
+		/**
 		 * <summary>Gets the current value of the 'SFX volume'.</summary>
 		 * <returns>The current value of the 'SFX volume', as defined in the current instance of OptionsData</returns>
 		 */
@@ -736,6 +798,34 @@ namespace AC
 			if (Application.isPlaying && optionsData != null)
 			{
 				return optionsData.sfxVolume;
+			}
+			return 1f;
+		}
+
+
+		/**
+		 * <summary>Gets the current value of the 'Music volume'.</summary>
+		 * <returns>The current value of the 'Music volume', as defined in the current instance of OptionsData</returns>
+		 */
+		public static float GetMusicVolume ()
+		{
+			if (Application.isPlaying && optionsData != null)
+			{
+				return optionsData.musicVolume;
+			}
+			return 1f;
+		}
+
+
+		/**
+		 * <summary>Gets the current value of the 'Speech volume'.</summary>
+		 * <returns>The current value of the 'Speech volume', as defined in the current instance of OptionsData</returns>
+		 */
+		public static float GetSpeechVolume ()
+		{
+			if (Application.isPlaying && optionsData != null)
+			{
+				return optionsData.speechVolume;
 			}
 			return 1f;
 		}
@@ -772,6 +862,28 @@ namespace AC
 			ISaveOptions[] ret = new ISaveOptions[list.Count];
 			list.CopyTo (ret, 0);
 			return ret;
+		}
+
+
+		/**
+		 * The iSaveFileHandler class that handles the creation, loading, and deletion of save files
+		 */
+		public static iOptionsFileHandler OptionsFileHandler
+		{
+			get
+			{
+				if (optionsFileHandlerOverride != null)
+				{
+					return optionsFileHandlerOverride;
+				}
+
+				return new OptionsFileHandler_PlayerPrefs ();
+			}
+			set
+			{
+				optionsFileHandlerOverride = value;
+				LoadPrefs ();
+			}
 		}
 		
 	}

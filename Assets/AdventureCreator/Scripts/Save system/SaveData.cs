@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2016
+ *	by Chris Burton, 2013-2018
  *	
  *	"SaveData.cs"
  * 
@@ -103,10 +103,23 @@ namespace AC
 		/** The IDs and time positions of all tracks that have been played before */
 		public string oldMusicTimeSamples;
 
+		/** The IDs and loop states of all queued ambience tracks, including the one currently-playing */
+		public string ambienceQueueData;
+		/** The IDs and loop states of the last set of queued ambience tracks */
+		public string lastAmbienceQueueData;
+		/** The time position of the current ambience track */
+		public int ambienceTimeSamples;
+		/** The time position of the last-played ambience track */
+		public int lastAmbienceTimeSamples;
+		/** The IDs and time positions of all ambience tracks that have been played before */
+		public string oldAmbienceTimeSamples;
+
 		/** The currently-set AC_MovementMethod enum, converted to an integer */
 		public int movementMethod;
 		/** Data regarding paused and skipping ActionList assets */
 		public string activeAssetLists;
+		/** Data regarding active inputs */
+		public string activeInputsData;
 
 	}
 
@@ -320,8 +333,8 @@ namespace AC
 			playerPathAffectY = originalData.playerPathAffectY;
 			
 			lastPlayerTargetNode = originalData.lastPlayerTargetNode;
-			lastPlayerPrevNode = originalData.playerPrevNode;
-			lastPlayerActivePath = originalData.playerActivePath;
+			lastPlayerPrevNode = originalData.lastPlayerPrevNode;
+			lastPlayerActivePath = originalData.lastPlayerActivePath;
 			
 			playerUpLock = originalData.playerUpLock;
 			playerDownLock = originalData.playerDownLock;
@@ -342,6 +355,7 @@ namespace AC
 			inventoryData = originalData.inventoryData;
 			
 			isHeadTurning = originalData.isHeadTurning;
+			headTargetID = originalData.headTargetID;
 			headTargetX = originalData.headTargetX;
 			headTargetY = originalData.headTargetY;
 			headTargetZ = originalData.headTargetZ;
@@ -363,7 +377,12 @@ namespace AC
 			splitCameraID = originalData.splitCameraID;
 			splitAmountMain = originalData.splitAmountMain;
 			splitAmountOther = originalData.splitAmountOther;
+			shakeIntensity = originalData.shakeIntensity;
+			shakeDuration = originalData.shakeDuration;
+			shakeEffect = originalData.shakeEffect;
 
+			followSortingMap = originalData.followSortingMap;
+			customSortingMapID = originalData.customSortingMapID;
 		}
 
 	}

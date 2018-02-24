@@ -33,6 +33,17 @@ namespace AC
 		public int replaceParameterID = -1;
 		public int replaceConstantID = 0;
 
+		public GameObject relativeGameObject = null;
+		public int relativeGameObjectID = 0;
+		public int relativeGameObjectParameterID = -1;
+
+		public int relativeVectorParameterID = -1;
+		public Vector3 relativeVector = Vector3.zero;
+
+		public int vectorVarParameterID = -1;
+		public int vectorVarID;
+		public VariableLocation variableLocation = VariableLocation.Global;
+
 		public InvAction invAction;
 		public PositionRelativeTo positionRelativeTo = PositionRelativeTo.Nothing;
 		private GameObject _gameObject;
@@ -57,11 +68,18 @@ namespace AC
 				{
 					replaceGameObject = AssignFile (parameters, replaceParameterID, replaceConstantID, replaceGameObject);
 				}
+				else if (invAction == InvAction.Add)
+				{
+					relativeGameObject = AssignFile (parameters, relativeGameObjectParameterID, relativeGameObjectID, relativeGameObject);
+				}
 			}
 			else if (invAction == InvAction.Remove)
 			{
 				_gameObject = AssignFile (parameters, parameterID, constantID, gameObject);
 			}
+
+			relativeVector = AssignVector3 (parameters, relativeVectorParameterID, relativeVector);
+			vectorVarID = AssignVariableID (parameters, vectorVarParameterID, vectorVarID);
 		}
 		
 		
@@ -79,8 +97,17 @@ namespace AC
 				GameObject oldOb = AssignFile (constantID, _gameObject);
 				if (_gameObject.activeInHierarchy || (oldOb != null && oldOb.activeInHierarchy))
 				{
-					ACDebug.Log (gameObject.name + " won't be instantiated, as it is already present in the scene.");
-					return 0f;
+					RememberTransform rememberTransform = oldOb.GetComponent <RememberTransform>();
+
+					if (rememberTransform != null && rememberTransform.saveScenePresence && rememberTransform.linkedPrefabID != 0)
+					{
+						// Bypass this check
+					}
+					else
+					{
+						ACDebug.LogWarning (gameObject.name + " won't be instantiated, as it is already present in the scene.");
+						return 0f;
+					}
 				}
 
 				Vector3 position = _gameObject.transform.position;
@@ -107,11 +134,41 @@ namespace AC
 							rotation.eulerAngles += playerTranform.rotation.eulerAngles;
 						}
 					}
+					else if (positionRelativeTo == PositionRelativeTo.RelativeToGameObject)
+					{
+						if (relativeGameObject != null)
+						{
+							Transform relativeTransform = relativeGameObject.transform;
+							position = relativeTransform.position + (relativeTransform.forward * forward) + (relativeTransform.right * right) + (relativeTransform.up * up);
+							rotation.eulerAngles += relativeTransform.rotation.eulerAngles;
+						}
+					}
+					else if (positionRelativeTo == PositionRelativeTo.EnteredValue)
+					{
+						position += relativeVector;
+					}
+					else if (positionRelativeTo == PositionRelativeTo.VectorVariable)
+					{
+						if (variableLocation == VariableLocation.Global)
+						{
+							position += GlobalVariables.GetVector3Value (vectorVarID);
+						}
+						else if (variableLocation == VariableLocation.Local && !isAssetFile)
+						{
+							position += LocalVariables.GetVector3Value (vectorVarID);
+						}
+					}
 				}
 
 				GameObject newObject = (GameObject) Instantiate (_gameObject, position, rotation);
 				newObject.name = _gameObject.name;
-				KickStarter.stateHandler.GatherObjects ();
+
+				if (newObject.GetComponent <RememberTransform>())
+				{
+					newObject.GetComponent <RememberTransform>().OnSpawn ();
+				}
+
+				KickStarter.stateHandler.IgnoreNavMeshCollisions ();
 			}
 			else if (invAction == InvAction.Remove)
 			{
@@ -140,7 +197,7 @@ namespace AC
 
 				GameObject newObject = (GameObject) Instantiate (_gameObject, position, rotation);
 				newObject.name = _gameObject.name;
-				KickStarter.stateHandler.GatherObjects ();
+				KickStarter.stateHandler.IgnoreNavMeshCollisions ();
 			}
 
 			return 0f;
@@ -176,6 +233,59 @@ namespace AC
 			if (invAction == InvAction.Add)
 			{
 				positionRelativeTo = (PositionRelativeTo) EditorGUILayout.EnumPopup ("Position relative to:", positionRelativeTo);
+
+				if (positionRelativeTo == PositionRelativeTo.RelativeToGameObject)
+				{
+					relativeGameObjectParameterID = Action.ChooseParameterGUI ("Relative GameObject:", parameters, relativeGameObjectParameterID, ParameterType.GameObject);
+					if (relativeGameObjectParameterID >= 0)
+					{
+						relativeGameObjectID = 0;
+						relativeGameObject = null;
+					}
+					else
+					{
+						relativeGameObject = (GameObject) EditorGUILayout.ObjectField ("Relative GameObject:", relativeGameObject, typeof (GameObject), true);
+						
+						relativeGameObjectID = FieldToID (relativeGameObject, relativeGameObjectID);
+						relativeGameObject = IDToField (relativeGameObject, relativeGameObjectID, false);
+					}
+				}
+				else if (positionRelativeTo == PositionRelativeTo.EnteredValue)
+				{
+					relativeVectorParameterID = Action.ChooseParameterGUI ("Value:", parameters, relativeVectorParameterID, ParameterType.Vector3);
+					if (relativeVectorParameterID < 0)
+					{
+						relativeVector = EditorGUILayout.Vector3Field ("Value:", relativeVector);
+					}
+				}
+				else if (positionRelativeTo == PositionRelativeTo.VectorVariable)
+				{
+					if (isAssetFile)
+					{
+						variableLocation = VariableLocation.Global;
+					}
+					else
+					{
+						variableLocation = (VariableLocation) EditorGUILayout.EnumPopup ("Source:", variableLocation);
+					}
+
+					if (variableLocation == VariableLocation.Global)
+					{
+						vectorVarParameterID = Action.ChooseParameterGUI ("Vector3 variable:", parameters, vectorVarParameterID, ParameterType.GlobalVariable);
+						if (vectorVarParameterID < 0)
+						{
+							vectorVarID = AdvGame.GlobalVariableGUI ("Vector3 variable:", vectorVarID, VariableType.Vector3);
+						}
+					}
+					else if (variableLocation == VariableLocation.Local)
+					{
+						vectorVarParameterID = Action.ChooseParameterGUI ("Vector3 variable:", parameters, vectorVarParameterID, ParameterType.LocalVariable);
+						if (vectorVarParameterID < 0)
+						{
+							vectorVarID = AdvGame.LocalVariableGUI ("Vector3 variable:", vectorVarID, VariableType.Vector3);
+						}
+					}
+				}
 			}
 			else if (invAction == InvAction.Replace)
 			{

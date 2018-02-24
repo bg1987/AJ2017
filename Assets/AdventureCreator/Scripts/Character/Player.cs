@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2016
+ *	by Chris Burton, 2013-2018
  *	
  *	"Player.cs"
  * 
@@ -45,6 +45,9 @@ namespace AC
 		
 		private bool lockHotspotHeadTurning = false;
 		private Transform fpCam;
+		private bool prepareToJump;
+
+		private SkinnedMeshRenderer skinnedMeshRenderer;
 
 
 		private void Awake ()
@@ -52,6 +55,11 @@ namespace AC
 			if (soundChild && soundChild.gameObject.GetComponent <AudioSource>())
 			{
 				audioSource = soundChild.gameObject.GetComponent <AudioSource>();
+			}
+
+			if (GetComponentInChildren <SkinnedMeshRenderer>())
+			{
+				skinnedMeshRenderer = GetComponentInChildren <SkinnedMeshRenderer>();
 			}
 
 			if (KickStarter.playerMovement)
@@ -102,13 +110,12 @@ namespace AC
 			else if (spriteChild)
 			{
 				// Hack: update 2D sprites
-				if (spriteChild.GetComponent <FollowSortingMap>())
-				{
-					KickStarter.sceneSettings.UpdateAllSortingMaps ();
-				}
-				PrepareSpriteChild (KickStarter.settingsManager.IsTopDown (), KickStarter.settingsManager.IsUnity2D ());
-				UpdateSpriteChild (KickStarter.settingsManager.IsTopDown (), KickStarter.settingsManager.IsUnity2D ());
+				PrepareSpriteChild (SceneSettings.IsTopDown (), SceneSettings.IsUnity2D ());
+				UpdateSpriteChild (SceneSettings.IsTopDown (), SceneSettings.IsUnity2D ());
 			}
+			UpdateScale ();
+
+			GetAnimEngine ().TurnHead (Vector2.zero);
 			GetAnimEngine ().PlayIdle ();
 		}
 
@@ -118,6 +125,15 @@ namespace AC
 		 */
 		public override void _Update ()
 		{
+			bool jumped = false;
+			if (KickStarter.playerInput.InputGetButtonDown ("Jump") && KickStarter.stateHandler.gameState == GameState.Normal)
+			{
+				if (!KickStarter.playerInput.IsJumpLocked)
+				{
+					jumped = Jump ();
+				}
+			}
+
 			if (hotspotDetector)
 			{
 				hotspotDetector._Update ();
@@ -154,7 +170,7 @@ namespace AC
 				charState = CharState.Decelerate;
 			}
 
-			if (isJumping)
+			if (isJumping && !jumped)
 			{
 				if (IsGrounded ())
 				{
@@ -186,7 +202,7 @@ namespace AC
 		 */
 		public void TankTurnLeft (float intensity = 1f)
 		{
-			lookDirection = -(intensity * transform.right) + ((1f - intensity) * transform.forward);
+			lookDirection = -(intensity * TransformRight) + ((1f - intensity) * TransformForward);
 			tankTurning = true;
 			tankTurnFloat = -intensity;
 		}
@@ -198,7 +214,7 @@ namespace AC
 		 */
 		public void TankTurnRight (float intensity = 1f)
 		{
-			lookDirection = (intensity * transform.right) + ((1f - intensity) * transform.forward);
+			lookDirection = (intensity * TransformRight) + ((1f - intensity) * TransformForward);
 			tankTurning = true;
 			tankTurnFloat = intensity;
 		}
@@ -218,7 +234,7 @@ namespace AC
 		 */
 		public void StopTurning ()
 		{
-			lookDirection = transform.forward;
+			lookDirection = TransformForward;
 			tankTurning = false;
 		}
 
@@ -240,27 +256,43 @@ namespace AC
 		
 
 		/**
-		 * Causes the Player to jump, so long as a Rigidbody component is attached.
+		 * <summary>Causes the Player to jump, so long as a Rigidbody component is attached.</summary>
+		 * <return>True if the attempt to jump was succesful</returns>
 		 */
-		public void Jump ()
+		public bool Jump ()
 		{
 			if (isJumping)
 			{
-				return;
+				return false;
 			}
 
 			if (IsGrounded () && activePath == null)
 			{
-				if (_rigidbody != null)
+				if (_rigidbody != null && !_rigidbody.isKinematic)
 				{
-					_rigidbody.velocity = new Vector3 (0f, KickStarter.settingsManager.jumpSpeed, 0f);
+					if (useRigidbodyForMovement)
+					{	
+						prepareToJump = true;
+					}
+					else
+					{
+						_rigidbody.velocity = Vector3.up * KickStarter.settingsManager.jumpSpeed;
+					}
 					isJumping = true;
+					return true;
 				}
 				else
 				{
 					if (motionControl == MotionControl.Automatic)
 					{
-						ACDebug.Log ("Player cannot jump without a Rigidbody component.");
+						if (_rigidbody != null && _rigidbody.isKinematic)
+						{
+							ACDebug.Log ("Player cannot jump without a non-kinematic Rigidbody component.");
+						}
+						else
+						{
+							ACDebug.Log ("Player cannot jump without a Rigidbody component.");
+						}
 					}
 				}
 			}
@@ -268,6 +300,20 @@ namespace AC
 			{
 				ACDebug.Log (gameObject.name + " has no Collider component");
 			}
+
+			return false;
+		}
+
+
+		public override void _FixedUpdate ()
+		{
+			if (prepareToJump)
+			{
+				prepareToJump = false;
+				_rigidbody.AddForce (Vector3.up * KickStarter.settingsManager.jumpSpeed, ForceMode.Impulse);
+			}
+
+			base._FixedUpdate ();
 		}
 		
 		
@@ -282,10 +328,6 @@ namespace AC
 		}
 
 
-		/*
-		 * <summary>Stops the Player from moving along the current Paths object.</summary>
-		 * <param name = "stopLerpToo">If True, then the lerp effect used to ensure pinpoint accuracy will also be cancelled</param>
-		 */
 		new public void EndPath ()
 		{
 			lockedPath = false;
@@ -366,6 +408,16 @@ namespace AC
 				
 		protected override void Accelerate ()
 		{
+			/*if (AccurateDestination () && WillStopAtNextNode ())
+			{
+				AccurateAcc (GetTargetSpeed (), false);
+			}
+			else
+			{
+				//moveSpeed = Mathf.Lerp (moveSpeed, GetTargetSpeed (), Time.deltaTime * acceleration);
+				moveSpeed = moveSpeedLerp.Update (moveSpeed, GetTargetSpeed (), acceleration, true);
+			}*/
+
 			float targetSpeed = GetTargetSpeed ();
 
 			if (AccurateDestination () && WillStopAtNextNode ())
@@ -374,12 +426,13 @@ namespace AC
 			}
 			else
 			{
-				if (this is Player && KickStarter.settingsManager.magnitudeAffectsDirect && KickStarter.settingsManager.movementMethod == MovementMethod.Direct && KickStarter.stateHandler.gameState == GameState.Normal && !IsMovingToHotspot ())
+				if (KickStarter.settingsManager.magnitudeAffectsDirect && KickStarter.settingsManager.movementMethod == MovementMethod.Direct && KickStarter.stateHandler.gameState == GameState.Normal && !IsMovingToHotspot ())
 				{
 					targetSpeed -= (1f - KickStarter.playerInput.GetMoveKeys ().magnitude) / 2f;
 				}
 
-				moveSpeed = Mathf.Lerp (moveSpeed, targetSpeed, Time.deltaTime * acceleration);
+				//moveSpeed = Mathf.Lerp (moveSpeed, targetSpeed, Time.deltaTime * acceleration);
+				moveSpeed = moveSpeedLerp.Update (moveSpeed, targetSpeed, acceleration);
 			}
 		}
 		
@@ -505,7 +558,7 @@ namespace AC
 			playerData.playerLocX = transform.position.x;
 			playerData.playerLocY = transform.position.y;
 			playerData.playerLocZ = transform.position.z;
-			playerData.playerRotY = transform.eulerAngles.y;
+			playerData.playerRotY = TransformRotation.eulerAngles.y;
 			
 			playerData.playerWalkSpeed = walkSpeedScale;
 			playerData.playerRunSpeed = runSpeedScale;
@@ -827,6 +880,24 @@ namespace AC
 			}
 
 			ignoreGravity = playerData.playerIgnoreGravity;
+		}
+
+
+		/**
+		 * Hides the player's SkinnedMeshRenderer, if one exists
+		 */
+		public void Hide ()
+		{
+			if (skinnedMeshRenderer) skinnedMeshRenderer.enabled = false;
+		}
+
+
+		/**
+		 * Shows the player's SkinnedMeshRenderer, if one exists
+		 */
+		public void Show ()
+		{
+			if (skinnedMeshRenderer) skinnedMeshRenderer.enabled = true;
 		}
 
 	}

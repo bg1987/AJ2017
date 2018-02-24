@@ -14,8 +14,15 @@
  * 
  */
 
+#if !UNITY_5_0 && (UNITY_5 || UNITY_2017) && (UNITY_STANDALONE || UNITY_ANDROID || UNITY_IOS)
+#define ALLOW_VR
+#endif
+
 using UnityEngine;
 using System.Collections;
+#if ALLOW_VR
+using UnityEngine.VR;
+#endif
 
 namespace AC
 {
@@ -130,9 +137,16 @@ namespace AC
 		private Camera _camera;
 		private AudioListener _audioListener;
 
+		#if ALLOW_VR
+		/** If True, the camera's position and rotation will be restored when loading (VR only) */
+		public bool restoreTransformOnLoadVR = false;
+		#endif
+
 
 		public void OnAwake ()
 		{
+			Initialise ();
+
 			gameObject.tag = Tags.mainCamera;
 			
 			hideSceneWhileLoading = true;
@@ -153,7 +167,7 @@ namespace AC
 				ACDebug.LogWarning ("Note: The MainCamera is parented to an unknown object. Be careful when moving the parent, as it may cause mis-alignment when the MainCamera is attached to a GameCamera.");
 			}
 
-			if (KickStarter.settingsManager.forceAspectRatio)
+			if (KickStarter.settingsManager != null && KickStarter.settingsManager.forceAspectRatio)
 			{
 				#if !UNITY_IPHONE
 				KickStarter.settingsManager.landscapeModeOnly = false;
@@ -171,7 +185,7 @@ namespace AC
 		 * <summary>Initialises lookAtTransform if none exists and assigns fadeTexture.</summary>
 		 * <param name = "_fadeTexture">The new fadeTexture to use, if not null</param>
 		 */
-		public void Initialise (Texture2D _fadeTexture)
+		public void Initialise (Texture2D _fadeTexture = null)
 		{
 			if (lookAtTransform == null)
 			{
@@ -286,6 +300,8 @@ namespace AC
 			shakeIntensity = _shakeIntensity;
 			
 			shakeStartIntensity = shakeIntensity;
+
+			KickStarter.eventManager.Call_OnShakeCamera (shakeIntensity, shakeDuration);
 		}
 		
 
@@ -312,6 +328,8 @@ namespace AC
 			shakeIntensity = 0f;
 			shakePosition = Vector3.zero;
 			shakeRotation = Vector3.zero;
+
+			KickStarter.eventManager.Call_OnShakeCamera (0f, 0f);
 		}
 		
 
@@ -325,7 +343,7 @@ namespace AC
 			
 			if (LayerMask.NameToLayer (KickStarter.settingsManager.backgroundImageLayer) != -1)
 			{
-				_camera.cullingMask = ~(1 << LayerMask.NameToLayer (KickStarter.settingsManager.backgroundImageLayer));
+				_camera.cullingMask = _camera.cullingMask & ~(1 << LayerMask.NameToLayer (KickStarter.settingsManager.backgroundImageLayer));
 			}
 		}
 		
@@ -337,7 +355,7 @@ namespace AC
 			
 			if (LayerMask.NameToLayer (KickStarter.settingsManager.backgroundImageLayer) != -1)
 			{
-				_camera.cullingMask = ~(1 << LayerMask.NameToLayer (KickStarter.settingsManager.backgroundImageLayer));
+				_camera.cullingMask = _camera.cullingMask & ~(1 << LayerMask.NameToLayer (KickStarter.settingsManager.backgroundImageLayer));
 			}
 		}
 		
@@ -347,6 +365,12 @@ namespace AC
 		 */
 		public void SetFirstPerson ()
 		{
+			if (KickStarter.player == null)
+			{
+				ACDebug.LogWarning ("Cannot set first-person camera because no Player can be found!");
+				return;
+			}
+
 			FirstPersonCamera firstPersonCamera = KickStarter.player.GetComponentInChildren<FirstPersonCamera>();
 			if (firstPersonCamera)
 			{
@@ -473,7 +497,7 @@ namespace AC
 			{
 				return;
 			}
-			
+
 			if (KickStarter.stateHandler.gameState == GameState.Normal)
 			{
 				if (attachedCamera)
@@ -567,6 +591,12 @@ namespace AC
 			{
 				transform.position = attachedCamera.transform.position;
 				transform.rotation = attachedCamera.transform.rotation;
+
+				perspectiveOffset = attachedCamera.GetPerspectiveOffset ();
+				if (!_camera.orthographic)
+				{
+					_camera.projectionMatrix = AdvGame.SetVanishingPoint (_camera, perspectiveOffset);
+				}
 			}
 
 			else if (attachedCamera == null && manualRotation)
@@ -696,6 +726,8 @@ namespace AC
 		
 		private void SetlookAtTransformation ()
 		{
+			if (manualRotation) return;
+
 			if (KickStarter.stateHandler.gameState == GameState.Normal)
 			{
 				Vector2 mousePosition = KickStarter.playerInput.GetMousePosition ();
@@ -729,7 +761,9 @@ namespace AC
 				LookAtCentre ();
 				isSmoothChanging = false;
 				transitionFromCamera = null;
-				
+
+				bool changedOrientation = (transform.rotation != attachedCamera.transform.rotation);
+
 				_camera.orthographic = attachedCamera._camera.orthographic;
 				_camera.fieldOfView = attachedCamera._camera.fieldOfView;
 				_camera.orthographicSize = attachedCamera._camera.orthographicSize;
@@ -737,17 +771,9 @@ namespace AC
 				transform.rotation = attachedCamera.transform.rotation;
 				focalDistance = attachedCamera.focalDistance;
 				
-				if (attachedCamera is GameCamera2D)
-				{
-					GameCamera2D cam2D = (GameCamera2D) attachedCamera;
-					perspectiveOffset = cam2D.GetPerspectiveOffset ();
-				}
-				else
-				{
-					perspectiveOffset = new Vector2 (0f, 0f);
-				}
-				
-				if (KickStarter.stateHandler.gameState == GameState.Normal && KickStarter.settingsManager.movementMethod == MovementMethod.Direct && KickStarter.settingsManager.directMovementType == DirectMovementType.RelativeToCamera && /*KickStarter.settingsManager.inputMethod != InputMethod.TouchScreen &&*/ KickStarter.playerInput != null)
+				perspectiveOffset = attachedCamera.GetPerspectiveOffset ();
+
+				if (changedOrientation && !SceneSettings.IsUnity2D () && KickStarter.stateHandler.gameState == GameState.Normal && KickStarter.settingsManager.movementMethod == MovementMethod.Direct && KickStarter.settingsManager.directMovementType == DirectMovementType.RelativeToCamera && /*KickStarter.settingsManager.inputMethod != InputMethod.TouchScreen &&*/ KickStarter.playerInput != null)
 				{
 					if (KickStarter.player != null && 
 						(KickStarter.player.GetPath () == null || !KickStarter.player.IsLockedToPath ()))
@@ -1259,10 +1285,12 @@ namespace AC
 				}
 			}
 			
-			BackgroundCamera backgroundCamera = FindObjectOfType (typeof (BackgroundCamera)) as BackgroundCamera;
-			if (backgroundCamera)
+			if (KickStarter.stateHandler)
 			{
-				backgroundCamera.UpdateRect ();
+				foreach (BackgroundCamera backgroundCamera in KickStarter.stateHandler.BackgroundCameras)
+				{
+					backgroundCamera.UpdateRect ();
+				}
 			}
 
 			CalculateUnityUIAspectRatioCorrection ();
@@ -1326,12 +1354,24 @@ namespace AC
 
 			if (borderWidth != 0f)
 			{
+				if (fadeTexture == null)
+				{
+					ACDebug.LogWarning ("Cannot draw camera borders because no Fade texture is assigned in the MainCamera!");
+					return;
+				}
+
 				GUI.depth = 10;
 				GUI.DrawTexture (borderRect1, fadeTexture);
 				GUI.DrawTexture (borderRect2, fadeTexture);
 			}
 			else if (isSplitScreen)
 			{
+				if (fadeTexture == null)
+				{
+					ACDebug.LogWarning ("Cannot draw camera borders because no Fade texture is assigned in the MainCamera!");
+					return;
+				}
+
 				GUI.depth = 10;
 				GUI.DrawTexture (midBorderRect, fadeTexture);
 			}
@@ -1859,14 +1899,12 @@ namespace AC
 			{
 				Shake (playerData.shakeIntensity, playerData.shakeDuration, (CameraShakeEffect) playerData.shakeEffect);
 			}
-
 			_Camera _attachedCamera = Serializer.returnComponent <_Camera> (playerData.gameCamera);
 			if (_attachedCamera != null)
 			{
 				_attachedCamera.MoveCameraInstant ();
 				SetGameCamera (_attachedCamera);
 			}
-			//else if (KickStarter.settingsManager.IsInFirstPerson ())
 			else if (KickStarter.settingsManager.movementMethod == MovementMethod.FirstPerson && KickStarter.settingsManager.IsInFirstPerson ())
 			{
 				SetFirstPerson ();
@@ -1876,9 +1914,20 @@ namespace AC
 			lastNavCamera2 = Serializer.returnComponent <_Camera> (playerData.lastNavCamera2);
 			ResetMoving ();
 
-			transform.position = new Vector3 (playerData.mainCameraLocX, playerData.mainCameraLocY, playerData.mainCameraLocZ);
-			transform.eulerAngles = new Vector3 (playerData.mainCameraRotX, playerData.mainCameraRotY, playerData.mainCameraRotZ);
-			ResetProjection ();
+			#if ALLOW_VR
+				#if UNITY_2017_2_OR_NEWER
+				if (!UnityEngine.XR.XRSettings.enabled || restoreTransformOnLoadVR) {
+				#else
+				if (!VRSettings.enabled || restoreTransformOnLoadVR) {
+				#endif
+			#endif
+				transform.position = new Vector3 (playerData.mainCameraLocX, playerData.mainCameraLocY, playerData.mainCameraLocZ);
+				transform.eulerAngles = new Vector3 (playerData.mainCameraRotX, playerData.mainCameraRotY, playerData.mainCameraRotZ);
+				ResetProjection ();
+			#if ALLOW_VR
+			}
+			#endif
+
 			SnapToAttached ();
 
 			isSplitScreen = playerData.isSplitScreen;
@@ -1902,6 +1951,15 @@ namespace AC
 					}
 				}
 				StartSplitScreen (playerData.splitAmountMain, playerData.splitAmountOther);
+			}
+		}
+
+
+		public Camera Camera
+		{
+			get
+			{
+				return _camera;
 			}
 		}
 

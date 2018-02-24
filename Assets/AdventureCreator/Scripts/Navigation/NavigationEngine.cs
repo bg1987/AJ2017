@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2016
+ *	by Chris Burton, 2013-2018
  *	
  *	"NavigationEngine.cs"
  * 
@@ -126,7 +126,7 @@ namespace AC
 		public virtual NavigationMesh NavigationMeshGUI (NavigationMesh _target)
 		{
 			_target.disableRenderer = EditorGUILayout.ToggleLeft ("Disable mesh renderer?", _target.disableRenderer);
-			#if UNITY_5
+			#if UNITY_5 || UNITY_2017_1_OR_NEWER
 			_target.ignoreCollisions = EditorGUILayout.ToggleLeft ("Ignore collisions?", _target.ignoreCollisions);
 			#endif
 			return _target;

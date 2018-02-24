@@ -51,15 +51,21 @@ namespace AC
 		public Vector2 directionInfluence = Vector2.zero;
 		/** The intended horizontal and vertical panning offsets */
 		public Vector2 afterOffset = Vector2.zero;
-		
+
+		/** If True, the camera will only move in steps, as if snapping to a grid */
+		public bool doSnapping = false;
+		/** The step size when doSnapping is True */
+		public float unitSnap = 0.1f;
+
 		private Vector2 perspectiveOffset = Vector2.zero;
-		private Vector2 originalPosition = Vector2.zero;
+		private Vector3 originalPosition = Vector3.zero;
 		private Vector2 desiredOffset = Vector2.zero;
 		private bool haveSetOriginalPosition = false;
 
-		private float yDot;
+		private LerpUtils.FloatLerp xLerp = new LerpUtils.FloatLerp ();
+		private LerpUtils.FloatLerp yLerp = new LerpUtils.FloatLerp ();
 
-		
+
 		protected override void Awake ()
 		{
 			SetOriginalPosition ();
@@ -67,10 +73,11 @@ namespace AC
 		}
 		
 		
-		private void Start ()
+		protected override void Start ()
 		{
+			base.Start ();
+
 			ResetTarget ();
-			
 			if (target)
 			{
 				MoveCameraInstant ();
@@ -135,7 +142,7 @@ namespace AC
 			desiredOffset.y += afterOffset.y;
 			if (directionInfluence.y != 0f)
 			{
-				if (KickStarter.settingsManager.movingTurning == MovingTurning.TopDown)
+				if (SceneSettings.IsTopDown ())
 				{
 					desiredOffset.y += Vector3.Dot (target.forward, transform.up) * directionInfluence.y;
 				}
@@ -151,7 +158,7 @@ namespace AC
 			}
 		}	
 		
-		
+
 		private void MoveCamera ()
 		{
 			if (targetIsPlayer && KickStarter.player)
@@ -162,16 +169,19 @@ namespace AC
 			if (target && (!lockHorizontal || !lockVertical))
 			{
 				SetDesired ();
-			
+
 				if (!lockHorizontal)
 				{
-					perspectiveOffset.x = Mathf.Lerp (perspectiveOffset.x, desiredOffset.x, Time.deltaTime * dampSpeed);
+					//perspectiveOffset.x = Mathf.Lerp (perspectiveOffset.x, desiredOffset.x, Time.deltaTime * dampSpeed);
+					perspectiveOffset.x = xLerp.Update (perspectiveOffset.x, desiredOffset.x, dampSpeed);
 				}
 				
 				if (!lockVertical)
 				{
-					perspectiveOffset.y = Mathf.Lerp (perspectiveOffset.y, desiredOffset.y, Time.deltaTime * dampSpeed);
+					//perspectiveOffset.y = Mathf.Lerp (perspectiveOffset.y, desiredOffset.y, Time.deltaTime * dampSpeed);
+					perspectiveOffset.y = yLerp.Update (perspectiveOffset.y, desiredOffset.y, dampSpeed);
 				}
+
 			}
 			else if (!_camera.orthographic)
 			{
@@ -186,11 +196,9 @@ namespace AC
 		{
 			if (!haveSetOriginalPosition)
 			{
-				originalPosition = new Vector2 (transform.position.x, transform.position.y);
+				originalPosition = transform.position;
 				haveSetOriginalPosition = true;
 			}
-
-			yDot = Vector3.Dot (transform.forward, Vector3.forward);
 		}
 		
 		
@@ -202,35 +210,38 @@ namespace AC
 			}
 
 			SetOriginalPosition ();
-			
+
 			if (target && (!lockHorizontal || !lockVertical))
 			{
 				SetDesired ();
 			
 				if (!lockHorizontal)
 				{
-					perspectiveOffset.x = desiredOffset.x;
+					//perspectiveOffset.x = desiredOffset.x;
+					perspectiveOffset.x = xLerp.Update (desiredOffset.x, desiredOffset.x, dampSpeed);
 				}
 				
 				if (!lockVertical)
 				{
 					perspectiveOffset.y = desiredOffset.y;
+					//perspectiveOffset.y = yLerp.Update (desiredOffset.y, desiredOffset.y, dampSpeed);
 				}
 			}
-			
 			SetProjection ();
 		}
 
 
 		private void SetProjection ()
 		{
-			if (!_camera.orthographic)
+			Vector2 snapOffset = GetSnapOffset ();
+
+			if (_camera.orthographic)
 			{
-				_camera.projectionMatrix = AdvGame.SetVanishingPoint (_camera, perspectiveOffset);
+				transform.position = originalPosition + (transform.right * snapOffset.x) + (transform.up * snapOffset.y);
 			}
 			else
 			{
-				transform.position = new Vector3 (originalPosition.x + perspectiveOffset.x, originalPosition.y + perspectiveOffset.y, transform.position.z);
+				_camera.projectionMatrix = AdvGame.SetVanishingPoint (_camera, snapOffset);
 			}
 		}
 
@@ -250,7 +261,7 @@ namespace AC
 			Vector2 targetOffset = new Vector2 ();
 			float forwardOffsetScale = 93 - (299 * _camera.nearClipPlane);
 
-			if (KickStarter.settingsManager && KickStarter.settingsManager.IsTopDown ())
+			if (SceneSettings.IsTopDown ())
 			{
 				if (_camera.orthographic)
 				{
@@ -267,13 +278,16 @@ namespace AC
 			{
 				if (_camera.orthographic)
 				{
-					targetOffset.x = targetPosition.x;
-					targetOffset.y = targetPosition.y;
+					targetOffset = transform.TransformVector (new Vector3 (targetPosition.x, targetPosition.y, -targetPosition.z));
 				}
 				else
 				{
-					targetOffset.x = (targetPosition.x - transform.position.x) / (forwardOffsetScale * (targetPosition.z - transform.position.z));
-					targetOffset.y = yDot * (targetPosition.y - transform.position.y) / (forwardOffsetScale * (targetPosition.z - transform.position.z));
+					float rightDot = Vector3.Dot (transform.right, targetPosition - transform.position);
+					float forwardDot = Vector3.Dot (transform.forward, targetPosition - transform.position);
+					float upDot = Vector3.Dot (transform.up, targetPosition - transform.position);
+
+					targetOffset.x = rightDot / (forwardOffsetScale * forwardDot);
+					targetOffset.y = upDot / (forwardOffsetScale * forwardDot);
 				}
 			}
 
@@ -290,13 +304,13 @@ namespace AC
 
 			if (KickStarter.settingsManager)
 			{
-				if (KickStarter.settingsManager.IsTopDown ())
+				if (SceneSettings.IsTopDown ())
 				{
 					transform.rotation = Quaternion.Euler (90f, 0, 0);
 					return;
 				}
 
-				if (KickStarter.settingsManager.IsUnity2D ())
+				if (SceneSettings.IsUnity2D ())
 				{
 					_camera.orthographic = true;
 				}
@@ -312,7 +326,7 @@ namespace AC
 		 */
 		public bool IsCorrectRotation ()
 		{
-			if (KickStarter.settingsManager != null && KickStarter.settingsManager.IsTopDown ())
+			if (SceneSettings.IsTopDown ())
 			{
 				if (transform.rotation == Quaternion.Euler (90f, 0f, 0f))
 				{
@@ -320,6 +334,11 @@ namespace AC
 				}
 
 				return false;
+			}
+
+			if (SceneSettings.CameraPerspective != CameraPerspective.TwoD)
+			{
+				return true;
 			}
 
 			if (transform.rotation == Quaternion.Euler (0f, 0f, 0f))
@@ -333,7 +352,32 @@ namespace AC
 
 		public override Vector2 GetPerspectiveOffset ()
 		{
+			return GetSnapOffset ();
+		}
+
+
+		private Vector2 GetSnapOffset ()
+		{
+			if (doSnapping)
+			{
+				Vector2 snapOffset = perspectiveOffset;
+				snapOffset /= unitSnap;
+				snapOffset.x = Mathf.Round (snapOffset.x);
+				snapOffset.y = Mathf.Round (snapOffset.y);
+				snapOffset *= unitSnap;
+				return snapOffset;
+			}
 			return perspectiveOffset;
+		}
+
+
+		/**
+		 * <summary>Sets the actual horizontal and vertical panning offsets. Be aware that the camera will still be subject to the movement set by the target, so it will move back to its original position afterwards unless you also change the target.</summary>
+		 * <param name = "_perspectiveOffset">The new offsets</param>
+		 */
+		public void SetPerspectiveOffset (Vector2 _perspectiveOffset)
+		{
+			perspectiveOffset = _perspectiveOffset;
 		}
 
 	}

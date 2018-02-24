@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2016
+ *	by Chris Burton, 2013-2018
  *	
  *	"Sound.cs"
  * 
@@ -45,7 +45,7 @@ namespace AC
 
 		private Options options;
 		protected AudioSource audioSource;
-		private float otherVolume;
+		private float otherVolume = 1f;
 
 		private float originalRelativeVolume;
 		private float targetRelativeVolume;
@@ -56,6 +56,24 @@ namespace AC
 		private void Awake ()
 		{
 			Initialise ();
+		}
+
+
+		private void OnEnable ()
+		{
+			if (KickStarter.stateHandler) KickStarter.stateHandler.Register (this);
+		}
+
+
+		private void Start ()
+		{
+			if (KickStarter.stateHandler) KickStarter.stateHandler.Register (this);
+		}
+
+
+		private void OnDisable ()
+		{
+			if (KickStarter.stateHandler) KickStarter.stateHandler.Unregister (this);
 		}
 
 
@@ -303,7 +321,7 @@ namespace AC
 		}
 
 
-		#if !UNITY_5
+		#if !(UNITY_5 || UNITY_2017_1_OR_NEWER)
 		/**
 		 * <summary>Fixes a Unity 4 issue whereby an AudioSource does not play while paused unless it is re-played from the current point.</summary>
 		 */
@@ -337,6 +355,10 @@ namespace AC
 		 */
 		public void Play (bool loop)
 		{
+			if (audioSource == null)
+			{
+				return;
+			}
 			audioSource.loop = loop;
 			audioSource.timeSamples = 0;
 			Play ();
@@ -351,6 +373,10 @@ namespace AC
 		 */
 		public void Play (AudioClip clip, bool loop, int _timeSamples = 0)
 		{
+			if (audioSource == null)
+			{
+				return;
+			}
 			audioSource.clip = clip;
 			audioSource.loop = loop;
 			audioSource.timeSamples = _timeSamples;
@@ -365,6 +391,10 @@ namespace AC
 		 */
 		public void PlayAtPoint (bool loop, int samplePoint)
 		{
+			if (audioSource == null)
+			{
+				return;
+			}
 			audioSource.loop = loop;
 			audioSource.timeSamples = samplePoint;
 			Play ();
@@ -379,7 +409,7 @@ namespace AC
 		{
 			maxVolume = relativeVolume;
 
-			#if UNITY_5
+			#if UNITY_5 || UNITY_2017_1_OR_NEWER
 			if (KickStarter.settingsManager.volumeControl == VolumeControl.AudioMixerGroups)
 			{
 				SetFinalVolume ();
@@ -406,7 +436,6 @@ namespace AC
 			{
 				maxVolume *= otherVolume;
 			}
-
 			SetFinalVolume ();
 		}
 
@@ -417,7 +446,7 @@ namespace AC
 		 */
 		public void SetVolume (float volume)
 		{
-			#if UNITY_5
+			#if UNITY_5 || UNITY_2017_1_OR_NEWER
 			if (KickStarter.settingsManager.volumeControl == VolumeControl.AudioMixerGroups)
 			{
 				volume = 1f;
@@ -527,11 +556,13 @@ namespace AC
 		 */
 		public void TryDestroy ()
 		{
-			if (surviveSceneChange && !audioSource.isPlaying)
+			if (this is Music || this is Ambience)
+			{}
+			else if (surviveSceneChange && !audioSource.isPlaying)
 			{
-				if (gameObject.GetComponentInParent <Player>() != null ||
-					GetComponent <Player>() != null ||
-					GetComponentInChildren <Player>() != null)
+				if (gameObject.GetComponentInParent <Player>() == null &&
+					GetComponent <Player>() == null &&
+					GetComponentInChildren <Player>() == null)
 				{
 					ACDebug.Log ("Deleting Sound object '" + gameObject + "' as it is not currently playing any sound.");
 					DestroyImmediate (gameObject);
@@ -541,12 +572,13 @@ namespace AC
 
 
 		/**
-		 * <summary>Fades out any music being played.</summary>
-		 * <param name = "newSound">The Sound object to not affect</param>
+		 * <summary>Fades out all sounds of a particular type being played.</summary>
+		 * <param name = "soundType">If the soundType matches this, the sound will end</param>
+		 * <param name = "ignoreSound">The Sound object to not affect</param>
 		 */
-		public void EndOldMusic (Sound newSound)
+		public void EndOld (SoundType _soundType, Sound ignoreSound)
 		{
-			if (soundType == SoundType.Music && audioSource.isPlaying && this != newSound)
+			if (soundType == _soundType && audioSource.isPlaying && this != ignoreSound)
 			{
 				if (fadeTime == 0f || fadeType == FadeType.fadeIn)
 				{

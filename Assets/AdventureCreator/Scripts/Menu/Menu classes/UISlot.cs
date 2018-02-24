@@ -37,10 +37,11 @@ namespace AC
 		
 		private Text uiText;
 		private Image uiImage;
+		private RawImage uiRawImage;
 
 		private Color originalColour;
 		private UnityEngine.Sprite emptySprite;
-		private Texture2D texture;
+		private Texture cacheTexture;
 
 
 		/**
@@ -52,6 +53,7 @@ namespace AC
 			uiButtonID = 0;
 			uiText = null;
 			uiImage = null;
+			uiRawImage = null;
 			sprite = null;
 		}
 
@@ -89,20 +91,52 @@ namespace AC
 
 
 		/**
-		 * Links the UI GameObjects to the class, based on the supplied uiButtonID.
+		 * <summary>Links the UI GameObjects to the class, based on the supplied uiButtonID.</summary>
+		 * <param name = "canvas">The Canvas that contains the UI GameObjects</param>
+		 * <param name = "linkUIGraphic">What Image component the Element's Graphics should be linked to (ImageComponent, ButtonTargetGraphic)</param>
 		 */
-		public void LinkUIElements ()
+		public void LinkUIElements (Canvas canvas, LinkUIGraphic linkUIGraphic)
 		{
-			uiButton = Serializer.returnComponent <UnityEngine.UI.Button> (uiButtonID);
+			if (canvas != null)
+			{
+				uiButton = Serializer.GetGameObjectComponent <UnityEngine.UI.Button> (uiButtonID, canvas.gameObject);
+			}
+			else
+			{
+				uiButton = null;
+			}
+
 			if (uiButton)
 			{
 				if (uiButton.GetComponentInChildren <Text>())
 				{
 					uiText = uiButton.GetComponentInChildren <Text>();
 				}
-				if (uiButton.GetComponentInChildren <Image>())
+				if (uiButton.GetComponentInChildren <RawImage>())
+				{
+					uiRawImage = uiButton.GetComponentInChildren <RawImage>();
+				}
+				if (linkUIGraphic == LinkUIGraphic.ImageComponent && uiButton.GetComponentInChildren <Image>())
 				{
 					uiImage = uiButton.GetComponentInChildren <Image>();
+				}
+				else if (linkUIGraphic == LinkUIGraphic.ButtonTargetGraphic)
+				{
+					if (uiButton.targetGraphic != null)
+					{
+						if (uiButton.targetGraphic is Image)
+						{
+							uiImage = uiButton.targetGraphic as Image;
+						}
+						else
+						{
+							ACDebug.LogWarning ("Cannot assign UI Image for " + uiButton.name + "'s target graphic as " + uiButton.targetGraphic + " is not an Image component.", canvas);
+						}
+					}
+					else
+					{
+						ACDebug.LogWarning ("Cannot assign UI Image for " + uiButton.name + "'s target graphic because it has none.", canvas);
+					}
 				}
 
 				originalColour = uiButton.colors.normalColor;
@@ -127,27 +161,39 @@ namespace AC
 		 * <summary>Sets the image of the UI Button.</summary>
 		 * <param title = "_texture">The texture to assign the Button</param>
 		 */
-		public void SetImage (Texture2D _texture)
+		public void SetImage (Texture _texture)
 		{
-			if (uiImage)
+			if (uiRawImage != null)
+			{
+				uiRawImage.texture = _texture;
+			}
+			else if (uiImage != null)
 			{
 				if (_texture == null)
 				{
 					if (emptySprite == null)
 					{
-						emptySprite = Resources.Load <UnityEngine.Sprite> ("EmptySlot");
+						emptySprite = Resources.Load <UnityEngine.Sprite> (Resource.emptySlot);
 					}
 
 					sprite = emptySprite;
 				}
-				else if (sprite == null || sprite == emptySprite || texture != _texture)
+				else if (sprite == null || sprite == emptySprite || cacheTexture != _texture)
 				{
-					sprite = UnityEngine.Sprite.Create (_texture, new Rect (0f, 0f, _texture.width, _texture.height), new Vector2 (0.5f, 0.5f), 100f, 0, SpriteMeshType.FullRect);
+					if (_texture is Texture2D)
+					{
+						Texture2D texture2D = (Texture2D) _texture;
+						sprite = UnityEngine.Sprite.Create (texture2D, new Rect (0f, 0f, texture2D.width, texture2D.height), new Vector2 (0.5f, 0.5f), 100f, 0, SpriteMeshType.FullRect);
+					}
+					else
+					{
+						ACDebug.LogWarning ("Cannot show texture " + _texture.name + " in UI Image " + uiImage.name + " because it is not a 2D Texture. Use a UI RawImage component instead.", uiImage);
+					}
 				}
 
 				if (_texture != null)
 				{
-					texture = _texture;
+					cacheTexture = _texture;
 				}
 
 				uiImage.sprite = sprite;

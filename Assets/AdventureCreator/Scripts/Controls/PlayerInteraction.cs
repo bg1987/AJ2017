@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2016
+ *	by Chris Burton, 2013-2018
  *	
  *	"PlayerInteraction.cs"
  * 
@@ -26,14 +26,16 @@ namespace AC
 	public class PlayerInteraction : MonoBehaviour
 	{
 
-		/** If True, then gameplay is blocked because the Player prefab is moving towards a Hotspot before the Interaction is run */
-		[HideInInspector] public bool inPreInteractionCutscene = false;
+		private bool inPreInteractionCutscene = false;
 
 		private Hotspot hotspotMovingTo;
 		private Hotspot hotspot;
 		private Hotspot lastHotspot = null;
 		private Button button = null;
 		private int interactionIndex = -1;
+		private Hotspot manualHotspot;
+		private string movingToHotspotLabel = "";
+
 
 
 		/**
@@ -51,7 +53,7 @@ namespace AC
 					return;
 				}
 				
-				if (KickStarter.playerInput.GetMouseState () == MouseState.RightClick && KickStarter.runtimeInventory.selectedItem != null && !KickStarter.playerMenus.IsMouseOverMenu ())
+				if (KickStarter.settingsManager.interactionMethod != AC_InteractionMethod.CustomScript && KickStarter.playerInput.GetMouseState () == MouseState.RightClick && KickStarter.runtimeInventory.SelectedItem != null && !KickStarter.playerMenus.IsMouseOverMenu ())
 				{
 					if (KickStarter.settingsManager.SelectInteractionMethod () == SelectInteractions.CyclingCursorAndClickingHotspot && KickStarter.settingsManager.cycleInventoryCursors)
 					{
@@ -62,10 +64,10 @@ namespace AC
 						KickStarter.playerInput.ResetMouseClick ();
 						KickStarter.runtimeInventory.SetNull ();
 					}
-					else if (KickStarter.settingsManager.rightClickInventory == RightClickInventory.ExaminesItem)
+					else if (KickStarter.settingsManager.rightClickInventory == RightClickInventory.ExaminesItem && KickStarter.cursorManager.lookUseCursorAction != LookUseCursorAction.RightClickCyclesModes)
 					{
 						KickStarter.playerInput.ResetMouseClick ();
-						KickStarter.runtimeInventory.Look (KickStarter.runtimeInventory.selectedItem);
+						KickStarter.runtimeInventory.Look (KickStarter.runtimeInventory.SelectedItem);
 					}
 				}
 				
@@ -121,6 +123,11 @@ namespace AC
 
 		private void HandleInteractionMenu ()
 		{
+			if (KickStarter.settingsManager.interactionMethod == AC_InteractionMethod.CustomScript)
+			{
+				return;
+			}
+
 			if (KickStarter.playerInput.GetMouseState () == MouseState.LetGo && !KickStarter.playerMenus.IsMouseOverInteractionMenu () && KickStarter.settingsManager.ReleaseClickInteractions ())
 			{
 				KickStarter.playerMenus.CloseInteractionMenus ();
@@ -171,10 +178,31 @@ namespace AC
 		{
 			if (hotspot == null && button == null && IsDroppingInventory ())
 			{
+				if (KickStarter.playerMenus.IsMouseOverInventory ())
+				{
+					// Don't null if over inventory (Unity UI issue)
+					return;
+				}
 				KickStarter.runtimeInventory.SetNull ();
 			}
 		}
-		
+
+
+
+		/**
+		 * <summary>Sets the active Hotspot, provided that the chosen hotspot detection method in Settings Manager is CustomScript.</summary>
+		 * <param name = "_hotspot">The Hotspot to make active</param>
+		 */
+		public void SetActiveHotspot (Hotspot _hotspot)
+		{
+			hotspot = manualHotspot = _hotspot;
+
+			if (KickStarter.settingsManager.hotspotDetection != HotspotDetection.CustomScript)
+			{
+				ACDebug.LogWarning ("The 'Hotspot detection method' setting must be set to 'Custom Script' in order for Hotspots to be set active manually.");
+			}
+		}
+
 		
 		private Hotspot CheckForHotspots ()
 		{
@@ -193,7 +221,11 @@ namespace AC
 				return null;
 			}
 
-			if (KickStarter.settingsManager.hotspotDetection == HotspotDetection.PlayerVicinity)
+			if (KickStarter.settingsManager.hotspotDetection == HotspotDetection.CustomScript)
+			{
+				return manualHotspot;
+			}
+			else if (KickStarter.settingsManager.hotspotDetection == HotspotDetection.PlayerVicinity)
 			{
 				if (KickStarter.player != null && KickStarter.player.hotspotDetector != null)
 				{
@@ -221,7 +253,7 @@ namespace AC
 				}
 			}
 
-			if (KickStarter.settingsManager && KickStarter.settingsManager.IsUnity2D ())
+			if (SceneSettings.IsUnity2D ())
 			{
 				RaycastHit2D hit;
 				if (KickStarter.mainCamera.IsOrthographic ())
@@ -293,10 +325,9 @@ namespace AC
 		{
 			if (KickStarter.settingsManager.AutoDisableUnhandledHotspots && hotspot != null)
 			{
-				List<InvItem> selectedItems = KickStarter.runtimeInventory.GetSelected ();
-				if (selectedItems != null && selectedItems.Count > 0)
+				if (KickStarter.runtimeInventory.SelectedItem != null)
 				{
-					if (!hotspot.HasInventoryInteraction (selectedItems[0]))
+					if (!hotspot.HasInventoryInteraction (KickStarter.runtimeInventory.SelectedItem))
 					{
 						return null;
 					}
@@ -308,7 +339,7 @@ namespace AC
 		
 		private bool CanDoDoubleTap ()
 		{
-			if (KickStarter.runtimeInventory.selectedItem != null &&  KickStarter.settingsManager.InventoryDragDrop)
+			if (KickStarter.runtimeInventory.SelectedItem != null &&  KickStarter.settingsManager.InventoryDragDrop)
 				return false;
 			
 			if (KickStarter.settingsManager.inputMethod == InputMethod.TouchScreen && KickStarter.settingsManager.doubleTapHotspots)
@@ -397,17 +428,17 @@ namespace AC
 					if (hotspot)
 					{
 						if (KickStarter.playerInput.GetMouseState () == MouseState.SingleClick ||
-						    ( KickStarter.settingsManager.InventoryDragDrop && IsDroppingInventory ()) ||
-						    (KickStarter.settingsManager.MouseOverForInteractionMenu () && KickStarter.runtimeInventory.hoverItem == null && KickStarter.runtimeInventory.selectedItem == null && clickedNew && !IsDroppingInventory ()))
+						    (KickStarter.settingsManager.InventoryDragDrop && IsDroppingInventory ()) ||
+						    (KickStarter.settingsManager.MouseOverForInteractionMenu () && KickStarter.runtimeInventory.hoverItem == null && KickStarter.runtimeInventory.SelectedItem == null && clickedNew && !IsDroppingInventory ()))
 						{
 							if (KickStarter.runtimeInventory.hoverItem == null && KickStarter.playerInput.GetMouseState () == MouseState.SingleClick && 
 							    KickStarter.settingsManager.MouseOverForInteractionMenu () && KickStarter.settingsManager.SelectInteractionMethod () == SelectInteractions.ClickingMenu &&
 							    KickStarter.settingsManager.cancelInteractions != CancelInteractions.ClickOffMenu &&
-							    !(KickStarter.runtimeInventory.selectedItem != null && !KickStarter.settingsManager.cycleInventoryCursors))
+							    !(KickStarter.runtimeInventory.SelectedItem != null && !KickStarter.settingsManager.cycleInventoryCursors))
 							{
 								return;
 							}
-							if (KickStarter.runtimeInventory.selectedItem != null)
+							if (KickStarter.runtimeInventory.SelectedItem != null)
 							{
 								if (! KickStarter.settingsManager.InventoryDragDrop && clickedNew && doubleTap)
 								{
@@ -430,8 +461,11 @@ namespace AC
 
 								if (KickStarter.playerMenus.IsInteractionMenuOn () && KickStarter.settingsManager.SelectInteractionMethod () == SelectInteractions.CyclingMenuAndClickingHotspot)
 								{
-									ClickHotspotToInteract ();
-									return;
+									if (KickStarter.playerInput.GetMouseState () == MouseState.SingleClick)
+									{
+										ClickHotspotToInteract ();
+										return;
+									}
 								}
 								
 								if (clickedNew && doubleTap)
@@ -467,8 +501,29 @@ namespace AC
 		}
 
 
+		private bool IsInvokingDefaultInteraction ()
+		{
+			if (KickStarter.settingsManager.interactionMethod == AC_InteractionMethod.ChooseInteractionThenHotspot &&
+				KickStarter.settingsManager.allowDefaultinteractions &&
+				KickStarter.playerInput.InputGetButtonDown ("DefaultInteraction") &&
+				KickStarter.runtimeInventory.SelectedItem == null)
+			{
+				return true;
+			}
+			return false;
+		}
+
+
 		private void ContextSensitiveClick ()
 		{
+			if (hotspot != null &&
+				IsInvokingDefaultInteraction () &&
+				hotspot.provideUseInteraction)
+			{
+				UseHotspot (hotspot);
+				return;
+			}
+
 			if (CanDoDoubleTap ())
 			{
 				// Detect Hotspots only on mouse click
@@ -493,7 +548,7 @@ namespace AC
 					if (KickStarter.playerInput.GetMouseState () == MouseState.SingleClick || KickStarter.playerInput.GetMouseState () == MouseState.DoubleClick || KickStarter.playerInput.GetMouseState () == MouseState.RightClick || IsDroppingInventory ())
 					{
 						if (KickStarter.settingsManager.SelectInteractionMethod () == SelectInteractions.CyclingCursorAndClickingHotspot &&
-						    (KickStarter.runtimeInventory.selectedItem == null || (KickStarter.runtimeInventory.selectedItem != null && KickStarter.settingsManager.cycleInventoryCursors)))
+						    (KickStarter.runtimeInventory.SelectedItem == null || (KickStarter.runtimeInventory.SelectedItem != null && KickStarter.settingsManager.cycleInventoryCursors)))
 						{
 							if (KickStarter.playerInput.GetMouseState () != MouseState.RightClick)
 							{
@@ -573,11 +628,11 @@ namespace AC
 		 */
 		public bool DoesHotspotHaveInventoryInteraction ()
 		{
-			if (hotspot && KickStarter.runtimeInventory && KickStarter.runtimeInventory.selectedItem != null)
+			if (hotspot && KickStarter.runtimeInventory && KickStarter.runtimeInventory.SelectedItem != null)
 			{
 				foreach (Button _button in hotspot.invButtons)
 				{
-					if (_button.invID == KickStarter.runtimeInventory.selectedItem.id && !_button.isDisabled)
+					if (_button.invID == KickStarter.runtimeInventory.SelectedItem.id && !_button.isDisabled)
 					{
 						return true;
 					}
@@ -596,32 +651,53 @@ namespace AC
 				{
 					if (KickStarter.playerInput.GetMouseState () == MouseState.SingleClick || KickStarter.playerInput.GetMouseState () == MouseState.DoubleClick)
 					{
-						if (KickStarter.runtimeInventory.selectedItem == null && hotspot.HasContextUse ())
+						if (KickStarter.runtimeInventory.SelectedItem == null && KickStarter.cursorManager.lookUseCursorAction == LookUseCursorAction.RightClickCyclesModes)
+						{
+							if (KickStarter.playerCursor.ContextCycleExamine && hotspot.HasContextLook ())
+							{
+								// Perform "Look" interaction
+								ClickButton (InteractionType.Examine, -1, -1);
+							}
+							else if (hotspot.HasContextUse ())
+							{
+								// Perform "Use" interaction
+								ClickButton (InteractionType.Use, -1, -1);
+							}
+							return;
+						}
+
+						if (KickStarter.runtimeInventory.SelectedItem == null && hotspot.HasContextUse ())
 						{
 							// Perform "Use" interaction
 							ClickButton (InteractionType.Use, -1, -1);
 						}
-						
-						else if (KickStarter.runtimeInventory.selectedItem != null)
+						else if (KickStarter.runtimeInventory.SelectedItem != null)
 						{
 							// Perform "Use Inventory" interaction
-							ClickButton (InteractionType.Inventory, -1, KickStarter.runtimeInventory.selectedItem.id);
+							ClickButton (InteractionType.Inventory, -1, KickStarter.runtimeInventory.SelectedItem.id);
 							
 							if (KickStarter.settingsManager.inventoryDisableLeft)
 							{
 								KickStarter.runtimeInventory.SetNull ();
 							}
 						}
-						
 						else if (hotspot.HasContextLook () && KickStarter.cursorManager.leftClickExamine)
 						{
 							// Perform "Look" interaction
 							ClickButton (InteractionType.Examine, -1, -1);
 						}
+						else
+						{
+							if (hotspot.walkToMarker)
+							{
+								ClickHotspotToWalk (hotspot.walkToMarker.transform);
+							}
+						}
+
 					}
 					else if (KickStarter.playerInput.GetMouseState () == MouseState.RightClick)
 					{
-						if (hotspot.HasContextLook () && KickStarter.runtimeInventory.selectedItem == null)
+						if (KickStarter.runtimeInventory.SelectedItem == null && hotspot.HasContextLook () && KickStarter.cursorManager.lookUseCursorAction != LookUseCursorAction.RightClickCyclesModes)
 						{
 							// Perform "Look" interaction
 							ClickButton (InteractionType.Examine, -1, -1);
@@ -630,7 +706,7 @@ namespace AC
 					else if ( KickStarter.settingsManager.InventoryDragDrop && IsDroppingInventory ())
 					{
 						// Perform "Use Inventory" interaction (Drag n' drop mode)
-						ClickButton (InteractionType.Inventory, -1, KickStarter.runtimeInventory.selectedItem.id);
+						ClickButton (InteractionType.Inventory, -1, KickStarter.runtimeInventory.SelectedItem.id);
 						KickStarter.runtimeInventory.SetNull ();
 					}
 				}
@@ -639,7 +715,7 @@ namespace AC
 				{
 					if (KickStarter.playerInput.GetMouseState () == MouseState.SingleClick)
 					{
-						if (KickStarter.runtimeInventory.selectedItem == null && hotspot.provideUseInteraction)
+						if (KickStarter.runtimeInventory.SelectedItem == null && hotspot.provideUseInteraction)
 						{
 							// Perform "Use" interaction
 							if (GetActiveHotspot () != null && GetActiveHotspot ().IsSingleInteraction ())
@@ -658,11 +734,11 @@ namespace AC
 								}
 							}
 						}
-						else if (KickStarter.runtimeInventory.selectedItem != null && KickStarter.playerCursor.GetSelectedCursor () == -2)
+						else if (KickStarter.runtimeInventory.SelectedItem != null && KickStarter.playerCursor.GetSelectedCursor () == -2)
 						{
 							// Perform "Use Inventory" interaction
 							KickStarter.playerCursor.ResetSelectedCursor ();
-							ClickButton (InteractionType.Inventory, -1, KickStarter.runtimeInventory.selectedItem.id);
+							ClickButton (InteractionType.Inventory, -1, KickStarter.runtimeInventory.SelectedItem.id);
 							
 							if (KickStarter.settingsManager.inventoryDisableLeft)
 							{
@@ -673,18 +749,18 @@ namespace AC
 					else if ( KickStarter.settingsManager.InventoryDragDrop && IsDroppingInventory ())
 					{
 						// Perform "Use Inventory" interaction (Drag n' drop mode)
-						ClickButton (InteractionType.Inventory, -1, KickStarter.runtimeInventory.selectedItem.id);
+						ClickButton (InteractionType.Inventory, -1, KickStarter.runtimeInventory.SelectedItem.id);
 					}
 				}
 				
 				else if (KickStarter.settingsManager.interactionMethod == AC_InteractionMethod.ChooseHotspotThenInteraction)
 				{
-					if (KickStarter.runtimeInventory.selectedItem != null && KickStarter.settingsManager.CanSelectItems (false))
+					if (KickStarter.runtimeInventory.SelectedItem != null && KickStarter.settingsManager.CanSelectItems (false))
 					{
 						if (KickStarter.playerInput.GetMouseState () == MouseState.SingleClick || KickStarter.playerInput.GetMouseState () == MouseState.DoubleClick)
 						{
 							// Perform "Use Inventory" interaction
-							ClickButton (InteractionType.Inventory, -1, KickStarter.runtimeInventory.selectedItem.id);
+							ClickButton (InteractionType.Inventory, -1, KickStarter.runtimeInventory.SelectedItem.id);
 							
 							if (KickStarter.settingsManager.inventoryDisableLeft)
 							{
@@ -695,13 +771,13 @@ namespace AC
 						else if ( KickStarter.settingsManager.InventoryDragDrop && IsDroppingInventory ())
 						{
 							// Perform "Use Inventory" interaction
-							ClickButton (InteractionType.Inventory, -1, KickStarter.runtimeInventory.selectedItem.id);
+							ClickButton (InteractionType.Inventory, -1, KickStarter.runtimeInventory.SelectedItem.id);
 							
 							KickStarter.runtimeInventory.SetNull ();
 							return;
 						}
 					}
-					else if (KickStarter.runtimeInventory.selectedItem == null && hotspot.IsSingleInteraction ())
+					else if (KickStarter.runtimeInventory.SelectedItem == null && hotspot.IsSingleInteraction ())
 					{
 						// Perform "Use" interaction
 						ClickButton (InteractionType.Use, -1, -1);
@@ -718,26 +794,61 @@ namespace AC
 
 		private void ClickHotspotToWalk (Transform walkToMarker)
 		{
-			StopMovingToHotspot ();
-			inPreInteractionCutscene = false;
-			StopCoroutine ("UseObject");
+			if (KickStarter.player)
+			{
+				KickStarter.player.ClearHeadTurnTarget (false, HeadFacing.Hotspot);
+			}
+			StopInteraction ();
+			//StopMovingToHotspot ();
+
 			KickStarter.playerInput.ResetMouseClick ();
 			KickStarter.playerInput.ResetClick ();
-			button = null;
 
 			Vector3[] pointArray = KickStarter.navigationManager.navigationEngine.GetPointsArray (KickStarter.player.transform.position, walkToMarker.position, KickStarter.player);
 			KickStarter.player.MoveAlongPoints (pointArray, false);
 		}
-		
+
 
 		/**
-		 * <summary>Handles the clicking of a Hotspot, and runs the appropriate interaction based on the current cursor and inventory.</summary>
-		 * <param name = "_interactionType">The type of interaction to run (Use, Examine, Inventory)</param>
-		 * <param name = "selectedCursorID">The ID number of the current cursor, if _interactionType = InteractionType.Use</param>
-		 * <param name = "selectedItemID">The ID number of the current inventory item (see InvItem), if _interactionType = InteractionType.Inventory</param>
-		 * <param name = "clickedHotspot">The Hotspot that was clicked on</param>
+		 * <summary>Runs a Hotspot's 'use' interaction.</summary>
+		 * <param name = "_hotspot">The Hotspot to use</param>
+		 * <param name = "selectedCursorID">The ID number of the current cursor. If -1, the Hotspot's first available 'use' interaction will be triggered</param>
 		 */
-		public void ClickButton (InteractionType _interactionType, int selectedCursorID, int selectedItemID, Hotspot clickedHotspot = null)
+		public void UseHotspot (Hotspot _hotspot, int selectedCursorID = -1)
+		{
+			ClickButton (InteractionType.Use, selectedCursorID, -1, _hotspot);
+		}
+
+
+		/**
+		 * <summary>Runs a Hotspot's 'look' interaction.</summary>
+		 * <param name = "_hotspot">The Hotspot to examine</param>
+		 */
+		public void ExamineHotspot (Hotspot _hotspot)
+		{
+			ClickButton (InteractionType.Examine, -1, -1, _hotspot);
+		}
+
+
+		/**
+		 * <summary>Runs a Hotspot's 'use inventory' interaction.</summary>
+		 * <param name = "_hotspot">The Hotspot to examine</param>
+		 * <param name = "inventoryItemID">The ID number of the inventory item (see InvItem)</param>
+		 * <param name = "requireCarry">If the SettingsManager's interactionMethod is CustomScript, the item must be carried by the player for the interaction to trigger</param>
+		 */
+		public void UseInventoryOnHotspot (Hotspot _hotspot, int inventoryItemID, bool requireCarry = true)
+		{
+			if (KickStarter.settingsManager.interactionMethod == AC_InteractionMethod.CustomScript && requireCarry && !KickStarter.runtimeInventory.IsCarryingItem (inventoryItemID))
+			{
+				ACDebug.Log ("Cannot use item with ID " + inventoryItemID + " as the player is not carrying it.");
+				return;
+			}
+
+			ClickButton (InteractionType.Inventory, -1, inventoryItemID, _hotspot);
+		}
+		
+
+		private void ClickButton (InteractionType _interactionType, int selectedCursorID, int selectedItemID, Hotspot clickedHotspot = null)
 		{
 			inPreInteractionCutscene = false;
 			StopCoroutine ("UseObject");
@@ -745,6 +856,12 @@ namespace AC
 			if (clickedHotspot != null)
 			{
 				lastHotspot = hotspot = clickedHotspot;
+			}
+
+			if (hotspot == null)
+			{
+				ACDebug.LogWarning ("Cannot process Hotspot interaction, because no Hotspot was set!");
+				return;
 			}
 			
 			if (KickStarter.player)
@@ -771,7 +888,7 @@ namespace AC
 			KickStarter.playerInput.ResetMouseClick ();
 			KickStarter.playerInput.ResetClick ();
 			button = null;
-			
+
 			if (_interactionType == InteractionType.Use)
 			{
 				if (selectedCursorID == -1)
@@ -824,11 +941,10 @@ namespace AC
 					button = hotspot.unhandledInvButton;
 				}
 			}
-			
 			if (button != null && button.isDisabled)
 			{
 				button = null;
-				
+
 				if (_interactionType != InteractionType.Inventory)
 				{
 					KickStarter.player.ClearHeadTurnTarget (false, HeadFacing.Hotspot);
@@ -860,9 +976,16 @@ namespace AC
 				}
 			}
 			
-			if (KickStarter.playerInput != null && KickStarter.playerInput.runLock == PlayerMoveLock.AlwaysWalk)
+			if (KickStarter.playerInput != null)
 			{
-				doRun = false;
+				if (KickStarter.playerInput.runLock == PlayerMoveLock.AlwaysWalk)
+				{
+					doRun = false;
+				}
+				else if (KickStarter.playerInput.runLock == PlayerMoveLock.AlwaysRun)
+				{
+					doRun = true;
+				}
 			}
 			
 			if (KickStarter.player)
@@ -878,7 +1001,18 @@ namespace AC
 					{
 						KickStarter.stateHandler.gameState = GameState.Normal;
 					}
+
 					hotspotMovingTo = hotspot;
+
+					if (IsInvokingDefaultInteraction ())
+					{
+						// Special case: force default icon ID
+						movingToHotspotLabel = hotspot.GetFullLabel (Options.GetLanguage (), hotspot.GetFirstUseButton ().iconID);
+					}
+					else
+					{
+						movingToHotspotLabel = KickStarter.playerMenus.GetHotspotLabel ();
+					}
 				}
 				else
 				{
@@ -907,14 +1041,18 @@ namespace AC
 				{
 					Vector3 lookVector = Vector3.zero;
 					Vector3 targetPos = _hotspot.transform.position;
-					
-					if (KickStarter.settingsManager.ActInScreenSpace ())
+
+					if (SceneSettings.ActInScreenSpace ())
 					{
-						lookVector = AdvGame.GetScreenDirection (KickStarter.player.transform.position, _hotspot.transform.position);
+						Vector3 _hotspotCentre = (_hotspot.centrePoint != null) ? _hotspot.centrePoint.position : _hotspot.transform.position;
+
+						lookVector = AdvGame.GetScreenDirection (KickStarter.player.transform.position, _hotspotCentre);
 					}
 					else
 					{
-						lookVector = targetPos - KickStarter.player.transform.position;
+						Vector3 _hotspotCentre = (_hotspot.centrePoint != null) ? _hotspot.centrePoint.position : _hotspot.transform.position;
+
+						lookVector = _hotspotCentre - KickStarter.player.transform.position;
 						lookVector.y = 0;
 					}
 					
@@ -937,7 +1075,7 @@ namespace AC
 								Vector3[] pointArray;
 								Vector3 targetPosition = _hotspot.walkToMarker.transform.position;
 								
-								if (KickStarter.settingsManager.ActInScreenSpace ())
+								if (SceneSettings.ActInScreenSpace ())
 								{
 									targetPosition = AdvGame.GetScreenNavMesh (targetPosition);
 								}
@@ -945,6 +1083,12 @@ namespace AC
 								pointArray = KickStarter.navigationManager.navigationEngine.GetPointsArray (KickStarter.player.transform.position, targetPosition, KickStarter.player);
 								KickStarter.player.MoveAlongPoints (pointArray, doRun);
 								targetPos = pointArray [pointArray.Length - 1];
+
+								if (KickStarter.player.retroPathfinding)
+								{
+									// Update the speed on the same frame so that we don't have a frame of zero moveSpeed
+									KickStarter.player._Update ();
+								}
 							}
 							
 							while (KickStarter.player.GetPath ())
@@ -997,7 +1141,7 @@ namespace AC
 									targetPosition = _hotspot.walkToMarker.transform.position;
 								}
 								
-								if (KickStarter.settingsManager.ActInScreenSpace ())
+								if (SceneSettings.ActInScreenSpace ())
 								{
 									targetPosition = AdvGame.GetScreenNavMesh (targetPosition);
 								}
@@ -1012,6 +1156,12 @@ namespace AC
 								else
 								{
 									targetPos = KickStarter.player.transform.position;
+								}
+
+								if (KickStarter.player.retroPathfinding)
+								{
+									// Update the speed on the same frame so that we don't have a frame of zero moveSpeed
+									KickStarter.player._Update ();
 								}
 							}
 							
@@ -1040,13 +1190,15 @@ namespace AC
 
 						if (button.faceAfter)
 						{
-							if (KickStarter.settingsManager.ActInScreenSpace ())
+							Vector3 centrePoint = (_hotspot.centrePoint != null) ? _hotspot.centrePoint.position : _hotspot.transform.position;
+
+							if (SceneSettings.ActInScreenSpace ())
 							{
-								lookVector = AdvGame.GetScreenDirection (KickStarter.player.transform.position, _hotspot.transform.position);
+								lookVector = AdvGame.GetScreenDirection (KickStarter.player.transform.position, centrePoint);
 							}
 							else
 							{
-								lookVector = _hotspot.transform.position - KickStarter.player.transform.position;
+								lookVector = _hotspot.transform.position - centrePoint;
 								lookVector.y = 0;
 							}
 							
@@ -1101,7 +1253,7 @@ namespace AC
 				else
 				{
 					KickStarter.stateHandler.gameState = GameState.Normal;
-					if ( KickStarter.settingsManager.InventoryDragDrop)
+					if (KickStarter.settingsManager.InventoryDragDrop)
 					{
 						KickStarter.runtimeInventory.SetNull ();
 					}
@@ -1109,7 +1261,10 @@ namespace AC
 			}
 			else
 			{
-				KickStarter.runtimeInventory.SetNull ();
+				if (KickStarter.settingsManager.InventoryDragDrop || KickStarter.settingsManager.inventoryDisableDefined)
+				{
+					KickStarter.runtimeInventory.SetNull ();
+				}
 				
 				if (_hotspot.interactionSource == InteractionSource.AssetFile)
 				{
@@ -1126,7 +1281,14 @@ namespace AC
 				{
 					if (button.customScriptObject != null && button.customScriptFunction != "")
 					{
-						button.customScriptObject.SendMessage (button.customScriptFunction);
+						if (selectedItemID >= 0)
+						{
+							button.customScriptObject.SendMessage (button.customScriptFunction, selectedItemID);
+						}
+						else
+						{
+							button.customScriptObject.SendMessage (button.customScriptFunction);
+						}
 					}
 				}
 				else if (_hotspot.interactionSource == InteractionSource.InScene)
@@ -1198,7 +1360,7 @@ namespace AC
 			{
 				return _hotspot.GetFullLabel (languageNumber);
 			}
-			else if (KickStarter.cursorManager && KickStarter.runtimeInventory.selectedItem != null && KickStarter.cursorManager.inventoryHandling != InventoryHandling.ChangeCursor && KickStarter.settingsManager.CanSelectItems (false) && KickStarter.cursorManager.onlyShowInventoryLabelOverHotspots)
+			else if (KickStarter.cursorManager && KickStarter.runtimeInventory.SelectedItem != null && KickStarter.cursorManager.inventoryHandling != InventoryHandling.ChangeCursor && KickStarter.settingsManager.CanSelectItems (false) && KickStarter.cursorManager.onlyShowInventoryLabelOverHotspots)
 			{
 				return "";
 			}
@@ -1208,23 +1370,37 @@ namespace AC
 		}
 
 
-		public string GetLabelPrefix (Hotspot _hotspot, InvItem _invItem, int languageNumber = 0)
+		/**
+		 * <summary>Gets the prefix for the Hotspot label (the label without the interactive Hotspot or inventory item)</summary>
+		 * <param name = "_hotspot">The Hotspot to get the prefix label for. This will be ignored if _invItem is not null</param>
+		 * <param name = "_invItem">The Inventory Item to get the prefix label for. This will override _hotspot if not null</param>
+		 * <param name = "languageNumber">The index number of the language to return. If 0, the default language will be used</param>
+		 * <param name = "cursorID">The ID number of the cursor to rely on, if appropriate.  If <0, the active cursor will be used</param>
+		 * <returns>The prefix for the Hotspot label</summary>
+		 */
+		public string GetLabelPrefix (Hotspot _hotspot, InvItem _invItem, int languageNumber = 0, int cursorID = -1)
 		{
 			if (_invItem != null)
 			{
 				_hotspot = null;
 			}
 
-			string label = "";
-			if (KickStarter.cursorManager && KickStarter.runtimeInventory.selectedItem != null && KickStarter.cursorManager.inventoryHandling != InventoryHandling.ChangeCursor)
+			bool isOverride = (cursorID >= 0);
+			if (cursorID < 0)
 			{
-				label = KickStarter.runtimeInventory.GetHotspotPrefixLabel (KickStarter.runtimeInventory.selectedItem, KickStarter.runtimeInventory.selectedItem.GetLabel (languageNumber), languageNumber, true);
+				cursorID = KickStarter.playerCursor.GetSelectedCursorID ();
+			}
+
+			string label = "";
+			if (KickStarter.cursorManager && KickStarter.runtimeInventory.SelectedItem != null && KickStarter.cursorManager.inventoryHandling != InventoryHandling.ChangeCursor)
+			{
+				label = KickStarter.runtimeInventory.GetHotspotPrefixLabel (KickStarter.runtimeInventory.SelectedItem, KickStarter.runtimeInventory.SelectedItem.GetLabel (languageNumber), languageNumber, true);
 			}
 			else if (KickStarter.cursorManager && KickStarter.cursorManager.addHotspotPrefix)
 			{
 				if (KickStarter.settingsManager.interactionMethod == AC_InteractionMethod.ContextSensitive)
 				{
-					if (_hotspot && _hotspot.provideUseInteraction)
+					if (_hotspot && _hotspot.provideUseInteraction && KickStarter.runtimeInventory.SelectedItem == null)
 					{
 						Button _button = _hotspot.GetFirstUseButton ();
 						if (_button != null)
@@ -1235,13 +1411,13 @@ namespace AC
 				}
 				else if (KickStarter.settingsManager.interactionMethod == AC_InteractionMethod.ChooseInteractionThenHotspot)
 				{
-					label = KickStarter.cursorManager.GetLabelFromID (KickStarter.playerCursor.GetSelectedCursorID (), languageNumber);
+					label = KickStarter.cursorManager.GetLabelFromID (cursorID, languageNumber);
 				}
 				else if (KickStarter.settingsManager.interactionMethod == AC_InteractionMethod.ChooseHotspotThenInteraction)
 				{
 					if (KickStarter.settingsManager.selectInteractions == SelectInteractions.CyclingCursorAndClickingHotspot)
 					{
-						label = KickStarter.cursorManager.GetLabelFromID (KickStarter.playerCursor.GetSelectedCursorID (), languageNumber);
+						label = KickStarter.cursorManager.GetLabelFromID (cursorID, languageNumber);
 					}
 					else if (KickStarter.settingsManager.selectInteractions == SelectInteractions.CyclingMenuAndClickingHotspot)
 					{
@@ -1295,9 +1471,9 @@ namespace AC
 				}
 			}
 
-			if (KickStarter.playerCursor.GetSelectedCursor () == -1 && KickStarter.cursorManager.addWalkPrefix && !KickStarter.playerMenus.IsInteractionMenuOn ())
+			if (!isOverride && KickStarter.playerCursor.GetSelectedCursor () == -1 && KickStarter.cursorManager.addWalkPrefix && !KickStarter.playerMenus.IsInteractionMenuOn ())
 			{
-				label = KickStarter.runtimeLanguages.GetTranslation (KickStarter.cursorManager.walkPrefix.label, KickStarter.cursorManager.walkPrefix.lineID, languageNumber) + " ";
+				label = KickStarter.runtimeLanguages.GetTranslation (KickStarter.cursorManager.walkPrefix.label, KickStarter.cursorManager.walkPrefix.lineID, languageNumber);
 			}
 
 			return label;
@@ -1309,6 +1485,7 @@ namespace AC
 			button = null;
 			inPreInteractionCutscene = false;
 			StopCoroutine ("UseObject");
+			hotspotMovingTo = null;
 		}
 		
 
@@ -1355,7 +1532,7 @@ namespace AC
 				return false;
 			}
 			
-			if (KickStarter.settingsManager && KickStarter.settingsManager.IsUnity2D ())
+			if (SceneSettings.IsUnity2D ())
 			{
 				RaycastHit2D hit = new RaycastHit2D ();
 				
@@ -1429,7 +1606,7 @@ namespace AC
 				return false;
 			}
 			
-			if (KickStarter.runtimeInventory.selectedItem == null || !KickStarter.runtimeInventory.localItems.Contains (KickStarter.runtimeInventory.selectedItem))
+			if (KickStarter.runtimeInventory.SelectedItem == null || !KickStarter.runtimeInventory.localItems.Contains (KickStarter.runtimeInventory.SelectedItem))
 			{
 				return false;
 			}
@@ -1668,7 +1845,7 @@ namespace AC
 		{
 			if (KickStarter.settingsManager.SelectInteractionMethod () == SelectInteractions.CyclingCursorAndClickingHotspot)
 			{
-				if (KickStarter.runtimeInventory.selectedItem != null && KickStarter.runtimeInventory.hoverItem == null && hotspot == null)
+				if (KickStarter.runtimeInventory.SelectedItem != null && KickStarter.runtimeInventory.hoverItem == null && hotspot == null)
 				{
 					return;
 				}
@@ -1812,7 +1989,7 @@ namespace AC
 		 */
 		public void RestoreInventoryInteraction ()
 		{
-			if (KickStarter.runtimeInventory.selectedItem != null && KickStarter.settingsManager.CanSelectItems (false))
+			if (KickStarter.runtimeInventory.SelectedItem != null && KickStarter.settingsManager.CanSelectItems (false))
 			{
 				return;
 			}
@@ -1821,9 +1998,15 @@ namespace AC
 			{
 				return;
 			}
-			
+
 			if (KickStarter.runtimeInventory.hoverItem != null)
 			{
+				if (KickStarter.settingsManager.whenReselectHotspot == WhenReselectHotspot.ResetIcon)
+				{
+					KickStarter.runtimeInventory.hoverItem.lastInteractionIndex = interactionIndex = 0;
+					return;
+				}
+
 				interactionIndex = KickStarter.runtimeInventory.hoverItem.lastInteractionIndex;
 				if (!KickStarter.settingsManager.cycleInventoryCursors && GetActiveInvButtonID () >= 0)
 				{
@@ -1851,11 +2034,17 @@ namespace AC
 		 */
 		private void RestoreHotspotInteraction ()
 		{
-			if (!KickStarter.settingsManager.cycleInventoryCursors && KickStarter.runtimeInventory.selectedItem != null)
+			if (!KickStarter.settingsManager.cycleInventoryCursors && KickStarter.runtimeInventory.SelectedItem != null)
 			{
 				return;
 			}
-			
+
+			if (KickStarter.settingsManager.whenReselectHotspot == WhenReselectHotspot.ResetIcon)
+			{
+				hotspot.lastInteractionIndex = interactionIndex = 0;
+				return;
+			}
+
 			if (hotspot != null)
 			{
 				interactionIndex = hotspot.lastInteractionIndex;
@@ -1888,7 +2077,7 @@ namespace AC
 				ClickButton (InteractionType.Inventory, -1, invID);
 			}
 		}
-		
+
 
 		/**
 		 * <summary>Runs the appropriate interaction after the clicking of a MenuInteraction element.</summary>
@@ -1903,7 +2092,7 @@ namespace AC
 			}
 			else if (KickStarter.settingsManager.interactionMethod == AC_InteractionMethod.ChooseInteractionThenHotspot)
 			{
-				KickStarter.runtimeInventory.SetNull ();
+				//KickStarter.runtimeInventory.SetNull ();
 				KickStarter.playerCursor.SetCursorFromID (iconID);
 			}
 			else if (KickStarter.settingsManager.interactionMethod == AC_InteractionMethod.ChooseHotspotThenInteraction)
@@ -1914,12 +2103,14 @@ namespace AC
 				}
 				if (_menu.GetTargetInvItem () != null)
 				{
-					_menu.ForceOff ();
+					//_menu.ForceOff ();
+					_menu.TurnOff ();
 					KickStarter.runtimeInventory.RunInteraction (iconID, _menu.GetTargetInvItem ());
 				}
 				else if (_menu.GetTargetHotspot ())
 				{
-					_menu.ForceOff ();
+					//_menu.ForceOff ();
+					_menu.TurnOff ();
 					ClickButton (InteractionType.Use, iconID, -1, _menu.GetTargetHotspot ());
 				}
 			}
@@ -1936,19 +2127,36 @@ namespace AC
 		}
 
 
+		/** The Hotspot label while the player is moving towards a Hotspot in order to run an interaction */
+		public string MovingToHotspotLabel
+		{
+			get
+			{
+				return movingToHotspotLabel;
+			}
+		}
+
+
 		/**
 		 * Cancels the interaction process, that involves the Player prefab moving towards the Hotspot before the Interaction itself is run.
 		 */
 		public void StopMovingToHotspot ()
 		{
-			hotspotMovingTo = null;
-
 			if (KickStarter.player)
 			{
 				KickStarter.player.EndPath ();
 				KickStarter.player.ClearHeadTurnTarget (false, HeadFacing.Hotspot);
 			}
 			StopInteraction ();
+		}
+
+
+		public bool InPreInteractionCutscene
+		{
+			get
+			{
+				return inPreInteractionCutscene;
+			}
 		}
 		
 	}

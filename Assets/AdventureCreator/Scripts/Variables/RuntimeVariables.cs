@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2016
+ *	by Chris Burton, 2013-2018
  *	
  *	"RuntimeVariables.cs"
  * 
@@ -171,7 +171,7 @@ namespace AC
 		 */
 		public void AssignCustomTokensFromString (string tokenData)
 		{
-			if (tokenData != null && tokenData.Length > 0)
+			if (!string.IsNullOrEmpty (tokenData))
 			{
 				customTokens.Clear ();
 				string[] countArray = tokenData.Split (SaveSystem.pipe[0]);
@@ -227,7 +227,7 @@ namespace AC
 		{
 			foreach (GVar var in globalVars)
 			{
-				if (var.link == VarLink.PlaymakerGlobalVariable)
+				if (var.link == VarLink.PlaymakerGlobalVariable || var.link == VarLink.CustomScript)
 				{
 					if (var.updateLinkOnStart)
 					{
@@ -274,6 +274,7 @@ namespace AC
 							globalVar.val = presetValue.val;
 							globalVar.floatVal = presetValue.floatVal;
 							globalVar.textVal = presetValue.textVal;
+							globalVar.vector3Val = presetValue.vector3Val;
 						}
 					}
 				}

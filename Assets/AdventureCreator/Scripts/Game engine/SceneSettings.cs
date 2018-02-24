@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2017
+ *	by Chris Burton, 2013-2018
  *	
  *	"SceneSettings.cs"
  * 
@@ -9,6 +9,10 @@
  *	and where the player should begin from.
  * 
  */
+
+#if UNITY_STANDALONE && (UNITY_5 || UNITY_2017_1_OR_NEWER || UNITY_PRO_LICENSE)
+#define ALLOW_MOVIETEXTURES
+#endif
 
 using UnityEngine;
 using System.Collections;
@@ -28,12 +32,23 @@ namespace AC
 	public class SceneSettings : MonoBehaviour
 	{
 
-		/** The Cutscene to run whenever the game beings from this scene, or when this scene is visited during gameplay */
+		/** The source of Actions used for the scene's main cutscenes (InScene, AssetFile) */
+		public ActionListSource actionListSource = ActionListSource.InScene;
+
+		/** The Cutscene to run whenever the game beings from this scene, or when this scene is visited during gameplay, if actionListSource = ActionListSource.InScene */
 		public Cutscene cutsceneOnStart;
-		/** The Cutscene to run whenever this scene is loaded after restoring a saved game file */
+		/** The Cutscene to run whenever this scene is loaded after restoring a saved game file, if actionListSource = ActionListSource.InScene */
 		public Cutscene cutsceneOnLoad;
-		/** The Cutscene to run whenever a variable's value is changed */
+		/** The Cutscene to run whenever a variable's value is changed, if actionListSource = ActionListSource.InScene */
 		public Cutscene cutsceneOnVarChange;
+
+		/** The ActionListAsset to run whenever the game beings from this scene, or when this scene is visited during gameplay, if actionListSource = ActionListSource.AssetFile */
+		public ActionListAsset actionListAssetOnStart;
+		/** The ActionListAsset to run whenever this scene is loaded after restoring a saved game file, if actionListSource = ActionListSource.AssetFile */
+		public ActionListAsset actionListAssetOnLoad;
+		/** The ActionListAsset to run whenever a variable's value is changed, if actionListSource = ActionListSource.AssetFile */
+		public ActionListAsset actionListAssetOnVarChange;
+
 		/** The scene's default PlayerStart prefab */
 		public PlayerStart defaultPlayerStart;
 		/** The scene's navigation method (meshCollider, UnityNavigation, PolygonCollider) */
@@ -60,7 +75,14 @@ namespace AC
 		/** How much slower vertical movement is compared to horizontal movement, if the game is in 2D and overriderVerticalReductionFactor = True */
 		public float verticalReductionFactor = 0.7f;
 
-		#if !(UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_WEBGL || UNITY_TVOS)
+		/** The distance to offset a character by when it is in the same area of a SortingMap as another (to correct display order) */
+		public float sharedLayerSeparationDistance = 0.001f;
+
+		[SerializeField] private bool overrideCameraPerspective = false;
+		[SerializeField] private CameraPerspective cameraPerspective;
+		[SerializeField] private MovingTurning movingTurning = MovingTurning.Unity2D;
+
+		#if ALLOW_MOVIETEXTURES
 		private MovieTexture fullScreenMovie;
 		#endif
 		private IStateChange[] stateChangeHooks;
@@ -97,7 +119,7 @@ namespace AC
 		
 		public void OnStart ()
 		{
-			if (KickStarter.settingsManager.IsInLoadingScene ())
+			if (KickStarter.settingsManager == null || KickStarter.settingsManager.IsInLoadingScene ())
 			{
 				return;
 			}
@@ -126,12 +148,11 @@ namespace AC
 		 */
 		public void UpdateAllSortingMaps ()
 		{
-			SortingMap[] sortingMaps = FindObjectsOfType (typeof (SortingMap)) as SortingMap[];
-			foreach (SortingMap _sortingMap in sortingMaps)
+			if (KickStarter.stateHandler != null)
 			{
-				if (_sortingMap != null)
+				foreach (FollowSortingMap followSortingMap in KickStarter.stateHandler.FollowSortingMaps)
 				{
-					_sortingMap.GetAllFollowers ();
+					followSortingMap.UpdateSortingMap ();
 				}
 			}
 		}
@@ -173,10 +194,21 @@ namespace AC
 		{
 			KickStarter.eventManager.Call_OnStartScene ();
 
-			if (cutsceneOnStart != null)
+			if (actionListSource == ActionListSource.InScene)
 			{
-				KickStarter.stateHandler.gameState = GameState.Normal;
-				cutsceneOnStart.Interact ();
+				if (cutsceneOnStart != null)
+				{
+					KickStarter.stateHandler.gameState = GameState.Normal;
+					cutsceneOnStart.Interact ();
+				}
+			}
+			else if (actionListSource == ActionListSource.AssetFile)
+			{
+				if (actionListAssetOnStart != null)
+				{
+					KickStarter.stateHandler.gameState = GameState.Normal;
+					actionListAssetOnStart.Interact ();
+				}
 			}
 		}
 		
@@ -214,9 +246,19 @@ namespace AC
 		 */
 		public void OnLoad ()
 		{
-			if (cutsceneOnLoad != null)
+			if (actionListSource == ActionListSource.InScene)
 			{
-				cutsceneOnLoad.Interact ();
+				if (cutsceneOnLoad != null)
+				{
+					cutsceneOnLoad.Interact ();
+				}
+			}
+			else if (actionListSource == ActionListSource.AssetFile)
+			{
+				if (actionListAssetOnLoad != null)
+				{
+					actionListAssetOnLoad.Interact ();
+				}
 			}
 		}
 		
@@ -258,7 +300,7 @@ namespace AC
 				}
 			}
 
-			#if !UNITY_5
+			#if !(UNITY_5 || UNITY_2017_1_OR_NEWER)
 			// Disable Interactive Cloth components
 			InteractiveCloth[] interactiveCloths = FindObjectsOfType (typeof (InteractiveCloth)) as InteractiveCloth[];
 			foreach (InteractiveCloth interactiveCloth in interactiveCloths)
@@ -268,21 +310,30 @@ namespace AC
 			#endif
 
 			Time.timeScale = 0f;
-			AudioListener.pause = true;
+			//AudioListener.pause = true; // Now delay audiolistener pause for a frame becuase of a bug with Unity 2017
 
-			#if !(UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_WEBGL || UNITY_TVOS)
+			#if ALLOW_MOVIETEXTURES
 			if (fullScreenMovie != null)
 			{
 				fullScreenMovie.Pause ();
 			}
 			#endif
 
-			#if !UNITY_5
+			#if !(UNITY_5 || UNITY_2017_1_OR_NEWER)
 			foreach (Sound sound in soundsToResume)
 			{
 				sound.ContinueFix ();
 			}
 			#endif
+
+			StartCoroutine (PauseAudio ());
+		}
+
+
+		private IEnumerator PauseAudio ()
+		{
+			yield return null;
+			AudioListener.pause = true;
 		}
 
 
@@ -291,16 +342,18 @@ namespace AC
 		 */
 		public void UnpauseGame (float newScale)
 		{
+			StopAllCoroutines ();
+
 			Time.timeScale = newScale;
 
-			#if !(UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_WEBGL || UNITY_TVOS)
+			#if ALLOW_MOVIETEXTURES
 			if (fullScreenMovie != null)
 			{
 				fullScreenMovie.Play ();
 			}
 			#endif
 
-			#if !UNITY_5
+			#if !(UNITY_5 || UNITY_2017_1_OR_NEWER)
 			// Enable Interactive Cloth components
 			InteractiveCloth[] interactiveCloths = FindObjectsOfType (typeof (InteractiveCloth)) as InteractiveCloth[];
 			foreach (InteractiveCloth interactiveCloth in interactiveCloths)
@@ -324,7 +377,7 @@ namespace AC
 		}
 
 
-		#if !(UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_WEBGL || UNITY_TVOS)
+		#if ALLOW_MOVIETEXTURES
 		/**
 		 * <summary>Assigns a MovieTexture as the one to pause when the game is paused.</summary>
 		 * <param name = "movieTexture">The MovieTexture to pause when the game is paused.</summary>
@@ -333,10 +386,8 @@ namespace AC
 		{
 			fullScreenMovie = movieTexture;
 		}
-		#endif
-		
 
-		#if !(UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_WEBGL || UNITY_TVOS)
+
 		/**
 		 * <summary>Unassigns the currently-set MovieTexture to pause when the game is paused.
 		 * This should be called once the movie has finished playing.</summary>
@@ -345,6 +396,7 @@ namespace AC
 		{
 			fullScreenMovie = null;
 		}
+
 		#endif
 
 
@@ -379,6 +431,8 @@ namespace AC
 				return;
 			}
 
+			#if UNITY_EDITOR
+
 			if ((requiredManagerPackage.sceneManager != null && requiredManagerPackage.sceneManager != KickStarter.sceneManager) ||
 			    (requiredManagerPackage.settingsManager != null && requiredManagerPackage.settingsManager != KickStarter.settingsManager) ||
 			    (requiredManagerPackage.actionsManager != null && requiredManagerPackage.actionsManager != KickStarter.actionsManager) ||
@@ -404,6 +458,8 @@ namespace AC
 
 				ACDebug.LogWarning ("This scene's required Manager asset files are not all loaded - please find the asset file '" + requiredManagerPackage.name + "' and click 'Assign managers' in its Inspector.");
 			}
+
+			#endif
 		}
 
 
@@ -426,6 +482,132 @@ namespace AC
 			}
 			return null;
 		}
+
+
+		/**
+		 * <summary>Checks if the scene is in 2D, and plays in screen-space (i.e. characters do not move towards or away from the camera).</summary>
+		 * <returns>True if the game is in 2D, and plays in screen-space</returns>
+		 */
+		public static bool ActInScreenSpace ()
+		{
+			if (KickStarter.sceneSettings != null && KickStarter.sceneSettings.overrideCameraPerspective)
+			{
+				if ((KickStarter.sceneSettings.movingTurning == MovingTurning.ScreenSpace || KickStarter.sceneSettings.movingTurning == MovingTurning.Unity2D) && KickStarter.sceneSettings.cameraPerspective == CameraPerspective.TwoD)
+				{
+					return true;
+				}
+			}
+			else if (KickStarter.settingsManager != null)
+			{
+				if ((KickStarter.settingsManager.movingTurning == MovingTurning.ScreenSpace || KickStarter.settingsManager.movingTurning == MovingTurning.Unity2D) && KickStarter.settingsManager.cameraPerspective == CameraPerspective.TwoD)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+		
+
+		/**
+		 * <summary>Checks if the scene uses Unity 2D for its camera perspective.<summary>
+		 * <returns>True if the game uses Unity 2D for its camera perspective</returns>
+		 */
+		public static bool IsUnity2D ()
+		{
+			if (KickStarter.sceneSettings != null && KickStarter.sceneSettings.overrideCameraPerspective)
+			{
+				if (KickStarter.sceneSettings.movingTurning == MovingTurning.Unity2D && KickStarter.sceneSettings.cameraPerspective == CameraPerspective.TwoD)
+				{
+					return true;
+				}
+			}
+			else if (KickStarter.settingsManager != null)
+			{
+				if (KickStarter.settingsManager.movingTurning == MovingTurning.Unity2D && KickStarter.settingsManager.cameraPerspective == CameraPerspective.TwoD)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+
+		/**
+		 * <summary>Checks if the scene uses Top Down for its camera perspective.<summary>
+		 * <returns>True if the game uses Top Down for its camera perspective</returns>
+		 */
+		public static bool IsTopDown ()
+		{
+			if (KickStarter.sceneSettings != null && KickStarter.sceneSettings.overrideCameraPerspective)
+			{
+				if (KickStarter.sceneSettings.movingTurning == MovingTurning.TopDown && KickStarter.sceneSettings.cameraPerspective == CameraPerspective.TwoD)
+				{
+					return true;
+				}
+			}
+			else if (KickStarter.settingsManager != null)
+			{
+				if (KickStarter.settingsManager.movingTurning == MovingTurning.TopDown && KickStarter.settingsManager.cameraPerspective == CameraPerspective.TwoD)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+
+		/**
+		 * The camera perspective of the current scene.
+		 */
+		public static CameraPerspective CameraPerspective
+		{
+			get
+			{
+				if (KickStarter.sceneSettings != null && KickStarter.sceneSettings.overrideCameraPerspective)
+				{
+					return KickStarter.sceneSettings.cameraPerspective;
+				}
+				else if (KickStarter.settingsManager != null)
+				{
+					return KickStarter.settingsManager.cameraPerspective;
+				}
+				return CameraPerspective.ThreeD;
+			}
+		}
+
+
+		public bool OverridesCameraPerspective ()
+		{
+			return overrideCameraPerspective;
+		}
+
+
+		#if UNITY_EDITOR
+
+		private string[] cameraPerspective_list = { "2D", "2.5D", "3D" };
+
+		public void SetOverrideCameraPerspective (CameraPerspective _cameraPerspective, MovingTurning _movingTurning)
+		{
+			overrideCameraPerspective = true;
+			cameraPerspective = _cameraPerspective;
+			movingTurning = _movingTurning;
+		}
+
+
+		public void ShowCameraOverrideLabel ()
+		{
+			if (overrideCameraPerspective)
+			{
+				int cameraPerspective_int = (int) cameraPerspective;
+
+				string persp = cameraPerspective_list[cameraPerspective_int];
+				if (cameraPerspective == CameraPerspective.TwoD) persp += " (" + movingTurning + ")";
+				UnityEditor.EditorGUILayout.LabelField ("This scene's camera perspective is overriding the default and is " + persp + ".", UnityEditor.EditorStyles.boldLabel);
+
+			}
+		}
+
+		#endif
 
 	}
 	

@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2017
+ *	by Chris Burton, 2013-2018
  *	
  *	"MenuDialogList.cs"
  * 
@@ -54,6 +54,8 @@ namespace AC
 		public bool showIndexNumbers = false;
 		/** The method which this element (or slots within it) are hidden from view when made invisible (DisableObject, ClearContent) */
 		public UIHideStyle uiHideStyle = UIHideStyle.DisableObject;
+		/** What Image component the Element's Graphics should be linked to (ImageComponent, ButtonTargetGraphic) */
+		public LinkUIGraphic linkUIGraphic = LinkUIGraphic.ImageComponent;
 
 		private int numOptions = 0;
 		private string[] labels = null;
@@ -85,28 +87,31 @@ namespace AC
 			alreadyChosenFontHighlightedColour = Color.white;
 			showIndexNumbers = false;
 			uiHideStyle = UIHideStyle.DisableObject;
+			linkUIGraphic = LinkUIGraphic.ImageComponent;
 
 			base.Declare ();
 		}
 
 
-		/**
-		 * <summary>Creates and returns a new MenuCrafting that has the same values as itself.</summary>
-		 * <param name = "fromEditor">If True, the duplication was done within the Menu Manager and not as part of the gameplay initialisation.</param>
-		 * <returns>A new MenuCrafting with the same values as itself</returns>
-		 */
-		public override MenuElement DuplicateSelf (bool fromEditor)
+		public override MenuElement DuplicateSelf (bool fromEditor, bool ignoreUnityUI)
 		{
 			MenuDialogList newElement = CreateInstance <MenuDialogList>();
 			newElement.Declare ();
-			newElement.CopyDialogList (this);
+			newElement.CopyDialogList (this, ignoreUnityUI);
 			return newElement;
 		}
 		
 		
-		private void CopyDialogList (MenuDialogList _element)
+		private void CopyDialogList (MenuDialogList _element, bool ignoreUnityUI)
 		{
-			uiSlots = _element.uiSlots;
+			if (ignoreUnityUI)
+			{
+				uiSlots = null;
+			}
+			else
+			{
+				uiSlots = _element.uiSlots;
+			}
 
 			textEffects = _element.textEffects;
 			outlineSize = _element.outlineSize;
@@ -122,6 +127,7 @@ namespace AC
 			alreadyChosenFontHighlightedColour = _element.alreadyChosenFontHighlightedColour;
 			showIndexNumbers = _element.showIndexNumbers;
 			uiHideStyle = _element.uiHideStyle;
+			linkUIGraphic = _element.linkUIGraphic;
 
 			base.Copy (_element);
 		}
@@ -140,12 +146,12 @@ namespace AC
 		 * <summary>Initialises the linked Unity UI GameObjects.</summary>
 		 * <param name = "_menu">The element's parent Menu</param>
 		 */
-		public override void LoadUnityUI (AC.Menu _menu)
+		public override void LoadUnityUI (AC.Menu _menu, Canvas canvas)
 		{
 			int i=0;
 			foreach (UISlot uiSlot in uiSlots)
 			{
-				uiSlot.LinkUIElements ();
+				uiSlot.LinkUIElements (canvas, linkUIGraphic);
 				if (uiSlot != null && uiSlot.uiButton != null)
 				{
 					int j=i;
@@ -158,15 +164,11 @@ namespace AC
 		}
 
 
-		/**
-		 * <summary>Gets the first linked Unity UI GameObject associated with this element.</summary>
-		 * <param name = "The first Unity UI GameObject associated with the element</param>
-		 */
-		public override GameObject GetObjectToSelect ()
+		public override GameObject GetObjectToSelect (int slotIndex = 0)
 		{
-			if (uiSlots != null && uiSlots.Length > 0 && uiSlots[0].uiButton != null)
+			if (uiSlots != null && uiSlots.Length > slotIndex && uiSlots[slotIndex].uiButton != null)
 			{
-				return uiSlots[0].uiButton.gameObject;
+				return uiSlots[slotIndex].uiButton.gameObject;
 			}
 			return null;
 		}
@@ -210,7 +212,7 @@ namespace AC
 			}
 			else
 			{
-				maxSlots = CustomGUILayout.IntField ("Maximum no. of slots:", maxSlots, apiPrefix + ".maxSlots");
+				maxSlots = CustomGUILayout.IntField ("Maximum number of slots:", maxSlots, apiPrefix + ".maxSlots");
 
 				if (source == MenuSource.AdventureCreator)
 				{
@@ -223,6 +225,7 @@ namespace AC
 					}
 				}
 			}
+
 			displayType = (ConversationDisplayType) CustomGUILayout.EnumPopup ("Display type:", displayType, apiPrefix + ".displayType");
 			if (displayType == ConversationDisplayType.IconAndText && source == MenuSource.AdventureCreator)
 			{
@@ -236,26 +239,7 @@ namespace AC
 				alreadyChosenFontHighlightedColour = (Color) CustomGUILayout.ColorField ("'Already chosen' highlighted colour:", alreadyChosenFontHighlightedColour, apiPrefix + ".alreadyChosenFontHighlightedColour");
 			}
 
-			if (source == MenuSource.AdventureCreator)
-			{
-				if (displayType == ConversationDisplayType.IconOnly)
-				{
-					EditorGUILayout.BeginHorizontal ();
-					EditorGUILayout.LabelField ("Test icon:", GUILayout.Width (145f));
-					testIcon = (Texture2D) EditorGUILayout.ObjectField (testIcon, typeof (Texture2D), false, GUILayout.Width (70f), GUILayout.Height (30f));
-					EditorGUILayout.EndHorizontal ();
-				}
-				else
-				{
-					anchor = (TextAnchor) CustomGUILayout.EnumPopup ("Text alignment:", anchor, apiPrefix + ".anchor");
-					textEffects = (TextEffects) CustomGUILayout.EnumPopup ("Text effect:", textEffects, apiPrefix + ".textEffects");
-					if (textEffects != TextEffects.None)
-					{
-						outlineSize = CustomGUILayout.Slider ("Effect size:", outlineSize, 1f, 5f, apiPrefix + ".outlineSize");
-					}
-				}
-			}
-			else
+			if (source != MenuSource.AdventureCreator)
 			{
 				EditorGUILayout.EndVertical ();
 				EditorGUILayout.BeginVertical ("Button");
@@ -275,6 +259,8 @@ namespace AC
 				{
 					uiSlots[i].LinkedUiGUI (i, source);
 				}
+
+				linkUIGraphic = (LinkUIGraphic) EditorGUILayout.EnumPopup ("Link graphics to:", linkUIGraphic);
 			}
 
 			if (displayType == ConversationDisplayType.TextOnly || displayType == ConversationDisplayType.IconAndText)
@@ -286,6 +272,32 @@ namespace AC
 			EditorGUILayout.EndVertical ();
 			
 			base.ShowGUI (menu);
+		}
+
+
+		protected override void ShowTextGUI (string apiPrefix)
+		{
+			if (displayType != ConversationDisplayType.IconOnly)
+			{
+				anchor = (TextAnchor) CustomGUILayout.EnumPopup ("Text alignment:", anchor, apiPrefix + ".anchor");
+				textEffects = (TextEffects) CustomGUILayout.EnumPopup ("Text effect:", textEffects, apiPrefix + ".textEffects");
+				if (textEffects != TextEffects.None)
+				{
+					outlineSize = CustomGUILayout.Slider ("Effect size:", outlineSize, 1f, 5f, apiPrefix + ".outlineSize");
+				}
+			}
+		}
+
+
+		protected override void ShowTextureGUI (string apiPrefix)
+		{
+			if (displayType == ConversationDisplayType.IconOnly)
+			{
+				EditorGUILayout.BeginHorizontal ();
+				EditorGUILayout.LabelField ("Test icon:", GUILayout.Width (145f));
+				testIcon = (Texture2D) EditorGUILayout.ObjectField (testIcon, typeof (Texture2D), false, GUILayout.Width (70f), GUILayout.Height (30f));
+				EditorGUILayout.EndHorizontal ();
+			}
 		}
 		
 		#endif
@@ -556,7 +568,7 @@ namespace AC
 				return false;
 			}
 
-			if (shiftType == AC_ShiftInventory.ShiftLeft)
+			if (shiftType == AC_ShiftInventory.ShiftPrevious)
 			{
 				if (offset == 0)
 				{

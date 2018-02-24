@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2017
+ *	by Chris Burton, 2013-2018
  *	
  *	"MenuJournal.cs"
  * 
@@ -88,23 +88,26 @@ namespace AC
 		}
 
 
-		/**
-		 * <summary>Creates and returns a new MenuJournal that has the same values as itself.</summary>
-		 * <param name = "fromEditor">If True, the duplication was done within the Menu Manager and not as part of the gameplay initialisation.</param>
-		 * <returns>A new MenuJournal with the same values as itself</returns>
-		 */
-		public override MenuElement DuplicateSelf (bool fromEditor)
+		public override MenuElement DuplicateSelf (bool fromEditor, bool ignoreUnityUI)
 		{
 			MenuJournal newElement = CreateInstance <MenuJournal>();
 			newElement.Declare ();
-			newElement.CopyJournal (this, fromEditor);
+			newElement.CopyJournal (this, fromEditor, ignoreUnityUI);
 			return newElement;
 		}
 		
 		
-		private void CopyJournal (MenuJournal _element, bool fromEditor)
+		private void CopyJournal (MenuJournal _element, bool fromEditor, bool ignoreUnityUI)
 		{
-			uiText = _element.uiText;
+			if (ignoreUnityUI)
+			{
+				uiText = null;
+			}
+			else
+			{
+				uiText = _element.uiText;
+			}
+
 			pages = new List<JournalPage>();
 			foreach (JournalPage page in _element.pages)
 			{
@@ -157,9 +160,9 @@ namespace AC
 		 * <summary>Initialises the linked Unity UI GameObject.</summary>
 		 * <param name = "_menu">The element's parent Menu</param>
 		 */
-		public override void LoadUnityUI (AC.Menu _menu)
+		public override void LoadUnityUI (AC.Menu _menu, Canvas canvas)
 		{
-			uiText = LinkUIElement <Text>();
+			uiText = LinkUIElement <Text> (canvas);
 		}
 		
 
@@ -415,6 +418,23 @@ namespace AC
 			pages[a1] = pages[a2];
 			pages[a2] = tempPage;
 		}
+	
+
+		public override bool CheckConvertGlobalVariableToLocal (int oldGlobalID, int newLocalID)
+		{
+			if (pages != null)
+			{
+				foreach (JournalPage page in pages)
+				{
+					string newPageText = AdvGame.ConvertGlobalVariableTokenToLocal (page.text, oldGlobalID, newLocalID);
+					if (page.text != newPageText)
+					{
+						return true;
+					}
+				}
+			}
+			return false;
+		}
 		
 		#endif
 
@@ -540,11 +560,11 @@ namespace AC
 				return;
 			}
 
-			if (shiftType == AC_ShiftInventory.ShiftRight)
+			if (shiftType == AC_ShiftInventory.ShiftNext)
 			{
 				showPage += amount;
 			}
-			else if (shiftType == AC_ShiftInventory.ShiftLeft)
+			else if (shiftType == AC_ShiftInventory.ShiftPrevious)
 			{
 				showPage -= amount;
 			}
@@ -627,7 +647,7 @@ namespace AC
 				return false;
 			}
 
-			if (shiftType == AC_ShiftInventory.ShiftLeft)
+			if (shiftType == AC_ShiftInventory.ShiftPrevious)
 			{
 				if (showPage == 1)
 				{

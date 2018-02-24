@@ -43,6 +43,9 @@ namespace AC
 		private float endTime;
 		private float lastPressTime;
 		private bool canMash;
+		private float axisThreshold;
+
+		private const string touchScreenTap = "TOUCHSCREENTAP";
 
 
 		public void OnAwake ()
@@ -80,12 +83,36 @@ namespace AC
 		 */
 		public void StartSinglePressQTE (string _inputName, float _duration, Animator _animator = null, bool _wrongKeyFails = false)
 		{
+			if (string.IsNullOrEmpty (_inputName) && KickStarter.settingsManager.inputMethod == InputMethod.TouchScreen)
+			{
+				_inputName = touchScreenTap;
+			}
+
 			if (_inputName == "" || _duration <= 0f)
 			{
 				return;
 			}
 
-			Setup (QTEType.SingleKeypress, _inputName, _duration, _animator, _wrongKeyFails);
+			Setup (QTEType.SingleKeypress, _inputName, _duration, _animator, _wrongKeyFails, 0f);
+		}
+
+
+		/**
+		 * <summary>Begins a QTE that involves a single axis being pressed to win.</summary>
+		 * <param name = "_inputName">The name of the input axis that must be pressed to win</param>
+		 * <param name = "_duration">The duration, in seconds, that the QTE lasts</param>
+		 * <param name = "_axisThreshold">If positive, the value that the input must be greater than for it to register as succesful.  If positive, the input must be lower that this value.</param>
+		 * <param name = "_animator">An Animator that will be manipulated if it has "Win" and "Lose" states</param>
+		 * <param name = "_wrongKeyFails">If True, then pressing any axis other than _inputName will instantly fail the QTE</param>
+		 */
+		public void StartSingleAxisQTE (string _inputName, float _duration, float _axisThreshold, Animator _animator = null, bool _wrongKeyFails = false)
+		{
+			if (_inputName == "" || _duration <= 0f)
+			{
+				return;
+			}
+
+			Setup (QTEType.SingleAxis, _inputName, _duration, _animator, _wrongKeyFails, _axisThreshold);
 		}
 
 
@@ -99,13 +126,23 @@ namespace AC
 		 */
 		public void StartHoldKeyQTE (string _inputName, float _duration, float _holdDuration, Animator _animator = null, bool _wrongKeyFails = false)
 		{
+			if (string.IsNullOrEmpty (_inputName) && KickStarter.settingsManager.inputMethod == InputMethod.TouchScreen)
+			{
+				_inputName = touchScreenTap;
+			}
+
 			if (_inputName == "" || _duration <= 0f)
 			{
 				return;
 			}
 
+			if (_holdDuration > _duration)
+			{
+				_holdDuration = _duration;
+			}
+
 			holdDuration = _holdDuration;
-			Setup (QTEType.HoldKey, _inputName, _duration, _animator, _wrongKeyFails);
+			Setup (QTEType.HoldKey, _inputName, _duration, _animator, _wrongKeyFails, 0f);
 		}
 
 
@@ -121,6 +158,11 @@ namespace AC
 		 */
 		public void StartButtonMashQTE (string _inputName, float _duration, int _targetPresses, bool _doCooldown, float _cooldownTime, Animator _animator = null, bool _wrongKeyFails = false)
 		{
+			if (string.IsNullOrEmpty (_inputName) && KickStarter.settingsManager.inputMethod == InputMethod.TouchScreen)
+			{
+				_inputName = touchScreenTap;
+			}
+
 			if (_inputName == "" || _duration <= 0f)
 			{
 				return;
@@ -130,11 +172,11 @@ namespace AC
 			doCooldown = _doCooldown;
 			cooldownTime = _cooldownTime;
 
-			Setup (QTEType.ButtonMash, _inputName, _duration, _animator, _wrongKeyFails);
+			Setup (QTEType.ButtonMash, _inputName, _duration, _animator, _wrongKeyFails, 0f);
 		}
 
 
-		private void Setup (QTEType _qteType, string _inputName, float _duration, Animator _animator, bool _wrongKeyFails)
+		private void Setup (QTEType _qteType, string _inputName, float _duration, Animator _animator, bool _wrongKeyFails, float _axisThreshold)
 		{
 			qteType = _qteType;
 			qteState = QTEState.None;
@@ -147,6 +189,7 @@ namespace AC
 			startTime = Time.time;
 			lastPressTime = 0f;
 			endTime = Time.time + _duration;
+			axisThreshold = _axisThreshold;
 		}
 
 
@@ -219,6 +262,7 @@ namespace AC
 			return false;
 		}
 
+
 		/**
 		 * Updates the current QTE. This is called every frame by StateHandler.
 		 */
@@ -237,53 +281,123 @@ namespace AC
 			
 			if (qteType == QTEType.SingleKeypress)
 			{
-				if (KickStarter.playerInput.InputGetButtonDown (inputName))
+				if (inputName == touchScreenTap)
 				{
-					Win ();
-					return;
-				}
-				else if (wrongKeyFails && KickStarter.playerInput.InputAnyKey () && KickStarter.playerInput.GetMouseState () == MouseState.Normal)
-				{
-					Lose ();
-					return;
-				}
-			}
-			else if (qteType == QTEType.ButtonMash)
-			{
-				if (KickStarter.playerInput.InputGetButtonDown (inputName))
-				{
-					if (canMash)
+					if (Input.touchCount > 0f)
 					{
-						numPresses ++;
-						lastPressTime = Time.time;
-						if (animator)
-						{
-							animator.Play ("Hit", 0, 0f);
-						}
-						canMash = false;
+						Win ();
+						return;
 					}
 				}
 				else
 				{
-					canMash = true;
-
-					if (doCooldown)
+					if (KickStarter.playerInput.InputGetButtonDown (inputName))
 					{
-						if (lastPressTime > 0f && Time.time > lastPressTime + cooldownTime)
+						Win ();
+						return;
+					}
+					else if (wrongKeyFails && KickStarter.playerInput.InputAnyKey () && KickStarter.playerInput.GetMouseState () == MouseState.Normal)
+					{
+						Lose ();
+						return;
+					}
+				}
+			}
+			if (qteType == QTEType.SingleAxis)
+			{
+				float axisValue = KickStarter.playerInput.InputGetAxis (inputName);
+
+				if (axisThreshold > 0f && axisValue > axisThreshold)
+				{
+					Win ();
+					return;
+				}
+				else if (axisThreshold < 0f && axisValue < axisThreshold)
+				{
+					Win ();
+					return;
+				}
+				else if (wrongKeyFails)
+				{
+					if (axisThreshold > 0f && axisValue < -axisThreshold)
+					{
+						Lose ();
+						return;
+					}
+					else if (axisThreshold < 0f && axisValue > -axisThreshold)
+					{
+						Lose ();
+						return;
+					}
+				}
+			}
+			else if (qteType == QTEType.ButtonMash)
+			{
+				if (inputName == touchScreenTap)
+				{
+					if (Input.touchCount > 1)
+					{
+						if (canMash)
 						{
-							numPresses --;
+							numPresses ++;
 							lastPressTime = Time.time;
+							if (animator)
+							{
+								animator.Play ("Hit", 0, 0f);
+							}
+							canMash = false;
+						}
+					}
+					else
+					{
+						canMash = true;
+
+						if (doCooldown)
+						{
+							if (lastPressTime > 0f && Time.time > lastPressTime + cooldownTime)
+							{
+								numPresses --;
+								lastPressTime = Time.time;
+							}
 						}
 					}
 				}
-
-				if (KickStarter.playerInput.InputGetButtonDown (inputName)) {}
-				else if (wrongKeyFails && Input.anyKeyDown)
+				else
 				{
-					Lose ();
-					return;
-				}
+					if (KickStarter.playerInput.InputGetButtonDown (inputName))
+					{
+						if (canMash)
+						{
+							numPresses ++;
+							lastPressTime = Time.time;
+							if (animator)
+							{
+								animator.Play ("Hit", 0, 0f);
+							}
+							canMash = false;
+						}
+					}
+					else
+					{
+						canMash = true;
 
+						if (doCooldown)
+						{
+							if (lastPressTime > 0f && Time.time > lastPressTime + cooldownTime)
+							{
+								numPresses --;
+								lastPressTime = Time.time;
+							}
+						}
+					}
+
+					if (KickStarter.playerInput.InputGetButtonDown (inputName)) {}
+					else if (wrongKeyFails && Input.anyKeyDown)
+					{
+						Lose ();
+						return;
+					}
+				}
 				
 				if (numPresses < 0)
 				{
@@ -298,26 +412,48 @@ namespace AC
 			}
 			else if (qteType == QTEType.HoldKey)
 			{
-				if (KickStarter.playerInput.InputGetButton (inputName))
+				if (inputName == touchScreenTap)
 				{
-					if (lastPressTime == 0f)
+					if (Input.touchCount > 0f)
 					{
-						lastPressTime = Time.time;
+						if (lastPressTime == 0f)
+						{
+							lastPressTime = Time.time;
+						}
+						else if (Time.time > lastPressTime + holdDuration)
+						{
+							Win ();
+							return;
+						}
 					}
-					else if (Time.time > lastPressTime + holdDuration)
+					else
 					{
-						Win ();
-						return;
+						lastPressTime = 0f;
 					}
-				}
-				else if (wrongKeyFails && Input.anyKey)
-				{
-					Lose ();
-					return;
 				}
 				else
 				{
-					lastPressTime = 0f;
+					if (KickStarter.playerInput.InputGetButton (inputName))
+					{
+						if (lastPressTime == 0f)
+						{
+							lastPressTime = Time.time;
+						}
+						else if (Time.time > lastPressTime + holdDuration)
+						{
+							Win ();
+							return;
+						}
+					}
+					else if (wrongKeyFails && Input.anyKey)
+					{
+						Lose ();
+						return;
+					}
+					else
+					{
+						lastPressTime = 0f;
+					}
 				}
 
 				if (animator)

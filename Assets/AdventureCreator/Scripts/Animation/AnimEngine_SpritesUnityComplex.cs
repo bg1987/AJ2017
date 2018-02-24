@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2016
+ *	by Chris Burton, 2013-2018
  *	
  *	"AnimEngine_SpritesUnityComplex.cs"
  * 
@@ -30,6 +30,8 @@ namespace AC
 			character = _character;
 			turningStyle = TurningStyle.Linear;
 			isSpriteBased = true;
+			updateHeadAlways = true;
+			_character.frameFlipping = AC_2DFrameFlipping.None;
 		}
 		
 		
@@ -41,10 +43,21 @@ namespace AC
 			EditorGUILayout.LabelField ("Mecanim parameters:", EditorStyles.boldLabel);
 			
 			character.spriteChild = (Transform) EditorGUILayout.ObjectField ("Sprite child:", character.spriteChild, typeof (Transform), true);
+
+			if (character.spriteChild != null && character.spriteChild.GetComponent <Animator>() == null)
+			{
+				character.customAnimator = (Animator) EditorGUILayout.ObjectField ("Animator (if not on s.c.):", character.customAnimator, typeof (Animator), true);
+			}
+
 			character.moveSpeedParameter = EditorGUILayout.TextField ("Move speed float:", character.moveSpeedParameter);
 			character.turnParameter = EditorGUILayout.TextField ("Turn float:", character.turnParameter);
 			character.directionParameter = EditorGUILayout.TextField ("Direction integer:", character.directionParameter);
-			character.angleParameter = EditorGUILayout.TextField ("Angle float:", character.angleParameter);
+			character.angleParameter = EditorGUILayout.TextField ("Body angle float:", character.angleParameter);
+			character.headYawParameter = EditorGUILayout.TextField ("Head angle float:", character.headYawParameter);
+			if (!string.IsNullOrEmpty (character.angleParameter) || !string.IsNullOrEmpty (character.headYawParameter))
+			{
+				character.angleSnapping = (AngleSnapping) EditorGUILayout.EnumPopup ("Angle snapping:", character.angleSnapping);
+			}
 			character.talkParameter = EditorGUILayout.TextField ("Talk bool:", character.talkParameter);
 
 			if (AdvGame.GetReferences () && AdvGame.GetReferences ().speechManager)
@@ -77,18 +90,29 @@ namespace AC
 			{
 				character.antiGlideMode = EditorGUILayout.ToggleLeft ("Only move when sprite changes?", character.antiGlideMode);
 
-				if (character.antiGlideMode && character.GetComponent <Rigidbody2D>())
+				if (character.antiGlideMode)
 				{
-					EditorGUILayout.HelpBox ("This feature will disable use of the Rigidbody2D component.", MessageType.Warning);
+					if (character.GetComponent <Rigidbody2D>())
+					{
+						EditorGUILayout.HelpBox ("This feature will disable use of the Rigidbody2D component.", MessageType.Warning);
+					}
+					if (character is Player && AdvGame.GetReferences () != null && AdvGame.GetReferences ().settingsManager != null)
+					{
+						if (AdvGame.GetReferences ().settingsManager.movementMethod != MovementMethod.PointAndClick && AdvGame.GetReferences ().settingsManager.movementMethod != MovementMethod.None)
+						{
+							EditorGUILayout.HelpBox ("This feature will not work with collision - it is not recommended for " + AdvGame.GetReferences ().settingsManager.movementMethod.ToString () + " movement.", MessageType.Warning);
+						}
+					}
 				}
 			}
 
 			character.doWallReduction = EditorGUILayout.BeginToggleGroup ("Slow movement near wall colliders?", character.doWallReduction);
 			character.wallLayer = EditorGUILayout.TextField ("Wall collider layer:", character.wallLayer);
 			character.wallDistance = EditorGUILayout.Slider ("Collider distance:", character.wallDistance, 0f, 2f);
+			character.wallReductionOnlyParameter = EditorGUILayout.Toggle ("Only affects Mecanim parameter?", character.wallReductionOnlyParameter);
 			EditorGUILayout.EndToggleGroup ();
 
-			if (KickStarter.settingsManager != null && KickStarter.settingsManager.cameraPerspective != CameraPerspective.TwoD)
+			if (SceneSettings.CameraPerspective != CameraPerspective.TwoD)
 			{
 				character.rotateSprite3D = (RotateSprite3D) EditorGUILayout.EnumPopup ("Rotate sprite to:", character.rotateSprite3D);
 			}
@@ -119,7 +143,30 @@ namespace AC
 				}
 
 				action.mecanimParameterType = (MecanimParameterType) EditorGUILayout.EnumPopup ("Parameter type:", action.mecanimParameterType);
-				action.parameterValue = EditorGUILayout.FloatField ("Set as value:", action.parameterValue);
+				//action.parameterValue = EditorGUILayout.FloatField ("Set as value:", action.parameterValue);
+
+				if (action.mecanimParameterType == MecanimParameterType.Bool)
+				{
+					bool value = (action.parameterValue <= 0f) ? false : true;
+					value = EditorGUILayout.Toggle ("Set as value:", value);
+					action.parameterValue = (value) ? 1f : 0f;
+				}
+				else if (action.mecanimParameterType == MecanimParameterType.Int)
+				{
+					int value = (int) action.parameterValue;
+					value = EditorGUILayout.IntField ("Set as value:", value);
+					action.parameterValue = (float) value;
+				}
+				else if (action.mecanimParameterType == MecanimParameterType.Float)
+				{
+					action.parameterValue = EditorGUILayout.FloatField ("Set as value:", action.parameterValue);
+				}
+				else if (action.mecanimParameterType == MecanimParameterType.Trigger)
+				{
+					bool value = (action.parameterValue <= 0f) ? false : true;
+					value = EditorGUILayout.Toggle ("Ignore when skipping?", value);
+					action.parameterValue = (value) ? 1f : 0f;
+				}
 			}
 			
 			else if (action.methodMecanim == AnimMethodCharMecanim.SetStandard)
@@ -169,6 +216,12 @@ namespace AC
 		
 		
 		public override float ActionCharAnimRun (ActionCharAnim action)
+		{
+			return ActionCharAnimProcess (action, false);
+		}
+
+
+		private float ActionCharAnimProcess (ActionCharAnim action, bool isSkipping)
 		{
 			if (action.methodMecanim == AnimMethodCharMecanim.SetStandard)
 			{
@@ -234,7 +287,10 @@ namespace AC
 						}
 						else if (action.mecanimParameterType == MecanimParameterType.Trigger)
 						{
-							character.GetAnimator ().SetTrigger (action.parameterName);
+							if (!isSkipping || action.parameterValue != 1f)
+							{
+								character.GetAnimator ().SetTrigger (action.parameterName);
+							}
 						}
 					}
 				}
@@ -276,10 +332,7 @@ namespace AC
 		
 		public override void ActionCharAnimSkip (ActionCharAnim action)
 		{
-			if (action.methodMecanim != AnimMethodCharMecanim.ChangeParameterValue)
-			{
-				ActionCharAnimRun (action);
-			}
+			ActionCharAnimProcess (action, true);
 		}
 
 
@@ -315,9 +368,32 @@ namespace AC
 				}
 
 				action.mecanimParameterType = (MecanimParameterType) EditorGUILayout.EnumPopup ("Parameter type:", action.mecanimParameterType);
-				if (action.mecanimParameterType != MecanimParameterType.Trigger)
+				/*if (action.mecanimParameterType != MecanimParameterType.Trigger)
 				{
 					action.parameterValue = EditorGUILayout.FloatField ("Set as value:", action.parameterValue);
+				}*/
+
+				if (action.mecanimParameterType == MecanimParameterType.Bool)
+				{
+					bool value = (action.parameterValue <= 0f) ? false : true;
+					value = EditorGUILayout.Toggle ("Set as value:", value);
+					action.parameterValue = (value) ? 1f : 0f;
+				}
+				else if (action.mecanimParameterType == MecanimParameterType.Int)
+				{
+					int value = (int) action.parameterValue;
+					value = EditorGUILayout.IntField ("Set as value:", value);
+					action.parameterValue = (float) value;
+				}
+				else if (action.mecanimParameterType == MecanimParameterType.Float)
+				{
+					action.parameterValue = EditorGUILayout.FloatField ("Set as value:", action.parameterValue);
+				}
+				else if (action.mecanimParameterType == MecanimParameterType.Trigger)
+				{
+					bool value = (action.parameterValue <= 0f) ? false : true;
+					value = EditorGUILayout.Toggle ("Ignore when skipping?", value);
+					action.parameterValue = (value) ? 1f : 0f;
 				}
 			}
 			else if (action.methodMecanim == AnimMethodMecanim.PlayCustom)
@@ -372,6 +448,12 @@ namespace AC
 		
 		public override float ActionAnimRun (ActionAnim action)
 		{
+			return ActionAnimProcess (action, false);
+		}
+
+
+		private float ActionAnimProcess (ActionAnim action, bool isSkipping)
+		{
 			if (!action.isRunning)
 			{
 				action.isRunning = true;
@@ -397,7 +479,10 @@ namespace AC
 					}
 					else if (action.mecanimParameterType == MecanimParameterType.Trigger)
 					{
-						action.animator.SetTrigger (action.parameterName);
+						if (!isSkipping || action.parameterValue != 1f)
+						{
+							action.animator.SetTrigger (action.parameterName);
+						}
 					}
 					
 					return 0f;
@@ -407,11 +492,18 @@ namespace AC
 				{
 					if (action.clip2D != "")
 					{
-						action.animator.CrossFade (action.clip2D, action.fadeTime, action.layerInt);
-						
-						if (action.willWait)
+						if (isSkipping)
 						{
-							return (action.defaultPauseTime);
+							action.animator.CrossFade (action.clip2D, action.fadeTime, action.layerInt);
+							
+							if (action.willWait)
+							{
+								return (action.defaultPauseTime);
+							}
+						}
+						else
+						{
+							action.animator.CrossFade (action.clip2D, 0f, action.layerInt);
 						}
 					}
 				}
@@ -438,38 +530,7 @@ namespace AC
 		
 		public override void ActionAnimSkip (ActionAnim action)
 		{
-			if (action.methodMecanim == AnimMethodMecanim.ChangeParameterValue && action.animator && action.parameterName != "")
-			{
-				if (action.mecanimParameterType == MecanimParameterType.Float)
-				{
-					action.animator.SetFloat (action.parameterName, action.parameterValue);
-				}
-				else if (action.mecanimParameterType == MecanimParameterType.Int)
-				{
-					action.animator.SetInteger (action.parameterName, (int) action.parameterValue);
-				}
-				else if (action.mecanimParameterType == MecanimParameterType.Bool)
-				{
-					bool paramValue = false;
-					if (action.parameterValue > 0f)
-					{
-						paramValue = true;
-					}
-					action.animator.SetBool (action.parameterName, paramValue);
-				}
-				else if (action.mecanimParameterType == MecanimParameterType.Trigger)
-				{
-					action.animator.SetTrigger (action.parameterName);
-				}
-			}
-			
-			else if (action.methodMecanim == AnimMethodMecanim.PlayCustom && action.animator)
-			{
-				if (action.clip2D != "")
-				{
-					action.animator.CrossFade (action.clip2D, action.fadeTime, action.layerInt);
-				}
-			}
+			ActionAnimProcess (action, true);
 		}
 
 
@@ -550,14 +611,14 @@ namespace AC
 				return;
 			}
 
-			if (character.moveSpeedParameter != "")
+			if (!string.IsNullOrEmpty (character.moveSpeedParameter))
 			{
 				character.GetAnimator ().SetFloat (character.moveSpeedParameter, character.GetMoveSpeed ());
 			}
 
 			AnimTalk (character.GetAnimator ());
 			
-			if (character.turnParameter != "")
+			if (!string.IsNullOrEmpty (character.turnParameter))
 			{
 				character.GetAnimator ().SetFloat (character.turnParameter, 0f);
 			}
@@ -573,7 +634,7 @@ namespace AC
 				return;
 			}
 
-			if (character.moveSpeedParameter != "")
+			if (!string.IsNullOrEmpty (character.moveSpeedParameter))
 			{
 				if (character.IsReversing ())
 				{
@@ -583,6 +644,11 @@ namespace AC
 				{
 					character.GetAnimator ().SetFloat (character.moveSpeedParameter, character.GetMoveSpeed ());
 				}
+			}
+
+			if (!string.IsNullOrEmpty (character.turnParameter))
+			{
+				character.GetAnimator ().SetFloat (character.turnParameter, 0f);
 			}
 
 			AnimTalk (character.GetAnimator ());
@@ -597,7 +663,7 @@ namespace AC
 				return;
 			}
 
-			if (character.moveSpeedParameter != "")
+			if (!string.IsNullOrEmpty (character.moveSpeedParameter))
 			{
 				if (character.IsReversing ())
 				{
@@ -607,6 +673,11 @@ namespace AC
 				{
 					character.GetAnimator ().SetFloat (character.moveSpeedParameter, character.GetMoveSpeed ());
 				}
+			}
+
+			if (!string.IsNullOrEmpty (character.turnParameter))
+			{
+				character.GetAnimator ().SetFloat (character.turnParameter, 0f);
 			}
 
 			AnimTalk (character.GetAnimator ());
@@ -627,14 +698,14 @@ namespace AC
 				return;
 			}
 
-			if (character.turnParameter != "")
+			if (!string.IsNullOrEmpty (character.turnParameter))
 			{
 				character.GetAnimator ().SetFloat (character.turnParameter, -1f);
 			}
 			
 			AnimTalk (character.GetAnimator ());
 			
-			if (character.moveSpeedParameter != "")
+			if (!string.IsNullOrEmpty (character.moveSpeedParameter))
 			{
 				character.GetAnimator ().SetFloat (character.moveSpeedParameter, 0f);
 			}
@@ -650,14 +721,14 @@ namespace AC
 				return;
 			}
 
-			if (character.turnParameter != "")
+			if (!string.IsNullOrEmpty (character.turnParameter))
 			{
 				character.GetAnimator ().SetFloat (character.turnParameter, 1f);
 			}
 			
 			AnimTalk (character.GetAnimator ());
 			
-			if (character.moveSpeedParameter != "")
+			if (!string.IsNullOrEmpty (character.moveSpeedParameter))
 			{
 				character.GetAnimator ().SetFloat (character.moveSpeedParameter, 0f);
 			}
@@ -673,26 +744,43 @@ namespace AC
 				return;
 			}
 			
-			if (character.verticalMovementParameter != "")
+			if (!string.IsNullOrEmpty (character.verticalMovementParameter))
 			{
 				character.GetAnimator ().SetFloat (character.verticalMovementParameter, character.GetHeightChange ());
 			}
 		}
 
 
+		public override void TurnHead (Vector2 angles)
+		{
+			if (!string.IsNullOrEmpty (character.headYawParameter))
+			{
+				float spinAngleOffset = angles.x * Mathf.Rad2Deg;
+				float headAngle = character.GetSpriteAngle () + spinAngleOffset;
+
+				if (character.angleSnapping != AngleSnapping.None)
+				{
+					headAngle = character.FlattenSpriteAngle (headAngle, character.angleSnapping);
+				}
+
+				character.GetAnimator ().SetFloat (character.headYawParameter, headAngle);
+			}
+		}
+
+
 		private void AnimTalk (Animator animator)
 		{
-			if (character.talkParameter != "")
+			if (!string.IsNullOrEmpty (character.talkParameter))
 			{
 				animator.SetBool (character.talkParameter, character.isTalking);
 			}
 			
-			if (character.phonemeParameter != "" && character.LipSyncGameObject ())
+			if (!string.IsNullOrEmpty (character.phonemeParameter) && character.LipSyncGameObject ())
 			{
 				animator.SetInteger (character.phonemeParameter, character.GetLipSyncFrame ());
 			}
 
-			if (character.expressionParameter != "" && character.useExpressions)
+			if (!string.IsNullOrEmpty (character.expressionParameter) && character.useExpressions)
 			{
 				animator.SetInteger (character.expressionParameter, character.GetExpressionID ());
 			}
@@ -701,18 +789,18 @@ namespace AC
 
 		private void SetDirection (Animator animator)
 		{
-			if (character.directionParameter != "")
+			if (!string.IsNullOrEmpty (character.directionParameter))
 			{
 				animator.SetInteger (character.directionParameter, character.GetSpriteDirectionInt ());
 			}
-			if (character.angleParameter != "")
+			if (!string.IsNullOrEmpty (character.angleParameter))
 			{
 				animator.SetFloat (character.angleParameter, character.GetSpriteAngle ());
 			}
 		}
 
 
-		#if UNITY_EDITOR && UNITY_5
+		#if UNITY_EDITOR && (UNITY_5 || UNITY_2017_1_OR_NEWER)
 		
 		public override void AddSaveScript (Action _action, GameObject _gameObject)
 		{

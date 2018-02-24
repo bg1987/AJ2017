@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿#if UNITY_ANDROID || UNITY_IOS
+#define ON_MOBILE
+#endif
+
+using UnityEngine;
 using UnityEditor;
 
 namespace AC
@@ -32,14 +36,16 @@ namespace AC
 		private CameraPerspective cameraPerspective = CameraPerspective.ThreeD;
 		private MovingTurning movingTurning = MovingTurning.Unity2D;
 
+		private Rect pageRect = new Rect (350, 335, 150, 25);
+
 
 		[MenuItem ("Adventure Creator/Getting started/New Game wizard", false, 4)]
 		public static void Init ()
 		{
-			NewGameWizardWindow window = (NewGameWizardWindow) EditorWindow.GetWindow (typeof (NewGameWizardWindow));
+			NewGameWizardWindow window = EditorWindow.GetWindowWithRect <NewGameWizardWindow> (new Rect (0, 0, 420, 360), true, "New Game Wizard", true);
 			window.GetReferences ();
 			UnityVersionHandler.SetWindowTitle (window, "New Game wizard");
-			window.position = new Rect (300, 200, 350, 300);
+			window.position = new Rect (300, 200, 420, 360);
 		}
 		
 		
@@ -51,13 +57,15 @@ namespace AC
 
 		public void OnInspectorUpdate ()
 		{
-			Repaint();
+			Repaint ();
 		}
 
 
 		private void OnGUI ()
 		{
-			GUILayout.Label (GetTitle (), EditorStyles.largeLabel);
+			GUILayout.BeginVertical (CustomStyles.thinBox, GUILayout.ExpandWidth (true), GUILayout.ExpandHeight (true));
+
+			GUILayout.Label (GetTitle (), CustomStyles.managerHeader);
 			if (GetTitle () != "")
 			{
 				EditorGUILayout.Separator ();
@@ -110,17 +118,6 @@ namespace AC
 			}
 			else
 			{
-				/*if (pageNumber == numPages)
-				{
-					GUI.enabled = false;
-				}
-				if (GUILayout.Button ("Finish", EditorStyles.miniButtonRight))
-				{
-					pageNumber ++;
-					Finish ();
-				}
-				GUI.enabled = true;*/
-
 				if (pageNumber == numPages)
 				{
 					if (GUILayout.Button ("Close", EditorStyles.miniButtonRight))
@@ -141,7 +138,10 @@ namespace AC
 			}
 			GUILayout.EndHorizontal ();
 
-			GUILayout.Label ("Page " + (pageNumber + 1) + " of " + (numPages + 1));
+			GUI.Label (pageRect, "Page " + (pageNumber + 1) + " of " + (numPages + 1));
+
+			GUILayout.FlexibleSpace ();
+			EditorGUILayout.EndVertical ();
 		}
 
 
@@ -193,9 +193,10 @@ namespace AC
 			{
 				System.IO.Directory.CreateDirectory (Application.dataPath + "/" + managerPath);
 			}
-			catch
+			catch (System.Exception e)
 			{
 				ACDebug.LogError ("Wizard aborted - Could not create directory: " + Application.dataPath + "/" + managerPath + ". Please make sure the Assets direcrory is writeable, and that the intended game name contains no special characters.");
+				Debug.LogException (e, this);
 				pageNumber --;
 				return;
 			}
@@ -212,11 +213,11 @@ namespace AC
 
 				references.settingsManager.saveFileName = gameName;
 				references.settingsManager.cameraPerspective = cameraPerspective;
+				references.settingsManager.movingTurning = movingTurning;
 				references.settingsManager.movementMethod = movementMethod;
 				references.settingsManager.inputMethod = inputMethod;
 				references.settingsManager.interactionMethod = interactionMethod;
 				references.settingsManager.hotspotDetection = hotspotDetection;
-				references.settingsManager.movingTurning = movingTurning;
 				if (cameraPerspective == CameraPerspective.TwoPointFiveD)
 				{
 					references.settingsManager.forceAspectRatio = true;
@@ -226,11 +227,11 @@ namespace AC
 				AssetDatabase.RenameAsset ("Assets/" + managerPath + "/ActionsManager.asset", gameName + "_ActionsManager");
 				references.actionsManager = (ActionsManager) t;
 				AdventureCreator.RefreshActions ();
-				ActionsManager demoActionsManager = AssetDatabase.LoadAssetAtPath("Assets/AdventureCreator/Demo/Managers/Demo_ActionsManager.asset", typeof(ActionsManager)) as ActionsManager;
-				if (demoActionsManager != null)
+				ActionsManager defaultActionsManager = AssetDatabase.LoadAssetAtPath (Resource.MainFolderPath + "/Default/Default_ActionsManager.asset", typeof(ActionsManager)) as ActionsManager;
+				if (defaultActionsManager != null)
 				{
-					references.actionsManager.defaultClass = demoActionsManager.defaultClass;
-					references.actionsManager.defaultClassName = demoActionsManager.defaultClassName;
+					references.actionsManager.defaultClass = defaultActionsManager.defaultClass;
+					references.actionsManager.defaultClassName = defaultActionsManager.defaultClassName;
 				}
 
 				t = CustomAssetUtility.CreateAsset<VariablesManager> ("VariablesManager", managerPath);
@@ -255,58 +256,56 @@ namespace AC
 				AssetDatabase.RenameAsset ("Assets/" + managerPath + "/MenuManager.asset", gameName + "_MenuManager");
 				references.menuManager = (MenuManager) t;
 
-				CursorManager demoCursorManager = AssetDatabase.LoadAssetAtPath("Assets/AdventureCreator/Demo/Managers/Demo_CursorManager.asset", typeof(CursorManager)) as CursorManager;
+				CursorManager defaultCursorManager = AssetDatabase.LoadAssetAtPath (Resource.MainFolderPath + "/Default/Default_CursorManager.asset", typeof(CursorManager)) as CursorManager;
 				if (wizardMenu == WizardMenu.Blank)
 				{
-					if (demoCursorManager != null)
+					if (defaultCursorManager != null)
 					{
 						CursorIcon useIcon = new CursorIcon ();
-						useIcon.Copy (demoCursorManager.cursorIcons[0]);
+						useIcon.Copy (defaultCursorManager.cursorIcons[0]);
 						references.cursorManager.cursorIcons.Add (useIcon);
 						EditorUtility.SetDirty (references.cursorManager);
 					}
 				}
 				else
 				{
-					if (demoCursorManager != null)
+					if (defaultCursorManager != null)
 					{
-						foreach (CursorIcon demoIcon in demoCursorManager.cursorIcons)
+						foreach (CursorIcon defaultIcon in defaultCursorManager.cursorIcons)
 						{
 							CursorIcon newIcon = new CursorIcon ();
-							newIcon.Copy (demoIcon);
+							newIcon.Copy (defaultIcon);
 							references.cursorManager.cursorIcons.Add (newIcon);
 						}
 
 						CursorIconBase pointerIcon = new CursorIconBase ();
-						pointerIcon.Copy (demoCursorManager.pointerIcon);
+						pointerIcon.Copy (defaultCursorManager.pointerIcon);
 						references.cursorManager.pointerIcon = pointerIcon;
 					}
 					else
 					{
-						ACDebug.LogWarning ("Cannot find Demo_CursorManager asset to copy from!");
+						ACDebug.LogWarning ("Cannot find Default_CursorManager asset to copy from!");
 					}	
-
 					references.cursorManager.allowMainCursor = true;
 					EditorUtility.SetDirty (references.cursorManager);
 
-					MenuManager demoMenuManager = AssetDatabase.LoadAssetAtPath("Assets/AdventureCreator/Demo/Managers/Demo_MenuManager.asset", typeof(MenuManager)) as MenuManager;
-					if (demoMenuManager != null)
+					MenuManager defaultMenuManager = AssetDatabase.LoadAssetAtPath (Resource.MainFolderPath + "/Default/Default_MenuManager.asset", typeof(MenuManager)) as MenuManager;
+					if (defaultMenuManager != null)
 					{
 						#if UNITY_EDITOR
-						references.menuManager.drawOutlines = demoMenuManager.drawOutlines;
-						references.menuManager.drawInEditor = demoMenuManager.drawInEditor;
+						references.menuManager.drawOutlines = defaultMenuManager.drawOutlines;
+						references.menuManager.drawInEditor = defaultMenuManager.drawInEditor;
 						#endif
-						references.menuManager.pauseTexture = demoMenuManager.pauseTexture;
+						references.menuManager.pauseTexture = defaultMenuManager.pauseTexture;
 
 						if (wizardMenu != WizardMenu.Blank)
 						{
 							System.IO.Directory.CreateDirectory (Application.dataPath + "/" + gameName + "/UI");
 						}
-
-						foreach (Menu demoMenu in demoMenuManager.menus)
+						foreach (Menu defaultMenu in defaultMenuManager.menus)
 						{
 							Menu newMenu = ScriptableObject.CreateInstance <Menu>();
-							newMenu.Copy (demoMenu, true, true);
+							newMenu.Copy (defaultMenu, true, true);
 							newMenu.Recalculate ();
 
 							if (wizardMenu == WizardMenu.DefaultAC)
@@ -318,45 +317,55 @@ namespace AC
 								newMenu.menuSource = MenuSource.UnityUiPrefab;
 							}
 
-							if (demoMenu.canvas)
+							if (defaultMenu.canvas)
 							{
-								string oldCanvasPath = AssetDatabase.GetAssetPath (demoMenu.canvas);
-								string newCanvasPath = "Assets/" + gameName + "/UI/" + demoMenu.canvas.name + ".prefab";
-								if (AssetDatabase.CopyAsset (oldCanvasPath, newCanvasPath))
-								{
-									AssetDatabase.ImportAsset (newCanvasPath);
-									newMenu.canvas = (Canvas) AssetDatabase.LoadAssetAtPath (newCanvasPath, typeof (Canvas));
-								}
+								string newCanvasPath = "Assets/" + gameName + "/UI/" + defaultMenu.canvas.name + ".prefab";
+
+								GameObject canvasObInScene = (GameObject) PrefabUtility.InstantiatePrefab (defaultMenu.canvas.gameObject);
+								PrefabUtility.DisconnectPrefabInstance (canvasObInScene);
+								GameObject canvasObNewPrefab = PrefabUtility.CreatePrefab (newCanvasPath, canvasObInScene);
+
+								newMenu.canvas = canvasObNewPrefab.GetComponent <Canvas>();
+								DestroyImmediate (canvasObInScene);
 
 								newMenu.rectTransform = null;
 							}
 
-							newMenu.hideFlags = HideFlags.HideInHierarchy;
-							references.menuManager.menus.Add (newMenu);
-							EditorUtility.SetDirty (references.menuManager);
 							foreach (MenuElement newElement in newMenu.elements)
 							{
-								newElement.hideFlags = HideFlags.HideInHierarchy;
 								AssetDatabase.AddObjectToAsset (newElement, references.menuManager);
+								newElement.hideFlags = HideFlags.HideInHierarchy;
 							}
 							AssetDatabase.AddObjectToAsset (newMenu, references.menuManager);
+							newMenu.hideFlags = HideFlags.HideInHierarchy;
+
+							references.menuManager.menus.Add (newMenu);
 						}
+
+						EditorUtility.SetDirty (references.menuManager);
 					}
 					else
 					{
-						ACDebug.LogWarning ("Cannot find Demo_MenuManager asset to copy from!");
+						ACDebug.LogWarning ("Cannot find Default_MenuManager asset to copy from!");
 					}
 				}
 
 				CreateManagerPackage (gameName);
 
 				AssetDatabase.SaveAssets ();
-				references.sceneManager.InitialiseObjects ();
-				//pageNumber = 0;
+				if (GameObject.FindObjectOfType <KickStarter>() == null)
+				{
+					bool initScene = EditorUtility.DisplayDialog ("Setup scene?", "Process complete.  Would you like to organise the scene objects to begin working?  This can be done at any time within the Scene Manager.", "Yes", "No");
+					if (initScene)
+					{
+						references.sceneManager.InitialiseObjects ();
+					}
+				}
 			}
-			catch
+			catch (System.Exception e)
 			{
-				ACDebug.LogWarning ("Could not create Manager. Does the subdirectory " + Resource.managersDirectory + " exist?");
+				ACDebug.LogWarning ("Could not create Manager. Does the subdirectory " + managerPath + " exist?");
+				Debug.LogException (e, this);
 				pageNumber --;
 			}
 		}
@@ -426,6 +435,10 @@ namespace AC
 					}
 				}
 			}
+
+			#if ON_MOBILE
+			inputMethod = InputMethod.TouchScreen;
+			#endif
 		}
 
 
@@ -437,8 +450,11 @@ namespace AC
 			{
 				if (Resource.ACLogo)
 				{
-					GUILayout.Label (Resource.ACLogo);
+					GUI.DrawTexture (new Rect (82, 25, 256, 128), Resource.ACLogo);
 				}
+				GUILayout.Space (140f);
+				GUILayout.Label ("New Game Wizard", CustomStyles.managerHeader);
+
 				GUILayout.Space (5f);
 				GUILayout.Label ("This window can help you get started with making a new Adventure Creator game.");
 				GUILayout.Label ("To begin, click 'Next'. Changes will not be implemented until you are finished.");
@@ -503,6 +519,10 @@ namespace AC
 				{
 					EditorGUILayout.HelpBox ("This method involves first choosing a Hotspot, and then from a range of available interactions, which can be customised in the Editor.", MessageType.Info);
 				}
+				else if (interactionMethod == AC_InteractionMethod.CustomScript)
+				{
+					EditorGUILayout.HelpBox ("See the Manual's 'Custom interaction systems' section for information on how to trigger Hotspots and inventory items.", MessageType.Info);
+				}
 			}
 
 			else if (pageNumber == 4)
@@ -512,12 +532,13 @@ namespace AC
 
 				if (wizardMenu == WizardMenu.DefaultAC || wizardMenu == WizardMenu.DefaultUnityUI)
 				{
-					MenuManager demoMenuManager = AssetDatabase.LoadAssetAtPath("Assets/AdventureCreator/Demo/Managers/Demo_MenuManager.asset", typeof(MenuManager)) as MenuManager;
-					CursorManager demoCursorManager = AssetDatabase.LoadAssetAtPath("Assets/AdventureCreator/Demo/Managers/Demo_CursorManager.asset", typeof(CursorManager)) as CursorManager;
+					MenuManager defaultMenuManager = AssetDatabase.LoadAssetAtPath (Resource.MainFolderPath + "/Default/Default_MenuManager.asset", typeof(MenuManager)) as MenuManager;
+					CursorManager defaultCursorManager = AssetDatabase.LoadAssetAtPath (Resource.MainFolderPath + "/Default/Default_CursorManager.asset", typeof(CursorManager)) as CursorManager;
+					ActionsManager defaultActionsManager = AssetDatabase.LoadAssetAtPath (Resource.MainFolderPath + "/Default/Default_ActionsManager.asset", typeof(ActionsManager)) as ActionsManager;
 
-					if (demoMenuManager == null || demoCursorManager == null)
+					if (defaultMenuManager == null || defaultCursorManager == null || defaultActionsManager == null)
 					{
-						EditorGUILayout.HelpBox ("Unable to locate the Demo game's Manager assets in '/AdventureCreator/Demo/Managers'. These assets must be imported in order to start with the default interface.", MessageType.Warning);
+						EditorGUILayout.HelpBox ("Unable to locate the default Manager assets in '" + Resource.MainFolderPath + "/Default'. These assets must be imported in order to start with the default interface.", MessageType.Warning);
 					}
 				}
 
@@ -562,7 +583,7 @@ namespace AC
 			{
 				GUILayout.Label ("Congratulations, your game's Managers have been set up!");
 				GUILayout.Space (5f);
-				GUILayout.Label ("Your scene objects have also been organised for Adventure Creator to use. Your next step is to create and set your Player prefab, which you can do using the Character Wizard.");
+				GUILayout.Label ("Your next step is to create and set your Player prefab, which you can do using the Character Wizard.");
 			}
 		}
 
@@ -582,6 +603,7 @@ namespace AC
 			managerPackage.cursorManager = references.cursorManager;
 			managerPackage.menuManager = references.menuManager;
 
+			managerPackage.AssignManagers ();
 			EditorUtility.SetDirty (managerPackage);
 			AssetDatabase.SaveAssets ();
 

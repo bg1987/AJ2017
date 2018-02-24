@@ -29,7 +29,7 @@ namespace AC
 		public int constantID = 0;
 		public bool isPlayer;
 		public Char _char;
-		public Texture2D newPortraitGraphic;
+		public Texture newPortraitGraphic;
 
 
 		public ActionCharPortrait ()
@@ -58,6 +58,7 @@ namespace AC
 			{
 				_char.portraitIcon.texture = newPortraitGraphic;
 				_char.portraitIcon.ClearSprites ();
+				_char.portraitIcon.ClearCache ();
 			}
 			
 			return 0f;
@@ -98,7 +99,7 @@ namespace AC
 				}
 			}
 			
-			newPortraitGraphic = (Texture2D) EditorGUILayout.ObjectField ("New Portrait graphic:", newPortraitGraphic, typeof (Texture2D), true);
+			newPortraitGraphic = (Texture) EditorGUILayout.ObjectField ("New Portrait graphic:", newPortraitGraphic, typeof (Texture), true);
 			AfterRunningOption ();
 		}
 

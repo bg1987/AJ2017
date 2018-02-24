@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2016
+ *	by Chris Burton, 2013-2018
  *	
  *	"NavigationEngine_PolygonCollider.cs"
  * 
@@ -56,6 +56,8 @@ namespace AC
 
 		public override void OnReset (NavigationMesh navMesh)
 		{
+			if (!Application.isPlaying) return;
+
 			is2D = true;
 			ResetHoles (navMesh);
 
@@ -76,12 +78,17 @@ namespace AC
 					}
 				}
 			}
+
+			if (navMesh == null && KickStarter.settingsManager != null && KickStarter.settingsManager.movementMethod == MovementMethod.PointAndClick)
+			{
+				ACDebug.LogWarning ("Could not initialise NavMesh - was one set as the Default in the Settings Manager?");
+			}
 		}
 
 
 		public override void TurnOn (NavigationMesh navMesh)
 		{
-			if (navMesh == null) return;
+			if (navMesh == null || KickStarter.settingsManager == null) return;
 
 			if (LayerMask.NameToLayer (KickStarter.settingsManager.navMeshLayer) == -1)
 			{
@@ -101,6 +108,11 @@ namespace AC
 
 		public override Vector3[] GetPointsArray (Vector3 _originPos, Vector3 _targetPos, AC.Char _char = null)
 		{
+			if (KickStarter.sceneSettings == null || KickStarter.sceneSettings.navMesh == null)
+			{
+				return base.GetPointsArray (_originPos, _targetPos, _char);
+			}
+
 			PolygonCollider2D[] polys = KickStarter.sceneSettings.navMesh.transform.GetComponents <PolygonCollider2D>();
 			if (polys == null || polys.Length == 0)
 			{
@@ -206,7 +218,7 @@ namespace AC
 					}
 					continue;
 				}
-				
+
 				Vector2 scaleFac = new Vector2 (1f / navMesh.transform.localScale.x, 1f / navMesh.transform.localScale.y);
 				foreach (PolygonCollider2D hole in navMesh.polygonColliderHoles)
 				{
@@ -387,6 +399,18 @@ namespace AC
 
 			if (!hit)
 			{
+				// Horizontal didn't work, try vertical
+				hit = UnityVersionHandler.Perform2DRaycast
+				(
+					vertex - new Vector2 (0f, 0.005f),
+					new Vector2 (0f, 1f),
+					0.01f,
+					1 << KickStarter.sceneSettings.navMesh.gameObject.layer
+				);
+			}
+
+			if (!hit)
+			{
 				return GetNearestOffMesh (vertex, poly);
 			}
 			else if (hasMultiple)
@@ -536,11 +560,25 @@ namespace AC
 		public override void SceneSettingsGUI ()
 		{
 			#if UNITY_EDITOR
+			EditorGUILayout.BeginHorizontal ();
 			KickStarter.sceneSettings.navMesh = (NavigationMesh) EditorGUILayout.ObjectField ("Default NavMesh:", KickStarter.sceneSettings.navMesh, typeof (NavigationMesh), true);
-			if (AdvGame.GetReferences ().settingsManager && !AdvGame.GetReferences ().settingsManager.IsUnity2D ())
+			if (!SceneSettings.IsUnity2D ())
 			{
 				EditorGUILayout.HelpBox ("This method is only compatible with 'Unity 2D' mode.", MessageType.Warning);
 			}
+			else if (KickStarter.sceneSettings.navMesh == null)
+			{
+				if (GUILayout.Button ("Create", GUILayout.MaxWidth (60f)))
+				{
+					NavigationMesh newNavMesh = null;
+					newNavMesh = SceneManager.AddPrefab ("Navigation", "NavMesh2D", true, false, true).GetComponent <NavigationMesh>();
+
+					newNavMesh.gameObject.name = "Default NavMesh";
+					KickStarter.sceneSettings.navMesh = newNavMesh;
+					EditorGUIUtility.PingObject (newNavMesh.gameObject);
+				}
+			}
+			EditorGUILayout.EndHorizontal ();
 			#endif
 		}
 
@@ -553,7 +591,6 @@ namespace AC
 			}
 
 			ResetHoles (KickStarter.sceneSettings.navMesh, false);
-			AC.Char[] characters = GameObject.FindObjectsOfType (typeof (AC.Char)) as AC.Char[];
 
 			for (int p=0; p<navPolys.Length; p++)
 			{
@@ -570,7 +607,7 @@ namespace AC
 
 				Vector2 navPosition = navPolys[p].transform.position;
 
-				foreach (AC.Char character in characters)
+				foreach (AC.Char character in KickStarter.stateHandler.Characters)
 				{
 					CircleCollider2D circleCollider2D = character.GetComponent <CircleCollider2D>();
 					if (circleCollider2D != null &&
@@ -581,7 +618,7 @@ namespace AC
 						circleCollider2D.isTrigger = true;
 						List<Vector2> newPoints3D = new List<Vector2>();
 						
-						#if UNITY_5
+						#if UNITY_5 || UNITY_2017_1_OR_NEWER
 						Vector2 centrePoint = character.transform.TransformPoint (circleCollider2D.offset);
 						#else
 						Vector2 centrePoint = character.transform.TransformPoint (circleCollider2D.center);
@@ -767,32 +804,33 @@ namespace AC
 			_target.accuracy = EditorGUILayout.Slider ("Accuracy:", _target.accuracy, 0f, 1f);
 			_target.gizmoColour = EditorGUILayout.ColorField ("Gizmo colour:", _target.gizmoColour);
 
-			int numOptions = _target.polygonColliderHoles.Count;
-			numOptions = EditorGUILayout.IntField ("Number of holes:", _target.polygonColliderHoles.Count);
-			if (numOptions < 0)
-			{
-				numOptions = 0;
-			}
-			
-			if (numOptions < _target.polygonColliderHoles.Count)
-			{
-				_target.polygonColliderHoles.RemoveRange (numOptions, _target.polygonColliderHoles.Count - numOptions);
-			}
-			else if (numOptions > _target.polygonColliderHoles.Count)
-			{
-				if (numOptions > _target.polygonColliderHoles.Capacity)
-				{
-					_target.polygonColliderHoles.Capacity = numOptions;
-				}
-				for (int i=_target.polygonColliderHoles.Count; i<numOptions; i++)
-				{
-					_target.polygonColliderHoles.Add (null);
-				}
-			}
-			
+
+			EditorGUILayout.Separator ();
+			GUILayout.Box("", GUILayout.ExpandWidth(true), GUILayout.Height(1));
+			EditorGUILayout.LabelField ("NavMesh holes", EditorStyles.boldLabel);
+
 			for (int i=0; i<_target.polygonColliderHoles.Count; i++)
 			{
+				EditorGUILayout.BeginHorizontal ();
 				_target.polygonColliderHoles [i] = (PolygonCollider2D) EditorGUILayout.ObjectField ("Hole #" + i.ToString () + ":", _target.polygonColliderHoles [i], typeof (PolygonCollider2D), true);
+
+				if (GUILayout.Button ("-", GUILayout.MaxWidth (20f)))
+				{
+					_target.polygonColliderHoles.RemoveAt (i);
+					i=-1;
+				}
+
+				EditorGUILayout.EndHorizontal ();
+
+				if (_target.polygonColliderHoles[i] != null && _target.polygonColliderHoles[i].GetComponent <NavMeshBase>())
+				{
+					EditorGUILayout.HelpBox ("A NavMesh cannot use its own Polygon Collider component as a hole!", MessageType.Warning);
+				}
+			}
+
+			if (GUILayout.Button ("Create new hole"))
+			{
+				_target.polygonColliderHoles.Add (null);
 			}
 
 			if (_target.GetComponent <PolygonCollider2D>() != null)
@@ -800,7 +838,7 @@ namespace AC
 				int numPolys = _target.GetComponents <PolygonCollider2D>().Length;
 				if (numPolys > 1)
 				{
-					if (numOptions > 0)
+					if (_target.polygonColliderHoles.Count > 0)
 					{
 						EditorGUILayout.HelpBox ("Holes will only work if they are within the boundaries of " + _target.gameObject.name + "'s FIRST PolygonCollider component.", MessageType.Warning);
 					}

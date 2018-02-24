@@ -53,6 +53,11 @@ namespace AC
 						{
 							AC.Menu menu = menuManager.GetSelectedMenu ();
 
+							if (menu.IsUnityUI ())
+							{
+								return;
+							}
+
 							foreach (MenuElement element in menu.visibleElements)
 							{
 								for (int i=0; i<element.GetNumSlots (); i++)
@@ -122,18 +127,16 @@ namespace AC
 								{
 									if (menuManager.GetSelectedElement () == element && element.isClickable && i == 0)
 									{
-									//	element.PreDisplay (i, true, 0);
 										element.Display (highlightedStyle, i, 1f, true);
 									}
 									
 									else
 									{
-									//	element.PreDisplay (i, true, 0);
 										element.Display (normalStyle, i, 1f, false);
 									}
 								}
 
-								if (UnityEditor.EditorWindow.mouseOverWindow != null && UnityEditor.EditorWindow.mouseOverWindow.ToString ().Contains ("(UnityEditor.GameView)"))
+								if (UnityEditor.EditorWindow.mouseOverWindow != null && UnityEditor.EditorWindow.mouseOverWindow.ToString () != null && UnityEditor.EditorWindow.mouseOverWindow.ToString ().Contains ("(UnityEditor.GameView)"))
 								{
 									if (menu.IsPointerOverSlot (element, 0, Event.current.mousePosition + new Vector2 (menu.GetRect ().x, menu.GetRect ().y)))
 									{

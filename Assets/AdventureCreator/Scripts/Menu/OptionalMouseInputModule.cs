@@ -58,9 +58,11 @@ namespace AC
 		}
 
 
+		#if !UNITY_5_0
+
 		public override void Process ()
 		{
-			bool usedEvent = SendUpdateEventToSelectedObject();
+			bool usedEvent = SendUpdateEventToSelectedObject ();
 	 
 			if (eventSystem.sendNavigationEvents)
 			{
@@ -71,15 +73,17 @@ namespace AC
 	 
 				if (!usedEvent)
 				{
-					SendSubmitEventToSelectedObject();
+					SendSubmitEventToSelectedObject ();
 				}
 			}
-	 
+
 			if (allowMouseInput)
 			{
 				ProcessMouseEvent ();
 			}
 		}
+
+		#endif
 
 	}
 

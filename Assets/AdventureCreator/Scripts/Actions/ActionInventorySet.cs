@@ -34,10 +34,13 @@ namespace AC
 		private int replaceInvNumber;
 		
 		public bool setAmount = false;
+		public int amountParameterID = -1;
 		public int amount = 1;
 
 		public bool setPlayer = false;
 		public int playerID;
+
+		public bool addToFront = false;
 
 		#if UNITY_EDITOR
 		private InventoryManager inventoryManager;
@@ -58,6 +61,7 @@ namespace AC
 		{
 			invID = AssignInvItemID (parameters, parameterID, invID);
 			invIDReplace = AssignInvItemID (parameters, replaceParameterID, invIDReplace);
+			amount = AssignInteger (parameters, amountParameterID, amount);
 		}
 		
 		
@@ -79,18 +83,26 @@ namespace AC
 
 				if (invAction == InvAction.Add)
 				{
-					KickStarter.runtimeInventory.Add (invID, amount, false, _playerID);
+					KickStarter.runtimeInventory.Add (invID, amount, false, _playerID, addToFront);
 				}
 				else if (invAction == InvAction.Remove)
 				{
+					if (KickStarter.runtimeInventory.SelectedItem != null && KickStarter.runtimeInventory.SelectedItem.id == invID)
+					{
+						KickStarter.runtimeInventory.SetNull ();
+					}
+
 					KickStarter.runtimeInventory.Remove (invID, amount, setAmount, _playerID);
 				}
 				else if (invAction == InvAction.Replace)
 				{
+					if (KickStarter.runtimeInventory.SelectedItem != null && KickStarter.runtimeInventory.SelectedItem.id == invIDReplace)
+					{
+						KickStarter.runtimeInventory.SetNull ();
+					}
+
 					KickStarter.runtimeInventory.Replace (invID, invIDReplace, amount);
 				}
-			
-				PlayerMenus.ResetInventoryBoxes ();
 			}
 			
 			return 0f;
@@ -180,13 +192,12 @@ namespace AC
 					
 						if (setAmount)
 						{
-							if (invAction == InvAction.Remove)
+							string _label = (invAction == InvAction.Remove) ? "Reduce count by:" : "Increase count by:";
+
+							amountParameterID = Action.ChooseParameterGUI (_label, parameters, amountParameterID, ParameterType.Integer);
+							if (parameterID < 0)
 							{
-								amount = EditorGUILayout.IntField ("Reduce count by:", amount);
-							}
-							else
-							{
-								amount = EditorGUILayout.IntField ("Increase count by:", amount);
+								amount = EditorGUILayout.IntField (_label, amount);
 							}
 						}
 					}
@@ -204,6 +215,10 @@ namespace AC
 							replaceInvNumber = EditorGUILayout.Popup ("Item to remove:", replaceInvNumber, labelList.ToArray());
 							invIDReplace = inventoryManager.items[replaceInvNumber].id;
 						}
+					}
+					else if (invAction == InvAction.Add)
+					{
+						addToFront = EditorGUILayout.Toggle ("Add to front?", addToFront);
 					}
 				}
 				else

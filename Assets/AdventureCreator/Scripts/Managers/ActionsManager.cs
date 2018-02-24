@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2017
+ *	by Chris Burton, 2013-2018
  *	
  *	"ActionsManager.cs"
  * 
@@ -34,8 +34,6 @@ namespace AC
 
 		/** The folder path to any custom Actions */
 		public string customFolderPath = "AdventureCreator/Scripts/Actions";
-		/** The folder path to the default Actions*/
-		public string folderPath = "AdventureCreator/Scripts/Actions";
 
 		#endif
 
@@ -117,6 +115,12 @@ namespace AC
 				displayActionsInInspector = CustomGUILayout.ToggleLeft ("List Actions in Inspector window?", displayActionsInInspector, "AC.KickStarter.actionsManager.displayActionsInInspector");
 				displayActionsInEditor = (DisplayActionsInEditor) CustomGUILayout.EnumPopup ("Actions in Editor are:", displayActionsInEditor, "AC.KickStarter.actionsManager.displayActionsInEditor");
 				actionListEditorScrollWheel = (ActionListEditorScrollWheel) CustomGUILayout.EnumPopup ("Using scroll-wheel:", actionListEditorScrollWheel, "AC.KickStarter.actionsManager.actionListEditorScrollWheel");
+
+				if (actionListEditorScrollWheel == ActionListEditorScrollWheel.ZoomsWindow)
+				{
+					EditorGUILayout.HelpBox ("Panning is possible by holding down the middle-mouse button.", MessageType.Info);
+				}
+
 				panSpeed = CustomGUILayout.FloatField ((actionListEditorScrollWheel == ActionListEditorScrollWheel.PansWindow) ? "Panning speed:" : "Zoom speed:", panSpeed, "AC.KickStarter.actionsManager.panSpeed");
 				invertPanning = CustomGUILayout.ToggleLeft ("Invert panning in ActionList Editor?", invertPanning, "AC.KickStarter.actionsManager.invertPanning");
 				allowMultipleActionListWindows = CustomGUILayout.ToggleLeft ("Allow multiple ActionList Editor windows?", allowMultipleActionListWindows, "AC.KickStarter.actionsManager.allowMultipleActionListWindows");
@@ -133,7 +137,7 @@ namespace AC
 				GUILayout.Label (customFolderPath, EditorStyles.textField);
 				GUILayout.EndHorizontal ();
 				GUILayout.BeginHorizontal ();
-				if (GUILayout.Button ("Set directory"))
+				if (GUILayout.Button ("Set directory", EditorStyles.miniButtonLeft))
 				{
 					string path = EditorUtility.OpenFolderPanel ("Set custom Actions directory", "Assets", "");
 					string dataPath = Application.dataPath;
@@ -152,6 +156,10 @@ namespace AC
 					{
 						ACDebug.LogError ("Cannot set new directory - be sure to select within the Assets directory.");
 					}
+				}
+				if (GUILayout.Button ("Clear", EditorStyles.miniButtonRight))
+				{
+					customFolderPath = "";
 				}
 				GUILayout.EndHorizontal ();
 			}
@@ -435,7 +443,7 @@ namespace AC
 				int numFinds = SearchActionsForType (list.GetActions (), actionType);
 				if (numFinds > 0)
 				{
-					ACDebug.Log (sceneLabel + " Found " + numFinds + " instances in '" + list.gameObject.name + "'");
+					ACDebug.Log (sceneLabel + " Found " + numFinds + " instances in '" + list.gameObject.name + "'", list.gameObject);
 				}
 			}
 		}
@@ -459,7 +467,7 @@ namespace AC
 				int numFinds = SearchActionsForType (actionListAsset.actions, actionType);
 				if (numFinds > 0)
 				{
-					ACDebug.Log ("(Asset: " + actionListAsset.name + ") Found " + numFinds + " instances of '" + actionType.GetFullTitle () + "'");
+					ACDebug.Log ("(Asset: " + actionListAsset.name + ") Found " + numFinds + " instances of '" + actionType.GetFullTitle () + "'", actionListAsset);
 				}
 			}
 		}
@@ -484,6 +492,24 @@ namespace AC
 			}
 			
 			return numFinds;
+		}
+
+		/** The folder path to the default Actions */
+		public string FolderPath
+		{
+			get
+			{
+				return Resource.MainFolderPathRelativeToAssets + "/Scripts/Actions";
+			}
+		}
+
+
+		public bool UsingCustomActionsFolder
+		{
+			get
+			{
+				return (customFolderPath != FolderPath);
+			}
 		}
 		
 		#endif

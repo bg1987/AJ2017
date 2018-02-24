@@ -36,7 +36,7 @@ namespace AC
 				_target.isSkippable = EditorGUILayout.Toggle ("Is skippable?", _target.isSkippable);
 			}
 			_target.triggerTime = EditorGUILayout.Slider ("Start delay (s):", _target.triggerTime, 0f, 10f);
-			_target.autosaveAfter = EditorGUILayout.Toggle ("Auto-save after?", _target.autosaveAfter);
+			_target.autosaveAfter = EditorGUILayout.Toggle ("Autosave after?", _target.autosaveAfter);
 			_target.tagID = ShowTagUI (_target.actions.ToArray (), _target.tagID);
 			if (_target.source == ActionListSource.InScene)
 			{
@@ -56,7 +56,7 @@ namespace AC
 					EditorGUILayout.BeginVertical ("Button");
 
 					EditorGUILayout.LabelField ("Parameters", EditorStyles.boldLabel);
-					ActionListEditor.ShowParametersGUI (_target.parameters);
+					ActionListEditor.ShowParametersGUI (_target, null, _target.parameters);
 
 					EditorGUILayout.EndVertical ();
 				}

@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2017
+ *	by Chris Burton, 2013-2018
  *	
  *	"MenuInteraction.cs"
  * 
@@ -29,7 +29,7 @@ namespace AC
 
 		/** The Unity UI Button this is linked to (Unity UI Menus only) */
 		public UnityEngine.UI.Button uiButton;
-		/** What pointer state registers as a 'click' for Unity UI Menus (PointerClick, PointerDown) */
+		/** What pointer state registers as a 'click' for Unity UI Menus (PointerClick, PointerDown, PointerEnter) */
 		public UIPointerState uiPointerState = UIPointerState.PointerClick;
 
 		/** How interactions are displayed (IconOnly, TextOnly, IconAndText) */
@@ -47,11 +47,12 @@ namespace AC
 		/** If True, the element's texture can be set independently of the associated interaction icon set within the Cursor Manager (OnGUI only) */
 		public bool overrideTexture;
 		/** The element's texture (OnGUI only) */
-		public Texture2D activeTexture;
+		public Texture activeTexture;
 
 		private Text uiText;
 		private CursorIcon icon;
 		private string label = "";
+		private bool isDefaultIcon = false;
 
 		private CursorManager cursorManager;
 
@@ -80,25 +81,29 @@ namespace AC
 		}
 
 
-		/**
-		 * <summary>Creates and returns a new MenuInteraction that has the same values as itself.</summary>
-		 * <param name = "fromEditor">If True, the duplication was done within the Menu Manager and not as part of the gameplay initialisation.</param>
-		 * <returns>A new MenuInteraction with the same values as itself</returns>
-		 */
-		public override MenuElement DuplicateSelf (bool fromEditor)
+		public override MenuElement DuplicateSelf (bool fromEditor, bool ignoreUnityUI)
 		{
 			MenuInteraction newElement = CreateInstance <MenuInteraction>();
 			newElement.Declare ();
-			newElement.CopyInteraction (this);
+			newElement.CopyInteraction (this, ignoreUnityUI);
 			return newElement;
 		}
 		
 		
-		private void CopyInteraction (MenuInteraction _element)
+		private void CopyInteraction (MenuInteraction _element, bool ignoreUnityUI)
 		{
-			uiButton = _element.uiButton;
+			if (ignoreUnityUI)
+			{
+				uiButton = null;
+			}
+			else
+			{
+				uiButton = _element.uiButton;
+			}
+
 			uiPointerState = _element.uiPointerState;
 			uiText = null;
+
 			displayType = _element.displayType;
 			anchor = _element.anchor;
 			textEffects = _element.textEffects;
@@ -116,9 +121,9 @@ namespace AC
 		 * <summary>Initialises the linked Unity UI GameObject.</summary>
 		 * <param name = "_menu">The element's parent Menu<param>
 		 */
-		public override void LoadUnityUI (AC.Menu _menu)
+		public override void LoadUnityUI (AC.Menu _menu, Canvas canvas)
 		{
-			uiButton = LinkUIElement <UnityEngine.UI.Button>();
+			uiButton = LinkUIElement <UnityEngine.UI.Button> (canvas);
 			if (uiButton)
 			{
 				if (uiButton.GetComponentInChildren <Text>())
@@ -131,11 +136,7 @@ namespace AC
 		}
 
 
-		/**
-		 * <summary>Gets the linked Unity UI GameObject associated with this element.</summary>
-		 * <returns>The Unity UI GameObject associated with the element</returns>
-		 */
-		public override GameObject GetObjectToSelect ()
+		public override GameObject GetObjectToSelect (int slotIndex = 0)
 		{
 			if (uiButton)
 			{
@@ -180,29 +181,12 @@ namespace AC
 
 			if (source == MenuSource.AdventureCreator)
 			{
-				displayType = (AC_DisplayType) CustomGUILayout.EnumPopup ("Display type:", displayType, apiPrefix + ".displayType");
 				GetCursorGUI ();
-				
-				if (displayType != AC_DisplayType.IconOnly)
-				{
-					anchor = (TextAnchor) CustomGUILayout.EnumPopup ("Text alignment:", anchor, apiPrefix + ".anchor");
-					textEffects = (TextEffects) CustomGUILayout.EnumPopup ("Text effect:", textEffects, apiPrefix + ".textEffects");
-					if (textEffects != TextEffects.None)
-					{
-						outlineSize = CustomGUILayout.Slider ("Effect size:", outlineSize, 1f, 5f, apiPrefix + ".outlineSize");
-					}
-				}
+				displayType = (AC_DisplayType) CustomGUILayout.EnumPopup ("Display type:", displayType, apiPrefix + ".displayType");
 
 				if (displayType != AC_DisplayType.TextOnly)
 				{
 					overrideTexture = CustomGUILayout.Toggle ("Override icon texture?", overrideTexture, apiPrefix + ".overrideTexture");
-					if (overrideTexture)
-					{
-						EditorGUILayout.BeginHorizontal ();
-						EditorGUILayout.LabelField ("Active texture:", GUILayout.Width (145f));
-						activeTexture = (Texture2D) EditorGUILayout.ObjectField (activeTexture, typeof (Texture2D), false, GUILayout.Width (70f), GUILayout.Height (30f));
-						EditorGUILayout.EndHorizontal ();
-					}
 				}
 			}
 			else
@@ -219,6 +203,32 @@ namespace AC
 			EditorGUILayout.EndVertical ();
 
 			base.ShowGUI (menu);
+		}
+
+
+		protected override void ShowTextGUI (string apiPrefix)
+		{
+			if (displayType != AC_DisplayType.IconOnly)
+			{
+				anchor = (TextAnchor) CustomGUILayout.EnumPopup ("Text alignment:", anchor, apiPrefix + ".anchor");
+				textEffects = (TextEffects) CustomGUILayout.EnumPopup ("Text effect:", textEffects, apiPrefix + ".textEffects");
+				if (textEffects != TextEffects.None)
+				{
+					outlineSize = CustomGUILayout.Slider ("Effect size:", outlineSize, 1f, 5f, apiPrefix + ".outlineSize");
+				}
+			}
+		}
+
+
+		protected override void ShowTextureGUI (string apiPrefix)
+		{
+			if (displayType != AC_DisplayType.TextOnly && overrideTexture)
+			{
+				EditorGUILayout.BeginHorizontal ();
+				EditorGUILayout.LabelField ("Active texture:", GUILayout.Width (145f));
+				activeTexture = (Texture) EditorGUILayout.ObjectField (activeTexture, typeof (Texture), false, GUILayout.Width (70f), GUILayout.Height (30f));
+				EditorGUILayout.EndHorizontal ();
+			}
 		}
 		
 		
@@ -239,6 +249,7 @@ namespace AC
 		#endif
 
 
+
 		/**
 		 * <summary>Performs all calculations necessary to display the element.</summary>
 		 * <param name = "_slot">Ignored by this subclass</param>
@@ -247,6 +258,16 @@ namespace AC
 		 */
 		public override void PreDisplay (int _slot, int languageNumber, bool isActive)
 		{
+			isDefaultIcon = false;
+			if (Application.isPlaying && KickStarter.stateHandler.gameState == GameState.Normal && KickStarter.settingsManager.interactionMethod == AC_InteractionMethod.ChooseInteractionThenHotspot && KickStarter.settingsManager.allowDefaultinteractions)
+			{
+				if (KickStarter.runtimeInventory.SelectedItem == null && KickStarter.playerInteraction.GetActiveHotspot () != null && KickStarter.playerInteraction.GetActiveHotspot ().GetFirstUseIcon () == iconID)
+				{
+					isActive = true;
+					isDefaultIcon = true;
+				}
+			}
+
 			if (uiButton != null)
 			{
 				UpdateUISelectable (uiButton, uiSelectableHideStyle);
@@ -427,6 +448,17 @@ namespace AC
 			
 				base.RecalculateSize (source);
 			}
+			else
+			{
+				if (AdvGame.GetReferences ().cursorManager)
+				{
+					CursorIcon _icon = AdvGame.GetReferences ().cursorManager.GetCursorIconFromID (iconID);
+					if (_icon != null)
+					{
+						label = _icon.label;
+					}
+				}
+			}
 		}
 
 
@@ -464,6 +496,18 @@ namespace AC
 			{
 				GUIContent content = new GUIContent (TranslateLabel  (label, Options.GetLanguage ()));
 				AutoSize (content);
+			}
+		}
+
+
+		/**
+		 * If using Choose Interaction Then Hotspot mode, and default interactions are enabled, then this is True if the active Hotspot's first-enabled Use interaction uses this icon
+		 */
+		public bool IsDefaultIcon
+		{
+			get
+			{
+				return isDefaultIcon;
 			}
 		}
 

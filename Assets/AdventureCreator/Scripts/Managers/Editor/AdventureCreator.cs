@@ -11,7 +11,7 @@ namespace AC
 		
 		public References references;
 		
-		public static string version = "1.56e";
+		public static string version = "1.61.2";
 	 
 		private bool showScene = true;
 		private bool showSettings = false;
@@ -118,7 +118,12 @@ namespace AC
 				if (showScene)
 				{
 					GUILayout.Label ("Scene manager",  CustomStyles.managerHeader);
+					EditorGUI.BeginChangeCheck ();
 					references.sceneManager = (SceneManager) EditorGUILayout.ObjectField ("Asset file: ", references.sceneManager, typeof (SceneManager), false);
+					if (EditorGUI.EndChangeCheck ())
+					{
+						KickStarter.ClearManagerCache ();
+					}
 					DrawManagerSpace ();
 
 					if (!references.sceneManager)
@@ -139,7 +144,12 @@ namespace AC
 				else if (showSettings)
 				{
 					GUILayout.Label ("Settings manager",  CustomStyles.managerHeader);
+					EditorGUI.BeginChangeCheck ();
 					references.settingsManager = (SettingsManager) EditorGUILayout.ObjectField ("Asset file: ", references.settingsManager, typeof (SettingsManager), false);
+					if (EditorGUI.EndChangeCheck ())
+					{
+						KickStarter.ClearManagerCache ();
+					}
 					DrawManagerSpace ();
 
 					if (!references.settingsManager)
@@ -148,7 +158,7 @@ namespace AC
 					}
 					else
 					{
-						if (references.settingsManager.name == "Demo_SettingsManager" || references.sceneManager.name == "Demo2D_SettingsManager")
+						if (references.settingsManager.name == "Demo_SettingsManager" || references.settingsManager.name == "Demo2D_SettingsManager")
 						{
 							EditorGUILayout.HelpBox ("The Demo Managers are for demonstration purposes only.  Modifying them to create your game may result in data loss upon upgrading - instead, use the New Game Wizard to create a new set of Managers.", MessageType.Warning);
 						}
@@ -160,7 +170,12 @@ namespace AC
 				else if (showActions)
 				{
 					GUILayout.Label ("Actions manager",  CustomStyles.managerHeader);
+					EditorGUI.BeginChangeCheck ();
 					references.actionsManager = (ActionsManager) EditorGUILayout.ObjectField ("Asset file: ", references.actionsManager, typeof (ActionsManager), false);
+					if (EditorGUI.EndChangeCheck ())
+					{
+						KickStarter.ClearManagerCache ();
+					}
 					DrawManagerSpace ();
 
 					if (!references.actionsManager)
@@ -169,7 +184,7 @@ namespace AC
 					}
 					else
 					{
-						if (references.actionsManager.name == "Demo_ActionsManager" || references.sceneManager.name == "Demo2D_ActionsManager")
+						if (references.actionsManager.name == "Demo_ActionsManager" || references.actionsManager.name == "Demo2D_ActionsManager")
 						{
 							EditorGUILayout.HelpBox ("The Demo Managers are for demonstration purposes only.  Modifying them to create your game may result in data loss upon upgrading - instead, use the New Game Wizard to create a new set of Managers.", MessageType.Warning);
 						}
@@ -181,7 +196,12 @@ namespace AC
 				else if (showGVars)
 				{
 					GUILayout.Label ("Variables manager",  CustomStyles.managerHeader);
+					EditorGUI.BeginChangeCheck ();
 					references.variablesManager = (VariablesManager) EditorGUILayout.ObjectField ("Asset file: ", references.variablesManager, typeof (VariablesManager), false);
+					if (EditorGUI.EndChangeCheck ())
+					{
+						KickStarter.ClearManagerCache ();
+					}
 					DrawManagerSpace ();
 					
 					if (!references.variablesManager)
@@ -190,7 +210,7 @@ namespace AC
 					}
 					else
 					{
-						if (references.variablesManager.name == "Demo_VariablesManager" || references.sceneManager.name == "Demo2D_VariablesManager")
+						if (references.variablesManager.name == "Demo_VariablesManager" || references.variablesManager.name == "Demo2D_VariablesManager")
 						{
 							EditorGUILayout.HelpBox ("The Demo Managers are for demonstration purposes only.  Modifying them to create your game may result in data loss upon upgrading - instead, use the New Game Wizard to create a new set of Managers.", MessageType.Warning);
 						}
@@ -202,7 +222,12 @@ namespace AC
 				else if (showInvItems)
 				{
 					GUILayout.Label ("Inventory manager",  CustomStyles.managerHeader);
+					EditorGUI.BeginChangeCheck ();
 					references.inventoryManager = (InventoryManager) EditorGUILayout.ObjectField ("Asset file: ", references.inventoryManager, typeof (InventoryManager), false);
+					if (EditorGUI.EndChangeCheck ())
+					{
+						KickStarter.ClearManagerCache ();
+					}
 					DrawManagerSpace ();
 
 					if (!references.inventoryManager)
@@ -211,7 +236,7 @@ namespace AC
 					}
 					else
 					{
-						if (references.inventoryManager.name == "Demo_InventoryManager" || references.sceneManager.name == "Demo2D_InventoryManager")
+						if (references.inventoryManager.name == "Demo_InventoryManager" || references.inventoryManager.name == "Demo2D_InventoryManager")
 						{
 							EditorGUILayout.HelpBox ("The Demo Managers are for demonstration purposes only.  Modifying them to create your game may result in data loss upon upgrading - instead, use the New Game Wizard to create a new set of Managers.", MessageType.Warning);
 						}
@@ -223,7 +248,12 @@ namespace AC
 				else if (showSpeech)
 				{
 					GUILayout.Label ("Speech manager",  CustomStyles.managerHeader);
+					EditorGUI.BeginChangeCheck ();
 					references.speechManager = (SpeechManager) EditorGUILayout.ObjectField ("Asset file: ", references.speechManager, typeof (SpeechManager), false);
+					if (EditorGUI.EndChangeCheck ())
+					{
+						KickStarter.ClearManagerCache ();
+					}
 					DrawManagerSpace ();
 
 					if (!references.speechManager)
@@ -232,7 +262,7 @@ namespace AC
 					}
 					else
 					{
-						if (references.speechManager.name == "Demo_SpeechManager" || references.sceneManager.name == "Demo2D_SpeechManager")
+						if (references.speechManager.name == "Demo_SpeechManager" || references.speechManager.name == "Demo2D_SpeechManager")
 						{
 							EditorGUILayout.HelpBox ("The Demo Managers are for demonstration purposes only.  Modifying them to create your game may result in data loss upon upgrading - instead, use the New Game Wizard to create a new set of Managers.", MessageType.Warning);
 						}
@@ -244,7 +274,12 @@ namespace AC
 				else if (showCursor)
 				{
 					GUILayout.Label ("Cursor manager",  CustomStyles.managerHeader);
+					EditorGUI.BeginChangeCheck ();
 					references.cursorManager = (CursorManager) EditorGUILayout.ObjectField ("Asset file: ", references.cursorManager, typeof (CursorManager), false);
+					if (EditorGUI.EndChangeCheck ())
+					{
+						KickStarter.ClearManagerCache ();
+					}
 					DrawManagerSpace ();
 
 					if (!references.cursorManager)
@@ -253,7 +288,7 @@ namespace AC
 					}
 					else
 					{
-						if (references.cursorManager.name == "Demo_CursorManager" || references.sceneManager.name == "Demo2D_CursorManager")
+						if (references.cursorManager.name == "Demo_CursorManager" || references.cursorManager.name == "Demo2D_CursorManager")
 						{
 							EditorGUILayout.HelpBox ("The Demo Managers are for demonstration purposes only.  Modifying them to create your game may result in data loss upon upgrading - instead, use the New Game Wizard to create a new set of Managers.", MessageType.Warning);
 						}
@@ -265,7 +300,12 @@ namespace AC
 				else if (showMenu)
 				{
 					GUILayout.Label ("Menu manager",  CustomStyles.managerHeader);
+					EditorGUI.BeginChangeCheck ();
 					references.menuManager = (MenuManager) EditorGUILayout.ObjectField ("Asset file: ", references.menuManager, typeof (MenuManager), false);
+					if (EditorGUI.EndChangeCheck ())
+					{
+						KickStarter.ClearManagerCache ();
+					}
 					DrawManagerSpace ();
 
 					if (!references.menuManager)
@@ -274,7 +314,7 @@ namespace AC
 					}
 					else
 					{
-						if (references.menuManager.name == "Demo_MenuManager" || references.sceneManager.name == "Demo2D_MenuManager")
+						if (references.menuManager.name == "Demo_MenuManager" || references.menuManager.name == "Demo2D_MenuManager")
 						{
 							EditorGUILayout.HelpBox ("The Demo Managers are for demonstration purposes only.  Modifying them to create your game may result in data loss upon upgrading - instead, use the New Game Wizard to create a new set of Managers.", MessageType.Warning);
 						}
@@ -378,7 +418,7 @@ namespace AC
 			if (GUILayout.Button ("Create new " + obName + " file"))
 			{
 				try {
-					ScriptableObject t = CustomAssetUtility.CreateAsset<T> (obName, Resource.managersDirectory);
+					ScriptableObject t = CustomAssetUtility.CreateAsset<T> (obName);
 					
 					Undo.RecordObject (references, "Assign " + obName);
 					
@@ -418,7 +458,7 @@ namespace AC
 				}
 				catch
 				{
-					ACDebug.LogWarning ("Could not create " + obName + ". Does the subdirectory " + Resource.managersDirectory + " exist?");
+					ACDebug.LogWarning ("Could not create " + obName + ".");
 				}
 			}
 		}
@@ -441,7 +481,7 @@ namespace AC
 			}
 
 			// Load default Actions
-			DirectoryInfo dir = new DirectoryInfo ("Assets/" + actionsManager.folderPath);
+			DirectoryInfo dir = new DirectoryInfo ("Assets/" + actionsManager.FolderPath);
 			FileInfo[] info = dir.GetFiles ("*.cs");
 			
 			actionsManager.AllActions.Clear ();
@@ -489,7 +529,7 @@ namespace AC
 			}
 
 			// Load custom Actions
-			if (actionsManager.customFolderPath != actionsManager.folderPath)
+			if (!string.IsNullOrEmpty (actionsManager.customFolderPath) && actionsManager.UsingCustomActionsFolder)
 			{
 				dir = new DirectoryInfo ("Assets/" + actionsManager.customFolderPath);
 				info = dir.GetFiles ("*.cs");

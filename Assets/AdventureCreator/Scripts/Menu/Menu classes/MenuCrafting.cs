@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2017
+ *	by Chris Burton, 2013-2018
  *	
  *	"MenuCrafting.cs"
  * 
@@ -40,6 +40,10 @@ namespace AC
 		public ConversationDisplayType displayType = ConversationDisplayType.IconOnly;
 		/** The method which this element (or slots within it) are hidden from view when made invisible (DisableObject, ClearContent) */
 		public UIHideStyle uiHideStyle = UIHideStyle.DisableObject;
+		/** If craftingType = CraftingElementType.Output, the ActionList to run if a crafting attempt is made but no succesful recipe is possible. This only works if crafting is performed manually via the Inventory: Crafting Action. */
+		public ActionListAsset actionListOnWrongIngredients;
+		/** What Image component the Element's Graphics should be linked to (ImageComponent, ButtonTargetGraphic) */
+		public LinkUIGraphic linkUIGraphic = LinkUIGraphic.ImageComponent;
 
 		private Recipe activeRecipe;
 		private bool[] isFilled;
@@ -61,6 +65,8 @@ namespace AC
 			craftingType = CraftingElementType.Ingredients;
 			displayType = ConversationDisplayType.IconOnly;
 			uiHideStyle = UIHideStyle.DisableObject;
+			actionListOnWrongIngredients = null;
+			linkUIGraphic = LinkUIGraphic.ImageComponent;
 			items = new List<InvItem>();
 		}
 
@@ -70,18 +76,26 @@ namespace AC
 		 * <param name = "fromEditor">If True, the duplication was done within the Menu Manager and not as part of the gameplay initialisation.</param>
 		 * <returns>A new MenuCrafting with the same values as itself</returns>
 		 */
-		public override MenuElement DuplicateSelf (bool fromEditor)
+		public override MenuElement DuplicateSelf (bool fromEditor, bool ignoreUnityUI)
 		{
 			MenuCrafting newElement = CreateInstance <MenuCrafting>();
 			newElement.Declare ();
-			newElement.CopyCrafting (this);
+			newElement.CopyCrafting (this, ignoreUnityUI);
 			return newElement;
 		}
 		
 		
-		private void CopyCrafting (MenuCrafting _element)
+		private void CopyCrafting (MenuCrafting _element, bool ignoreUnityUI)
 		{
-			uiSlots = _element.uiSlots;
+			if (ignoreUnityUI)
+			{
+				uiSlots = null;
+			}
+			else
+			{
+				uiSlots = _element.uiSlots;
+			}
+
 			isClickable = _element.isClickable;
 			textEffects = _element.textEffects;
 			outlineSize = _element.outlineSize;
@@ -89,6 +103,8 @@ namespace AC
 			craftingType = _element.craftingType;
 			displayType = _element.displayType;
 			uiHideStyle = _element.uiHideStyle;
+			actionListOnWrongIngredients = _element.actionListOnWrongIngredients;
+			linkUIGraphic = _element.linkUIGraphic;
 
 			PopulateList (MenuSource.AdventureCreator);
 			
@@ -100,12 +116,12 @@ namespace AC
 		 * <summary>Initialises the linked Unity UI GameObjects.</summary>
 		 * <param name = "_menu">The element's parent Menu</param>
 		 */
-		public override void LoadUnityUI (AC.Menu _menu)
+		public override void LoadUnityUI (AC.Menu _menu, Canvas canvas)
 		{
 			int i=0;
 			foreach (UISlot uiSlot in uiSlots)
 			{
-				uiSlot.LinkUIElements ();
+				uiSlot.LinkUIElements (canvas, linkUIGraphic);
 				if (uiSlot != null && uiSlot.uiButton != null)
 				{
 					int j=i;
@@ -119,15 +135,11 @@ namespace AC
 		}
 
 
-		/**
-		 * <summary>Gets the first linked Unity UI GameObject associated with this element.</summary>
-		 * <returns>The first Unity UI GameObject associated with the element</returns>
-		 */
-		public override GameObject GetObjectToSelect ()
+		public override GameObject GetObjectToSelect (int slotIndex = 0)
 		{
-			if (uiSlots != null && uiSlots.Length > 0 && uiSlots[0].uiButton != null)
+			if (uiSlots != null && uiSlots.Length > slotIndex && uiSlots[slotIndex].uiButton != null)
 			{
-				return uiSlots[0].uiButton.gameObject;
+				return uiSlots[slotIndex].uiButton.gameObject;
 			}
 			return null;
 		}
@@ -162,20 +174,7 @@ namespace AC
 			MenuSource source = menu.menuSource;
 
 			EditorGUILayout.BeginVertical ("Button");
-			if (source == MenuSource.AdventureCreator)
-			{
-				textEffects = (TextEffects) CustomGUILayout.EnumPopup ("Text effect:", textEffects, apiPrefix + ".textEffects");
-				if (textEffects != TextEffects.None)
-				{
-					outlineSize = CustomGUILayout.Slider ("Effect size:", outlineSize, 1f, 5f, apiPrefix + ".outlineSize");
-				}
-			}
 
-			displayType = (ConversationDisplayType) CustomGUILayout.EnumPopup ("Display:", displayType, apiPrefix + ".displayType");
-			if (displayType == ConversationDisplayType.IconAndText && source == MenuSource.AdventureCreator)
-			{
-				EditorGUILayout.HelpBox ("'Icon And Text' mode is only available for Unity UI-based Menus.", MessageType.Warning);
-			}
 			craftingType = (CraftingElementType) CustomGUILayout.EnumPopup ("Crafting element type:", craftingType, apiPrefix + ".craftingType");
 
 			if (craftingType == CraftingElementType.Ingredients)
@@ -194,6 +193,17 @@ namespace AC
 			else
 			{
 				numSlots = 1;
+				actionListOnWrongIngredients = ActionListAssetMenu.AssetGUI ("ActionList on fail:", actionListOnWrongIngredients, apiPrefix + ".actionListOnWrongIngredients", "ActionList_On_Fail_Recipe");
+				if (actionListOnWrongIngredients != null)
+				{
+					EditorGUILayout.HelpBox ("This ActionList will only be run if the result is calculated manually via the 'Inventory: Crafting' Action.", MessageType.Info);
+				}
+			}
+
+			displayType = (ConversationDisplayType) CustomGUILayout.EnumPopup ("Display type:", displayType, apiPrefix + ".displayType");
+			if (displayType == ConversationDisplayType.IconAndText && source == MenuSource.AdventureCreator)
+			{
+				EditorGUILayout.HelpBox ("'Icon And Text' mode is only available for Unity UI-based Menus.", MessageType.Warning);
 			}
 
 			if (source != MenuSource.AdventureCreator)
@@ -209,6 +219,8 @@ namespace AC
 				{
 					uiSlots[i].LinkedUiGUI (i, source);
 				}
+
+				linkUIGraphic = (LinkUIGraphic) EditorGUILayout.EnumPopup ("Link graphics to:", linkUIGraphic);
 			}
 
 			isClickable = true;
@@ -217,21 +229,15 @@ namespace AC
 			PopulateList (source);
 			base.ShowGUI (menu);
 		}
-		
-		
-		private int GetBinSlot (int _id, List<InvBin> bins)
+
+
+		protected override void ShowTextGUI (string apiPrefix)
 		{
-			int i = 0;
-			foreach (InvBin bin in bins)
+			textEffects = (TextEffects) CustomGUILayout.EnumPopup ("Text effect:", textEffects, apiPrefix + ".textEffects");
+			if (textEffects != TextEffects.None)
 			{
-				if (bin.id == _id)
-				{
-					return i;
-				}
-				i++;
+				outlineSize = CustomGUILayout.Slider ("Effect size:", outlineSize, 1f, 5f, apiPrefix + ".outlineSize");
 			}
-			
-			return 0;
 		}
 		
 		#endif
@@ -352,7 +358,7 @@ namespace AC
 						isFilled = new bool [numSlots];
 					}
 
-					if (!isFilled [_slot])
+					if (!isFilled [_slot] && Application.isPlaying)
 					{
 						return;
 					}
@@ -361,10 +367,9 @@ namespace AC
 				}
 				else
 				{
-					if (!isFilled [_slot])
+					if (!isFilled [_slot] && Application.isPlaying)
 					{
 						GUI.Label (GetSlotRectRelative (_slot), "", _style);
-						return;
 					}
 				}
 
@@ -404,7 +409,7 @@ namespace AC
 			{
 				if (_mouseState == MouseState.SingleClick)
 				{
-					if (KickStarter.runtimeInventory.selectedItem == null)
+					if (KickStarter.runtimeInventory.SelectedItem == null)
 					{
 						if (GetItem (_slot) != null)
 						{
@@ -418,12 +423,12 @@ namespace AC
 							KickStarter.runtimeInventory.TransferCraftingToLocal (GetItem (_slot).recipeSlot, false);
 						}
 			
-						KickStarter.runtimeInventory.TransferLocalToCrafting (KickStarter.runtimeInventory.selectedItem, _slot);
+						KickStarter.runtimeInventory.TransferLocalToCrafting (KickStarter.runtimeInventory.SelectedItem, _slot);
 					}
 				}
 				else if (_mouseState == MouseState.RightClick)
 				{
-					if (KickStarter.runtimeInventory.selectedItem != null)
+					if (KickStarter.runtimeInventory.SelectedItem != null)
 					{
 						KickStarter.runtimeInventory.SetNull ();
 					}
@@ -440,7 +445,7 @@ namespace AC
 			{
 				if (_mouseState == MouseState.SingleClick)
 				{
-					if (KickStarter.runtimeInventory.selectedItem == null)
+					if (KickStarter.runtimeInventory.SelectedItem == null)
 					{
 						// Pick up created item
 						if (activeRecipe.onCreateRecipe == OnCreateRecipe.SelectItem)
@@ -512,6 +517,22 @@ namespace AC
 			else
 			{
 				items = new List<InvItem>();
+				if (AdvGame.GetReferences ().inventoryManager != null)
+				{
+					foreach (InvItem _item in AdvGame.GetReferences ().inventoryManager.items)
+					{
+						items.Add (_item);
+
+						if (craftingType == CraftingElementType.Output)
+						{
+							return;
+						}
+						else if (items.Count >= numSlots)
+						{
+							return;
+						}
+					}
+				}
 				return;
 			}
 		}
@@ -545,6 +566,13 @@ namespace AC
 					}
 				}
 			}
+			else
+			{
+				if (!autoCreate && actionListOnWrongIngredients != null)
+				{
+					actionListOnWrongIngredients.Interact ();
+				}
+			}
 
 			if (!autoCreate)
 			{
@@ -553,17 +581,17 @@ namespace AC
 		}
 
 		
-		private Texture2D GetTexture ( int i)
+		private Texture GetTexture ( int i)
 		{
-			Texture2D tex = null;
+			Texture tex = null;
 			
 			if (Application.isPlaying)
 			{
 				tex = GetItem (i).tex;
 			}
-			else if (items [i].tex != null)
+			else if (items.Count > i && items[i].tex != null)
 			{
-				tex = items [i].tex;
+				tex = items[i].tex;
 			}
 			
 			return tex;
@@ -572,7 +600,7 @@ namespace AC
 		
 		private void DrawTexture (Rect rect, int i)
 		{
-			Texture2D tex = GetTexture (i);
+			Texture tex = GetTexture (i);
 
 			if (tex != null)
 			{
@@ -630,7 +658,7 @@ namespace AC
 			{
 				foreach (InvItem _item in items)
 				{
-					if (_item.recipeSlot == i)
+					if (_item.recipeSlot == i || !Application.isPlaying)
 					{
 						return _item;
 					}

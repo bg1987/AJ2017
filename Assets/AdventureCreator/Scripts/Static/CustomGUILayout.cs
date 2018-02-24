@@ -162,9 +162,33 @@ namespace AC
 		}
 
 
+		public static Vector2 Vector2Field (string label, Vector2 value, string api = "")
+		{
+			value = EditorGUILayout.Vector2Field (label, value);
+			CreateMenu (api);
+			return (value);
+		}
+
+
 		public static Vector2 Vector2Field (string label, Vector2 value, GUILayoutOption layoutOption, string api = "")
 		{
 			value = EditorGUILayout.Vector2Field (label, value, layoutOption);
+			CreateMenu (api);
+			return (value);
+		}
+
+
+		public static Vector3 Vector3Field (string label, Vector3 value, string api = "")
+		{
+			value = EditorGUILayout.Vector3Field (label, value);
+			CreateMenu (api);
+			return (value);
+		}
+
+
+		public static Vector3 Vector2Field (string label, Vector3 value, GUILayoutOption layoutOption, string api = "")
+		{
+			value = EditorGUILayout.Vector3Field (label, value, layoutOption);
 			CreateMenu (api);
 			return (value);
 		}
@@ -192,13 +216,31 @@ namespace AC
 		}
 
 
+		public static void TokenLabel (string token)
+		{
+			EditorGUILayout.LabelField ("Replacement token:", token);
+			CreateTokenMenu (token);
+		}
+
+
 		private static void CreateMenu (string api)
 		{
-			if (api != "" && Event.current.type == EventType.ContextClick && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition))
+			if (!string.IsNullOrEmpty (api) && Event.current.type == EventType.ContextClick && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition))
 			{
 				GenericMenu menu = new GenericMenu ();
 				menu.AddDisabledItem (new GUIContent (api));
 				menu.AddItem (new GUIContent ("Copy script variable"), false, CustomCallback, api);
+				menu.ShowAsContext ();
+			}
+		}
+
+
+		private static void CreateTokenMenu (string token)
+		{
+			if (!string.IsNullOrEmpty (token) && Event.current.type == EventType.ContextClick && GUILayoutUtility.GetLastRect ().Contains (Event.current.mousePosition))
+			{
+				GenericMenu menu = new GenericMenu ();
+				menu.AddItem (new GUIContent ("Copy token text"), false, CustomCallback, token);
 				menu.ShowAsContext ();
 			}
 		}
@@ -229,6 +271,7 @@ namespace AC
 		public static GUIStyle toggleHeader;
 		public static GUIStyle managerHeader;
 		public static GUIStyle smallCentre;
+		public static GUIStyle linkCentre;
 		public static GUIStyle thinBox;
 
 		private static bool isInitialised;
@@ -266,6 +309,11 @@ namespace AC
 			smallCentre = new GUIStyle (GUI.skin.label);
 			smallCentre.richText = true;
 			smallCentre.alignment = TextAnchor.MiddleCenter;
+
+			linkCentre = new GUIStyle (GUI.skin.label);
+			linkCentre.richText = true;
+			linkCentre.alignment = TextAnchor.MiddleCenter;
+			linkCentre.normal.textColor = (EditorGUIUtility.isProSkin) ? new Color (0.35f, 0.45f, 0.9f) : new Color (0.1f, 0.2f, 0.7f);
 
 			thinBox = new GUIStyle(GUI.skin.box);
 			thinBox.padding = new RectOffset(0, 0, 0, 0);

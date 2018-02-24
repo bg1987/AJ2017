@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2016
+ *	by Chris Burton, 2013-2018
  *	
  *	"NavMeshAgentIntegration.cs"
  * 
@@ -87,7 +87,7 @@ namespace AC
 				 * If this controls a Player, and the game's Movement method is not Point And Click,
 				 * we'll allow regular AC control over movement during gameplay.
 				 */
-				if (_char is Player && KickStarter.settingsManager != null && KickStarter.settingsManager.movementMethod != MovementMethod.PointAndClick)
+				if (_char.IsPlayer && KickStarter.settingsManager != null && KickStarter.settingsManager.movementMethod != MovementMethod.PointAndClick)
 				{
 					disableDuringGameplay = true;
 				}
@@ -189,7 +189,7 @@ namespace AC
 				/*
 				 * Provided the NavMeshAgent is on a NavMesh, set the destination point
 				 */
-				#if UNITY_5
+				#if UNITY_5 || UNITY_2017_1_OR_NEWER
 				if (navMeshAgent.isOnNavMesh)
 				{
 					navMeshAgent.SetDestination (targetPosition);

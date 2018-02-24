@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2017
+ *	by Chris Burton, 2013-2018
  *	
  *	"MenuElement.cs"
  * 
@@ -89,6 +89,10 @@ namespace AC
 		protected int offset = 0;
 		private string idString;
 		private Vector2 dragOffset;
+
+		#if UNITY_EDITOR
+		private bool doProportionalScaling = false;
+		#endif
 		
 		[SerializeField] protected Rect relativeRect;
 		[SerializeField] protected Vector2 relativePosition;
@@ -122,9 +126,10 @@ namespace AC
 		/**
 		 * <summary>Creates and returns a new MenuElement that has the same values as itself.</summary>
 		 * <param name = "fromEditor">If True, the duplication was done within the Menu Manager and not as part of the gameplay initialisation.</param>
+		 * <param name = "ignoreUnityUI">If True, variables associated with Unity UI will not be transferred</param>
 		 * <returns>A new MenuElement with the same values as itself</returns>
 		 */
-		public virtual MenuElement DuplicateSelf (bool fromEditor)
+		public virtual MenuElement DuplicateSelf (bool fromEditor, bool ignoreUnityUI)
 		{
 			return null;
 		}
@@ -187,16 +192,16 @@ namespace AC
 		 * <summary>Initialises the linked Unity UI GameObject.</summary>
 		 * <param name = "_menu">The element's parent Menu</param>
 		 */
-		public virtual void LoadUnityUI (AC.Menu _menu)
+		public virtual void LoadUnityUI (AC.Menu _menu, Canvas canvas)
 		{}
 
 
-		protected void CreateUIEvent (UnityEngine.UI.Button uiButton, AC.Menu _menu, UIPointerState uiPointerState = UIPointerState.PointerClick)
+		protected void CreateUIEvent (UnityEngine.UI.Button uiButton, AC.Menu _menu, UIPointerState uiPointerState = UIPointerState.PointerClick, int _slotIndex = 0, bool liveState = true)
 		{
 			if (uiPointerState == UIPointerState.PointerClick)
 			{
 				uiButton.onClick.AddListener (() => {
-					ProcessClickUI (_menu, 0, KickStarter.playerInput.GetMouseState ());
+					ProcessClickUI (_menu, _slotIndex, liveState ? KickStarter.playerInput.GetMouseState () : MouseState.SingleClick);
 				});
 			}
 			else
@@ -206,12 +211,19 @@ namespace AC
 				{
 					eventTrigger = uiButton.gameObject.AddComponent <EventTrigger>();
 				}
-
 				EventTrigger.Entry entry = new EventTrigger.Entry ();
-				entry.eventID = EventTriggerType.PointerDown;
+
+				if (uiPointerState == UIPointerState.PointerDown)
+				{
+					entry.eventID = EventTriggerType.PointerDown;
+				}
+				else if (uiPointerState == UIPointerState.PointerEnter)
+				{
+					entry.eventID = EventTriggerType.PointerEnter;
+				}
 
 				entry.callback.AddListener ((eventData) => {
-					ProcessClickUI (_menu, 0, KickStarter.playerInput.GetMouseState ());
+					ProcessClickUI (_menu, _slotIndex, liveState ? KickStarter.playerInput.GetMouseState () : MouseState.SingleClick);
 				} );
 
 				#if UNITY_4_6 || UNITY_4_7 || UNITY_5_0
@@ -262,9 +274,10 @@ namespace AC
 
 		/**
 		 * <summary>Gets the linked Unity UI GameObject associated with this element.</summary>
+		 * <param name = "slotIndex">The slot index, if the element has multiple slots</param>
 		 * <returns>The Unity UI GameObject associated with the element</returns>
 		 */
-		public virtual GameObject GetObjectToSelect ()
+		public virtual GameObject GetObjectToSelect (int slotIndex = 0)
 		{
 			return null;
 		}
@@ -365,6 +378,16 @@ namespace AC
 
 			ShowGUI (menu);
 		}
+
+
+		protected virtual void ShowTextGUI (string apiPrefix)
+		{
+		}
+
+
+		protected virtual void ShowTextureGUI (string apiPrefix)
+		{
+		}
 		
 		
 		public virtual void ShowGUI (Menu menu)
@@ -386,32 +409,39 @@ namespace AC
 			if (!(this is MenuGraphic))
 			{
 				EditorGUILayout.BeginVertical ("Button");
-					font = (Font) CustomGUILayout.ObjectField <Font> ("Font:", font, false, apiPrefix + ".font");
-					fontScaleFactor = CustomGUILayout.Slider ("Text size:", fontScaleFactor, 1f, 4f, apiPrefix + ".fontScaleFactor");
-					fontColor = CustomGUILayout.ColorField ("Text colour:", fontColor, apiPrefix + ".fontColor");
-					if (isClickable)
-					{
-					fontHighlightColor = CustomGUILayout.ColorField ("Text colour (highlighted):", fontHighlightColor, apiPrefix + ".fontHighlightColor");
-					}
+				font = (Font) CustomGUILayout.ObjectField <Font> ("Font:", font, false, apiPrefix + ".font");
+				fontScaleFactor = CustomGUILayout.Slider ("Text size:", fontScaleFactor, 1f, 4f, apiPrefix + ".fontScaleFactor");
+
+				ShowTextGUI (apiPrefix);
+
+				fontColor = CustomGUILayout.ColorField ("Text colour:", fontColor, apiPrefix + ".fontColor");
+				if (isClickable)
+				{
+				fontHighlightColor = CustomGUILayout.ColorField ("Text colour (highlighted):", fontHighlightColor, apiPrefix + ".fontHighlightColor");
+				}
 				EditorGUILayout.EndVertical ();
 			}
 
 			EditorGUILayout.BeginVertical ("Button");
-				if (isClickable)
-				{
-					EditorGUILayout.BeginHorizontal ();
-						EditorGUILayout.LabelField ("Highlight texture:", GUILayout.Width (145f));
-						highlightTexture = (Texture2D) CustomGUILayout.ObjectField <Texture2D> (highlightTexture, false, GUILayout.Width (70f), GUILayout.Height (30f), apiPrefix + ".highlightTexture");
-					EditorGUILayout.EndHorizontal ();
 
-					hoverSound = (AudioClip) CustomGUILayout.ObjectField <AudioClip> ("Hover sound:", hoverSound, false, apiPrefix + ".hoverSound");
-					clickSound = (AudioClip) CustomGUILayout.ObjectField <AudioClip> ("Click sound:", clickSound, false, apiPrefix + ".clickSound");
-				}
-				
+			ShowTextureGUI (apiPrefix);
+
+			EditorGUILayout.BeginHorizontal ();
+			EditorGUILayout.LabelField ("Background texture:", GUILayout.Width (145f));
+			backgroundTexture = (Texture2D) CustomGUILayout.ObjectField <Texture2D> (backgroundTexture, false, GUILayout.Width (70f), GUILayout.Height (30f), apiPrefix + ".backgroundTexture");
+			EditorGUILayout.EndHorizontal ();
+
+			if (isClickable)
+			{
 				EditorGUILayout.BeginHorizontal ();
-					EditorGUILayout.LabelField ("Background texture:", GUILayout.Width (145f));
-					backgroundTexture = (Texture2D) CustomGUILayout.ObjectField <Texture2D> (backgroundTexture, false, GUILayout.Width (70f), GUILayout.Height (30f), apiPrefix + ".backgroundTexture");
+				EditorGUILayout.LabelField ("Highlight texture:", GUILayout.Width (145f));
+				highlightTexture = (Texture2D) CustomGUILayout.ObjectField <Texture2D> (highlightTexture, false, GUILayout.Width (70f), GUILayout.Height (30f), apiPrefix + ".highlightTexture");
 				EditorGUILayout.EndHorizontal ();
+
+				hoverSound = (AudioClip) CustomGUILayout.ObjectField <AudioClip> ("Hover sound:", hoverSound, false, apiPrefix + ".hoverSound");
+				clickSound = (AudioClip) CustomGUILayout.ObjectField <AudioClip> ("Click sound:", clickSound, false, apiPrefix + ".clickSound");
+			}
+
 			EditorGUILayout.EndVertical ();
 			
 			EndGUI (apiPrefix);
@@ -446,12 +476,36 @@ namespace AC
 				sizeType = (AC_SizeType) CustomGUILayout.EnumPopup ("Size:", sizeType, apiPrefix + ".sizeType");
 				if (sizeType == AC_SizeType.Manual)
 				{
+					Vector2 originalSlotSize = slotSize;
+
 					EditorGUILayout.BeginHorizontal ();
 					EditorGUILayout.LabelField ("W:", GUILayout.Width (17f));
-					slotSize.x = EditorGUILayout.Slider (slotSize.x, 0f, 100f);
+					originalSlotSize.x = EditorGUILayout.Slider (slotSize.x, 0f, 100f);
 					EditorGUILayout.LabelField ("H:", GUILayout.Width (15f));
-					slotSize.y = EditorGUILayout.Slider (slotSize.y, 0f, 100f);
+					originalSlotSize.y = EditorGUILayout.Slider (slotSize.y, 0f, 100f);
+
+					int iconNumber = (doProportionalScaling) ? 11 : 12;
+					if (GUILayout.Button ("", Resource.NodeSkin.customStyles [iconNumber]))
+					{
+						doProportionalScaling = !doProportionalScaling;
+					}
 					EditorGUILayout.EndHorizontal ();
+
+					if (doProportionalScaling)
+					{
+						if (!Mathf.Approximately (originalSlotSize.x, slotSize.x))
+						{
+							float proportion = slotSize.y / slotSize.x;
+							originalSlotSize.y = proportion * originalSlotSize.x;
+						}
+						else if (!Mathf.Approximately (originalSlotSize.y, slotSize.y))
+						{
+							float proportion = slotSize.x / slotSize.y;
+							originalSlotSize.x = proportion * originalSlotSize.y;
+						}
+					}
+
+					slotSize = originalSlotSize;
 				}
 				else if (sizeType == AC_SizeType.AbsolutePixels)
 				{
@@ -468,7 +522,7 @@ namespace AC
 		
 		protected void ShowClipHelp ()
 		{
-			EditorGUILayout.HelpBox ("MenuSystem.OnElementClick will be run when this element is clicked.", MessageType.Info);
+			EditorGUILayout.HelpBox ("The OnMenuElementClick custom event will be run when this element is clicked.", MessageType.Info);
 		}
 
 
@@ -544,6 +598,18 @@ namespace AC
 					EditorGUILayout.HelpBox ("No Cursor Manager found!", MessageType.Warning);
 				}
 			}
+		}
+
+
+		/**
+		 * <summary>Checks if the Elements makesreferences from a given global variable to a given local variable</summary>
+		 * <param name = "oldGlobalID">The ID number of the old global variable</param>
+		 * <param name = "newLocalID">The ID number of the new local variable</param>
+		 * <returns>True if the Element was affected</returns>
+		 */
+		public virtual bool CheckConvertGlobalVariableToLocal (int oldGlobalID, int newLocalID)
+		{
+			return false;
 		}
 		
 		#endif
@@ -629,7 +695,28 @@ namespace AC
 				Rect outlineRect = _menu.GetRectAbsolute (GetSlotRectRelative (i));
 				DrawStraightLine.DrawBox (outlineRect, boxColor, 1f, false, 0);
 			}
+		}
 
+
+		/**
+		 * <summary>Gets the element's slot centres, as an array of Vector2s.  This is used when keyboard-navigating menus</summary>
+		 * <param name = "_menu">The parent Menu</param>
+		 * <returns>The element's slot centres, as an array of Vector2s.</returns>
+		 */
+		public Vector2[] GetSlotCentres (AC.Menu _menu)
+		{
+			List<Vector2> slotCentres = new List<Vector2>();
+
+			if (isClickable)
+			{
+				for (int i=0; i<GetNumSlots (); i++)
+				{
+					Vector2 slotCentre = _menu.GetRectAbsolute (GetSlotRectRelative (i)).center;
+					slotCentres.Add (slotCentre);
+				}
+			}
+
+			return slotCentres.ToArray ();
 		}
 
 
@@ -670,7 +757,7 @@ namespace AC
 
 		protected void Shift (AC_ShiftInventory shiftType, int maxSlots, int arraySize, int amount)
 		{
-			if (shiftType == AC_ShiftInventory.ShiftRight)
+			if (shiftType == AC_ShiftInventory.ShiftNext)
 			{
 				offset += amount;
 
@@ -679,7 +766,7 @@ namespace AC
 					offset = arraySize - maxSlots;
 				}
 			}
-			else if (shiftType == AC_ShiftInventory.ShiftLeft && offset > 0)
+			else if (shiftType == AC_ShiftInventory.ShiftPrevious && offset > 0)
 			{
 				offset -= amount;
 
@@ -971,6 +1058,7 @@ namespace AC
 			dragOffset = pos;
 		}
 
+
 		/**
 		 * <summary>Gets the drag offset.</summary>
 		 * <returns>The drag offset</returns>
@@ -997,10 +1085,19 @@ namespace AC
 		}
 
 
-		protected T LinkUIElement <T> () where T : Behaviour
+		protected T LinkUIElement <T> (Canvas canvas) where T : Behaviour
 		{
-			T field = Serializer.returnComponent <T> (linkedUiID);
-			return field;
+			if (canvas != null)
+			{
+				T field = Serializer.GetGameObjectComponent <T> (linkedUiID, canvas.gameObject);
+
+				if (field == null)
+				{
+					ACDebug.LogWarning ("Cannot find linked UI Element for " + title, canvas);
+				}
+				return field;
+			}
+			return null;
 		}
 
 

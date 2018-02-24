@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2016
+ *	by Chris Burton, 2013-2018
  *	
  *	"ActionListAssetManager.cs"
  * 
@@ -63,23 +63,33 @@ namespace AC
 		 */
 		public void AddToList (RuntimeActionList runtimeActionList, ActionListAsset actionListAsset, bool addToSkipQueue, int _startIndex)
 		{
-			for (int i=0; i<activeLists.Count; i++)
+			if (!actionListAsset.canRunMultipleInstances)
 			{
-				if (activeLists[i].IsFor (actionListAsset))
+				for (int i=0; i<activeLists.Count; i++)
 				{
-					activeLists.RemoveAt (i);
+					if (activeLists[i].IsFor (actionListAsset))
+					{
+						activeLists.RemoveAt (i);
+					}
 				}
 			}
 
 			addToSkipQueue = KickStarter.actionListManager.CanAddToSkipQueue (runtimeActionList, addToSkipQueue);
 			activeLists.Add (new ActiveList (runtimeActionList, addToSkipQueue, _startIndex));
-			
-			if (runtimeActionList.actionListType == ActionListType.PauseGameplay && !runtimeActionList.unfreezePauseMenus && KickStarter.playerMenus.ArePauseMenusOn (null))
+
+			if (KickStarter.playerMenus.ArePauseMenusOn (null))
 			{
-				// Don't affect the gamestate if we want to remain frozen
-				return;
+				if (runtimeActionList.actionListType == ActionListType.RunInBackground)
+				{
+					// Don't change gamestate if running in background
+					return;
+				}
+				if (runtimeActionList.actionListType == ActionListType.PauseGameplay && !runtimeActionList.unfreezePauseMenus)
+				{
+					// Don't affect the gamestate if we want to remain frozen
+					return;
+				}
 			}
-			
 			KickStarter.actionListManager.SetCorrectGameState ();
 		}
 		
@@ -102,7 +112,7 @@ namespace AC
 		
 		/**
 		 * <summary>Stops an ActionListAsset from running.</summary>
-		 * <param name = "The ActionListAsset file to stop"></param>
+		 * <param name = "asset">The ActionListAsset file to stop></param>
 		 * <param name = "_action">An Action that, if present within 'asset', will prevent the ActionListAsset from ending prematurely</param>
 		 */
 		public void EndAssetList (ActionListAsset asset, Action _action = null)
@@ -114,8 +124,29 @@ namespace AC
 					if (_action == null || !activeLists[i].actionList.actions.Contains (_action))
 					{
 						KickStarter.actionListManager.EndList (activeLists[i]);
+						if (asset.canRunMultipleInstances)
+						{
+							return;
+						}
 					}
 					else if (_action != null) ACDebug.Log ("Left " + activeLists[i].actionList.gameObject.name + " alone.");
+				}
+			}
+		}
+
+
+		/**
+		 * <summary>Stops an ActionListAsset from running.</summary>
+		 * <param name = "runtimeActionList">The RuntimeActionList associated with the ActionListAsset file to stop></param>
+		 */
+		public void EndAssetList (RuntimeActionList runtimeActionList)
+		{
+			for (int i=0; i<activeLists.Count; i++)
+			{
+				if (activeLists[i].IsFor (runtimeActionList))
+				{
+					KickStarter.actionListManager.EndList (activeLists[i]);
+					return;
 				}
 			}
 		}
@@ -147,20 +178,22 @@ namespace AC
 		/**
 		 * <summary>Pauses an ActionListAsset, provided that it is currently running.</summary>
 		 * <param name = "actionListAsset">The ActionListAsset to pause</param>
-		 * <returns>The RuntimeActionList that is in the scene, associated with the ActionListAsset</returns>
+		 * <returns>All RuntimeActionLists that are in the scene, associated with the ActionListAsset</returns>
 		 */
-		public RuntimeActionList Pause (ActionListAsset actionListAsset)
+		public RuntimeActionList[] Pause (ActionListAsset actionListAsset)
 		{
+			List<RuntimeActionList> runtimeActionLists = new List<RuntimeActionList>();
+
 			for (int i=0; i<activeLists.Count; i++)
 			{
 				if (activeLists[i].IsFor (actionListAsset))
 				{
 					RuntimeActionList runtimeActionList = (RuntimeActionList) activeLists[i].actionList;
 					runtimeActionList.Pause ();
-					return runtimeActionList;
+					runtimeActionLists.Add (runtimeActionList);
 				}
 			}
-			return null;
+			return runtimeActionLists.ToArray ();
 		}
 		
 
@@ -170,23 +203,44 @@ namespace AC
 		 */
 		public void Resume (ActionListAsset actionListAsset)
 		{
-			if (IsListRunning (actionListAsset))
+			if (IsListRunning (actionListAsset) && !actionListAsset.canRunMultipleInstances)
 			{
 				return;
 			}
 
+			bool foundInstance = false;
 			for (int i=0; i<activeLists.Count; i++)
 			{
 				if (activeLists[i].IsFor (actionListAsset))
 				{
+					int numInstances = 0;
+					foreach (ActiveList activeList in activeLists)
+					{
+						if (activeList.IsFor (actionListAsset) && activeList.IsRunning ())
+						{
+							numInstances ++;
+						}
+					}
+
 					GameObject runtimeActionListObject = (GameObject) Instantiate (Resources.Load (Resource.runtimeActionList));
+					runtimeActionListObject.name = actionListAsset.name;
+					if (numInstances > 0) runtimeActionListObject.name += " " + numInstances.ToString ();
+
 					RuntimeActionList runtimeActionList = runtimeActionListObject.GetComponent <RuntimeActionList>();
 					runtimeActionList.DownloadActions (actionListAsset, activeLists[i].GetConversationOnEnd (), activeLists[i].startIndex, false, activeLists[i].inSkipQueue, true);
 					activeLists[i].Resume (runtimeActionList);
-					return;
+					foundInstance = true;
+					if (!actionListAsset.canRunMultipleInstances)
+					{
+						return;
+					}
 				}
 			}
-			AdvGame.RunActionListAsset (actionListAsset);
+
+			if (!foundInstance)
+			{
+				AdvGame.RunActionListAsset (actionListAsset);
+			}
 		}
 
 
@@ -214,7 +268,7 @@ namespace AC
 			for (int i=0; i<activeLists.Count; i++)
 			{
 				string thisResumeData = activeLists[i].GetSaveData (null);
-				if (thisResumeData != null && thisResumeData.Length > 0)
+				if (!string.IsNullOrEmpty (thisResumeData))
 				{
 					assetResumeData += thisResumeData;
 
@@ -235,7 +289,8 @@ namespace AC
 		public void LoadData (string _dataString)
 		{
 			activeLists.Clear ();
-			if (_dataString != null && _dataString.Length > 0)
+
+			if (!string.IsNullOrEmpty (_dataString))
 			{
 				string[] dataArray = _dataString.Split (SaveSystem.pipe[0]);
 				foreach (string chunk in dataArray)

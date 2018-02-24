@@ -11,6 +11,10 @@
  * 
  */
 
+#if !UNITY_2017_2_OR_NEWER
+#define ALLOW_LEGACY_UI
+#endif
+
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -30,6 +34,8 @@ namespace AC
 	public class Highlight : MonoBehaviour
 	{
 
+		/** If True, then the Highlight effect will be enabled automatically when the Hotspot is selected */
+		public bool highlightWhenSelected = true;
 		/** If True, then Materials associated with the GameObject's Renderer will be affected. Otherwise, their intended values will be calculated, but not applied, allowing for custom effects to be achieved. */
 		public bool brightenMaterials = true;
 		/** If True, then child Renderer GameObjects will be brightened as well */
@@ -55,6 +61,24 @@ namespace AC
 		private HighlightState highlightState = HighlightState.None;
 		private List<Color> originalColors = new List<Color>();
 		private Renderer _renderer;
+
+
+		private void OnEnable ()
+		{
+			if (KickStarter.stateHandler) KickStarter.stateHandler.Register (this);
+		}
+
+
+		private void Start ()
+		{
+			if (KickStarter.stateHandler) KickStarter.stateHandler.Register (this);
+		}
+
+
+		private void OnDisable ()
+		{
+			if (KickStarter.stateHandler) KickStarter.stateHandler.Unregister (this);
+		}
 
 
 		/**
@@ -125,10 +149,12 @@ namespace AC
 				}
 			}
 
+			#if ALLOW_LEGACY_UI
 			if (GetComponent <GUITexture>())
 			{
 				originalColors.Add (GetComponent <GUITexture>().color);
 			}
+			#endif
 		}
 		
 
@@ -287,6 +313,11 @@ namespace AC
 
 		private void UpdateMaterials ()
 		{
+			if (!brightenMaterials)
+			{
+				return;
+			}
+
 			int i = 0;
 			float alpha;
 
@@ -332,6 +363,7 @@ namespace AC
 				}
 			}
 
+			#if ALLOW_LEGACY_UI
 			if (GetComponent <GUITexture>())
 			{
 				alpha = Mathf.Lerp (0.2f, 1f, highlight - 1f); // highlight is between 1 and 2
@@ -339,6 +371,7 @@ namespace AC
 				newColor.a = alpha;
 				GetComponent <GUITexture>().color = newColor;
 			}
+			#endif
 		}
 
 
@@ -406,20 +439,14 @@ namespace AC
 					}
 				}
 				
-				if (brightenMaterials)
-				{
-					UpdateMaterials ();
-				}
+				UpdateMaterials ();
 			}
 			else
 			{
 				if (highlight != minHighlight)
 				{
 					highlight = minHighlight;
-					if (brightenMaterials)
-					{
-						UpdateMaterials ();
-					}
+					UpdateMaterials ();
 				}
 			}
 		}

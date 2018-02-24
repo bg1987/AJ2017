@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2016
+ *	by Chris Burton, 2013-2018
  *	
  *	"AdvGame.cs"
  * 
@@ -12,7 +12,7 @@
  */
 
 using UnityEngine;
-#if UNITY_5
+#if UNITY_5 || UNITY_2017_1_OR_NEWER
 using UnityEngine.Audio;
 #endif
 using System.Collections;
@@ -43,9 +43,9 @@ namespace AC
 		#endif
 
 
-		#if UNITY_5
+		#if UNITY_5 || UNITY_2017_1_OR_NEWER
 		/**
-		 * <summary>Sets the volume of an Audio Mixer Group (Unity 5 only).</summary>
+		 * <summary>Sets the volume of an Audio Mixer Group (Unity 5 and onward only).</summary>
 		 * <param name = "audioMixerGroup">The Audio Mixer Group to affect</param>
 		 * <param name = "parameter">The name of the attenuation parameter</param>
 		 * <param name = "volume">The new volume (ranges from 0 to 1)</param>
@@ -68,8 +68,8 @@ namespace AC
 		 */
 		public static void AssignMixerGroup (AudioSource audioSource, SoundType soundType)
 		{
-			#if UNITY_5
-			if (audioSource != null && KickStarter.settingsManager.volumeControl == VolumeControl.AudioMixerGroups)
+			#if UNITY_5 || UNITY_2017_1_OR_NEWER
+			if (audioSource != null && KickStarter.settingsManager != null && KickStarter.settingsManager.volumeControl == VolumeControl.AudioMixerGroups)
 			{
 				if (audioSource.outputAudioMixerGroup != null)
 				{
@@ -132,7 +132,7 @@ namespace AC
 			
 			return layerInt;
 		}
-		
+
 
 		/**
 		 * Returns the References asset, which should be located in a Resources directory.
@@ -282,16 +282,22 @@ namespace AC
 		{
 			if (actionListAsset != null && actionListAsset.actions.Count > 0)
 			{
+				int numInstances = 0;
+				foreach (ActiveList activeList in KickStarter.actionListAssetManager.activeLists)
+				{
+					if (activeList.IsFor (actionListAsset) && activeList.IsRunning ())
+					{
+						numInstances ++;
+					}
+				}
+
 				GameObject runtimeActionListObject = (GameObject) Instantiate (Resources.Load (Resource.runtimeActionList));
+				runtimeActionListObject.name = actionListAsset.name;
+				if (numInstances > 0) runtimeActionListObject.name += " " + numInstances.ToString ();
+
 				RuntimeActionList runtimeActionList = runtimeActionListObject.GetComponent <RuntimeActionList>();
 				runtimeActionList.DownloadActions (actionListAsset, endConversation, i, doSkip, addToSkipQueue);
 
-				GameObject cutsceneFolder = GameObject.Find ("_Cutscenes");
-				if (cutsceneFolder != null && cutsceneFolder.transform.position == Vector3.zero)
-				{
-					runtimeActionList.transform.parent = cutsceneFolder.transform;
-				}
-			
 				return runtimeActionList;
 			}
 			
@@ -348,6 +354,43 @@ namespace AC
 
 
 		/**
+		 * <summary>Combines two on-screen strings into one.</summary>
+		 * <param name = "string1">The first string</param>
+		 * <param name = "string1">The second string</param>
+		 * <param name = "languageIndex">The index number of the current language. If the language reads right-to-left, then the strings will be combined in reverse</param>
+		 * <param name = "separateWithSpace">If True, the two strings will be separated by a space</param>
+		 * <returns>The combined string</returns>
+		 */
+		public static string CombineLanguageString (string string1, string string2, int langugeIndex, bool separateWithSpace = true)
+		{
+			if (string.IsNullOrEmpty (string1))
+			{
+				return string2;
+			}
+
+			if (string.IsNullOrEmpty (string2))
+			{
+				return string1;
+			}
+
+			if (KickStarter.runtimeLanguages.LanguageReadsRightToLeft (langugeIndex))
+			{
+				if (separateWithSpace)
+				{
+					return (string2 + " " + string1);
+				}
+				return (string2 + string1);
+			}
+
+			if (separateWithSpace)
+			{
+				return (string1 + " " + string2);
+			}
+			return (string1 + string2);
+		}
+
+
+		/**
 		 * <summary>Converts a string's tokens into their true values.
 		 * The '[var:ID]' token will be replaced by the value of global variable 'ID'.
 		 * The '[localvar:ID]' token will be replaced by the value of local variable 'ID'.</summary>
@@ -369,7 +412,7 @@ namespace AC
 		 * <param name = "localVariables">The LocalVariables script to read local variables from, if not the scene default</param>
 		 * <returns>The converted string without tokens</returns>
 		 */
-		public static string ConvertTokens (string _text, int languageNumber, LocalVariables localVariables = null)
+		public static string ConvertTokens (string _text, int languageNumber, LocalVariables localVariables = null, List<ActionParameter> parameters = null)
 		{
 			if (!Application.isPlaying)
 			{
@@ -378,13 +421,25 @@ namespace AC
 
 			if (localVariables == null) localVariables = KickStarter.localVariables;
 			
-			if (_text != null)
+			if (!string.IsNullOrEmpty (_text))
 			{
 				if (_text.Contains ("[var:"))
 				{
 					foreach (GVar _var in KickStarter.runtimeVariables.globalVars)
 					{
 						string tokenText = "[var:" + _var.id + "]";
+						if (_text.Contains (tokenText))
+						{
+							_var.Download ();
+							_text = _text.Replace (tokenText, _var.GetValue (languageNumber));
+						}
+					}
+				}
+				if (_text.Contains ("[Var:"))
+				{
+					foreach (GVar _var in KickStarter.runtimeVariables.globalVars)
+					{
+						string tokenText = "[Var:" + _var.id + "]";
 						if (_text.Contains (tokenText))
 						{
 							_var.Download ();
@@ -403,6 +458,28 @@ namespace AC
 						}
 					}
 				}
+				if (_text.Contains ("[param:") && parameters != null)
+				{
+					foreach (ActionParameter parameter in parameters)
+					{
+						string tokenText = "[param:" + parameter.ID.ToString () + "]";
+						if (_text.Contains (tokenText))
+						{
+							_text = _text.Replace (tokenText, parameter.GetSaveData ());
+						}
+					}
+				}
+				if (_text.Contains ("[paramlabel:") && parameters != null)
+				{
+					foreach (ActionParameter parameter in parameters)
+					{
+						string tokenText = "[paramlabel:" + parameter.ID.ToString () + "]";
+						if (_text.Contains (tokenText))
+						{
+							_text = _text.Replace (tokenText, parameter.GetLabel ());
+						}
+					}
+				}
 
 				if (KickStarter.runtimeVariables)
 				{
@@ -415,6 +492,44 @@ namespace AC
 		
 		
 		#if UNITY_EDITOR
+
+		/**
+		 * <summary>Converts a token that refers to a given local variable, to one that refers to a given global variable</summary>
+		 * <param name = "_text">The text to convert</param>
+		 * <param name = "oldLocalID">The ID number of the old local variable</param>
+		 * <param name = "newGlobalID">The ID number of the new global variable</param>
+		 * <returns>The converted text</returns>
+		 */
+		public static string ConvertLocalVariableTokenToGlobal (string _text, int oldLocalID, int newGlobalID)
+		{
+			string oldVarToken = "[localvar:" + oldLocalID.ToString () + "]";
+			if (_text.Contains (oldVarToken))
+			{
+				string newVarToken = "[var:" + newGlobalID.ToString () + "]";
+				_text = _text.Replace (oldVarToken, newVarToken);
+			}
+			return _text;
+		}
+
+
+		/**
+		 * <summary>Converts a token that refers to a given local variable, to one that refers to a given global variable</summary>
+		 * <param name = "_text">The text to convert</param>
+		 * <param name = "oldGlobalID">The ID number of the old global variable</param>
+		 * <param name = "newLocalID">The ID number of the new local variable</param>
+		 * <returns>The converted text</returns>
+		 */
+		public static string ConvertGlobalVariableTokenToLocal (string _text, int oldGlobalID, int newLocalID)
+		{
+			string oldVarToken = "[var:" + oldGlobalID.ToString () + "]";
+			if (_text.Contains (oldVarToken))
+			{
+				string newVarToken = "[localvar:" + newLocalID.ToString () + "]";
+				_text = _text.Replace (oldVarToken, newVarToken);
+			}
+			return _text;
+		}
+
 
 		/**
 		 * <summary>Draws a cube gizmo in the Scene window.</summary>
@@ -527,10 +642,14 @@ namespace AC
 			List<string> temp = new List<string>();
 			foreach (UnityEditor.EditorBuildSettingsScene S in UnityEditor.EditorBuildSettings.scenes)
 			{
+				#if AC_SearchAllScenes
+				temp.Add(S.path);
+				#else
 				if (S.enabled)
 				{
 					temp.Add(S.path);
 				}
+				#endif
 			}
 			
 			return temp.ToArray();
@@ -548,6 +667,7 @@ namespace AC
 			if (AdvGame.GetReferences () && AdvGame.GetReferences ().variablesManager)
 			{
 				VariablesManager variablesManager = AdvGame.GetReferences ().variablesManager;
+
 				// Create a string List of the field's names (for the PopUp box)
 				List<string> labelList = new List<string>();
 				
@@ -594,6 +714,136 @@ namespace AC
 
 			return variableID;
 		}
+
+
+		/**
+		 * <summary>Generates a Global Variable selector GUI (Unity Editor only).</summary>
+		 * <param name = "label">The label of the popup GUI</param>
+		 * <param name = "variableID">The currently-selected global variable's ID number</param>
+		 * <param name = "variableType">The variable type to restrict choices to</param>
+		 * <returns>The newly-selected global variable's ID number</returns>
+		 */
+		public static int GlobalVariableGUI (string label, int variableID, VariableType variableType)
+		{
+			if (AdvGame.GetReferences () && AdvGame.GetReferences ().variablesManager)
+			{
+				VariablesManager variablesManager = AdvGame.GetReferences ().variablesManager;
+
+				if (variablesManager.vars.Count > 0)
+				{
+					int variableNumber = 0;
+
+					List<PopupSelectData> popupSelectDataList = new List<PopupSelectData>();
+					for (int i=0; i<variablesManager.vars.Count; i++)
+					{
+						if (variablesManager.vars[i].type == variableType)
+						{
+							PopupSelectData popupSelectData = new PopupSelectData (variablesManager.vars[i].id, variablesManager.vars[i].label, i);
+							popupSelectDataList.Add (popupSelectData);
+
+							if (popupSelectData.ID == variableID)
+							{
+								variableNumber = popupSelectDataList.Count-1;
+							}
+						}
+					}
+
+					List<string> labelList = new List<string>();
+					foreach (PopupSelectData popupSelectData in popupSelectDataList)
+					{
+						labelList.Add (popupSelectData.label);
+					}
+
+					if (labelList.Count > 0)
+					{
+						variableNumber = EditorGUILayout.Popup (label, variableNumber, labelList.ToArray ());
+						int rootIndex = popupSelectDataList[variableNumber].rootIndex;
+						variableID = variablesManager.vars [rootIndex].id;
+					}
+					else
+					{
+						EditorGUILayout.HelpBox ("No global variables of the type '" + variableType.ToString () + "' exist!", MessageType.Info);
+						variableID = -1;
+					}
+				}
+				else
+				{
+					EditorGUILayout.HelpBox ("No global variables exist!", MessageType.Info);
+					variableID = -1;
+				}
+			}
+			else
+			{
+				EditorGUILayout.HelpBox ("No Variables Manager exists!", MessageType.Info);
+				variableID = -1;
+			}
+
+			return variableID;
+		}
+
+
+		/**
+		 * <summary>Generates a Local Variable selector GUI (Unity Editor only).</summary>
+		 * <param name = "label">The label of the popup GUI</param>
+		 * <param name = "variableID">The currently-selected local variable's ID number</param>
+		 * <param name = "variableType">The variable type to restrict choices to</param>
+		 * <returns>The newly-selected local variable's ID number</returns>
+		 */
+		public static int LocalVariableGUI (string label, int variableID, VariableType variableType)
+		{
+			if (KickStarter.localVariables != null && KickStarter.localVariables.localVars != null)
+			{
+				if (KickStarter.localVariables.localVars.Count > 0)
+				{
+					int variableNumber = 0;
+
+					List<PopupSelectData> popupSelectDataList = new List<PopupSelectData>();
+					for (int i=0; i<KickStarter.localVariables.localVars.Count; i++)
+					{
+						if (KickStarter.localVariables.localVars[i].type == variableType)
+						{
+							PopupSelectData popupSelectData = new PopupSelectData (KickStarter.localVariables.localVars[i].id, KickStarter.localVariables.localVars[i].label, i);
+							popupSelectDataList.Add (popupSelectData);
+
+							if (popupSelectData.ID == variableID)
+							{
+								variableNumber = popupSelectDataList.Count-1;
+							}
+						}
+					}
+
+					List<string> labelList = new List<string>();
+					foreach (PopupSelectData popupSelectData in popupSelectDataList)
+					{
+						labelList.Add (popupSelectData.label);
+					}
+
+					if (labelList.Count > 0)
+					{
+						variableNumber = EditorGUILayout.Popup (label, variableNumber, labelList.ToArray ());
+						int rootIndex = popupSelectDataList[variableNumber].rootIndex;
+						variableID = KickStarter.localVariables.localVars [rootIndex].id;
+					}
+					else
+					{
+						EditorGUILayout.HelpBox ("No local variables of the type '" + variableType.ToString () + "' exist!", MessageType.Info);
+						variableID = -1;
+					}
+				}
+				else
+				{
+					EditorGUILayout.HelpBox ("No local variables exist!", MessageType.Info);
+					variableID = -1;
+				}
+			}
+			else
+			{
+				EditorGUILayout.HelpBox ("No LocalVariables component exists!", MessageType.Info);
+				variableID = -1;
+			}
+
+			return variableID;
+		}
 		
 
 		/**
@@ -627,14 +877,14 @@ namespace AC
 			{
 				Vector2 endPos = new Vector2 (end.x + end.width / 2f + endOffset, end.y - 8);
 				DrawNodeCurve (start, endPos, color, offset, onSide, !arrangeVertically, isDisplayed);
-				Texture2D arrow = (Texture2D) AssetDatabase.LoadAssetAtPath ("Assets/AdventureCreator/Graphics/Textures/node-arrow.png", typeof (Texture2D));
+				Texture2D arrow = (Texture2D) AssetDatabase.LoadAssetAtPath (Resource.MainFolderPath + "/Graphics/Textures/node-arrow.png", typeof (Texture2D));
 				GUI.Label (new Rect (endPos.x-5, endPos.y-4, 12, 16), arrow, "Label");
 			}
 			else
 			{
 				Vector2 endPos = new Vector2 (end.x - 8f, end.y + 10 + endOffset);
 				DrawNodeCurve (start, endPos, color, offset, onSide, !arrangeVertically, isDisplayed);
-				Texture2D arrow = (Texture2D) AssetDatabase.LoadAssetAtPath ("Assets/AdventureCreator/Graphics/Textures/node-arrow-side.png", typeof (Texture2D));
+				Texture2D arrow = (Texture2D) AssetDatabase.LoadAssetAtPath (Resource.MainFolderPath + "/Graphics/Textures/node-arrow-side.png", typeof (Texture2D));
 				GUI.Label (new Rect (endPos.x-4, endPos.y-7, 16, 12), arrow, "Label");
 			}
 
@@ -1076,21 +1326,22 @@ namespace AC
 			if (clip != null && _animation != null)
 			{
 				// Initialises a clip
-				_animation.AddClip (clip, clip.name);
+				string clipName = clip.name;
+				_animation.AddClip (clip, clipName);
 				
 				if (mixingBone != null)
 				{
-					_animation [clip.name].AddMixingTransform (mixingBone);
+					_animation [clipName].AddMixingTransform (mixingBone);
 				}
 				
 				// Set up the state
 				if (_animation [clip.name])
 				{
-					_animation [clip.name].layer = layer;
-					_animation [clip.name].normalizedTime = 0f;
-					_animation [clip.name].blendMode = blendMode;
-					_animation [clip.name].wrapMode = wrapMode;
-					_animation [clip.name].enabled = true;
+					_animation [clipName].layer = layer;
+					_animation [clipName].normalizedTime = 0f;
+					_animation [clipName].blendMode = blendMode;
+					_animation [clipName].wrapMode = wrapMode;
+					_animation [clipName].enabled = true;
 				}
 			}
 		}
@@ -1154,18 +1405,15 @@ namespace AC
 		{
 			// Remove any non-playing animations
 			List <string> removeClips = new List <string>();
-			
+
 			foreach (AnimationState state in _animation)
 			{
 				if (!_animation [state.name].enabled)
 				{
 					// Queued animations get " - Queued Clone" appended to it, so remove
-					
-					int queueIndex = state.name.IndexOf (" - Queued Clone");
-					
-					if (queueIndex > 0)
+					if (state.name.Contains (queuedCloneAnimSuffix))
 					{
-						removeClips.Add (state.name.Substring (0, queueIndex));
+						removeClips.Add (state.name.Replace (queuedCloneAnimSuffix, string.Empty));
 					}
 					else
 					{
@@ -1179,6 +1427,7 @@ namespace AC
 				_animation.RemoveClip (_clip);
 			}
 		}
+		private static string queuedCloneAnimSuffix = " - Queued Clone";
 		
 
 		/**

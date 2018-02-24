@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2016
+ *	by Chris Burton, 2013-2018
  *	
  *	"ActionPauseActionList.cs"
  * 
@@ -34,7 +34,7 @@ namespace AC
 		public int constantID = 0;
 		public int parameterID = -1;
 
-		private RuntimeActionList runtimeActionList = null;
+		private RuntimeActionList[] runtimeActionLists = new RuntimeActionList[0];
 
 		
 		public ActionPauseActionList ()
@@ -60,15 +60,15 @@ namespace AC
 			if (!isRunning)
 			{
 				isRunning = true;
-				runtimeActionList = null;
+				runtimeActionLists = new RuntimeActionList[0];
 
 				if (pauseResume == PauseResume.Pause)
 				{
 					if (listSource == ActionRunActionList.ListSource.AssetFile && actionListAsset != null && !actionListAsset.actions.Contains (this))
 					{
-						runtimeActionList = KickStarter.actionListAssetManager.Pause (actionListAsset);
+						runtimeActionLists = KickStarter.actionListAssetManager.Pause (actionListAsset);
 
-						if (willWait && runtimeActionList != null)
+						if (willWait && runtimeActionLists.Length > 0)
 						{
 							return defaultPauseTime;
 						}
@@ -99,10 +99,18 @@ namespace AC
 			{
 				if (listSource == ActionRunActionList.ListSource.AssetFile)
 				{
+					foreach (RuntimeActionList runtimeActionList in runtimeActionLists)
+					{
+						if (runtimeActionList != null && KickStarter.actionListManager.IsListRunning (runtimeActionList))
+						{
+							return defaultPauseTime;
+						}
+					}
+					/*
 					if (KickStarter.actionListAssetManager.IsListRunning (actionListAsset))
 					{
 						return defaultPauseTime;
-					}
+					}*/
 				}
 				else if (listSource == ActionRunActionList.ListSource.InScene)
 				{

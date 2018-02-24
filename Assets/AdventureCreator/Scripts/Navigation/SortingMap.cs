@@ -42,89 +42,87 @@ namespace AC
 		/** The AnimationCurve used to define character scaling, where 0s is the smallest scale, and 1s is the largest (if sortingMapScaleType = AnimationCurve) */
 		public AnimationCurve scalingAnimationCurve;
 
-		private FollowSortingMap[] followers;
-		
 
-		/**
-		 * Recalculates the "followers" array, which is an array of all FollowSortingMap components present in the scene.
-		 */
-		public void GetAllFollowers ()
+		private void OnEnable ()
 		{
-			FollowSortingMap[] _followers = FindObjectsOfType (typeof (FollowSortingMap)) as FollowSortingMap[];
-			List<FollowSortingMap> followerList = new List<FollowSortingMap>();
-			foreach (FollowSortingMap _follower in _followers)
-			{
-				_follower.UpdateSortingMap ();
-				if (_follower.GetSortingMap () == this)
-				{
-					followerList.Add (_follower);
-				}
-			}
-			followers = followerList.ToArray ();
+			if (KickStarter.stateHandler) KickStarter.stateHandler.Register (this);
 		}
-		
-		
+
+
+		private void Start ()
+		{
+			if (KickStarter.stateHandler) KickStarter.stateHandler.Register (this);
+		}
+
+
+		private void OnDisable ()
+		{
+			if (KickStarter.stateHandler) KickStarter.stateHandler.Unregister (this);
+		}
+
+
 		private void OnDrawGizmos ()
 		{
+			Vector3 right = transform.right * 0.1f;
+
+			float scaleGizmo = (affectScale && sortingMapScaleType == SortingMapScaleType.Linear) ? (originScale / 100f) : 1f;
+			Gizmos.DrawLine (transform.position - right * scaleGizmo, transform.position + right * scaleGizmo);
+
 			for (int i=0; i<sortingAreas.Count; i++)
 			{
-				Gizmos.DrawIcon (GetAreaPosition (i), "", true);
-				
+				scaleGizmo = (affectScale && sortingMapScaleType == SortingMapScaleType.Linear) ? (sortingAreas[i].scale / 100f) : 1f;
+
 				Gizmos.color = sortingAreas [i].color;
-				if (i == 0)
-				{
-					Gizmos.DrawLine (transform.position, GetAreaPosition (i));
-				}
-				else
-				{
-					Gizmos.DrawLine (GetAreaPosition (i-1), GetAreaPosition (i));
-				}
+				Gizmos.DrawIcon (GetAreaPosition (i), "", true);
+				Gizmos.DrawLine (GetAreaPosition (i) - right * scaleGizmo, GetAreaPosition (i) + right * scaleGizmo);
+
+				Vector3 startPosition = (i == 0) ? transform.position : GetAreaPosition (i-1);
+
+				float startScaleGizmo = (affectScale && sortingMapScaleType == SortingMapScaleType.Linear) ? ((i == 0) ? (originScale / 100f) : (sortingAreas[i-1].scale / 100f)) : 1f;
+			
+				Gizmos.DrawLine (startPosition + right * startScaleGizmo, GetAreaPosition (i) + right * scaleGizmo);
+				Gizmos.DrawLine (startPosition - right * startScaleGizmo, GetAreaPosition (i) - right * scaleGizmo);
 			}
 		}
-		
+
 
 		/**
-		 * <summary>Given a FollowSortingMap component, adjusts all other FollowSortingMaps that are within the same region, so that they are all displayed correctly.</summary>
-		 * <param name = "follower">The FollowSortingMap component to check for</param>
+		 * <summary>Adjusts all relevant FollowSortingMaps that are within the same region, so that they are all displayed correctly.</summary>
 		 */
-		public void UpdateSimilarFollowers (FollowSortingMap follower)
+		public void UpdateSimilarFollowers ()
 		{
-			if (followers == null || followers.Length <= 1)
+			foreach (SortingArea sortingArea in sortingAreas)
 			{
-				return;
-			}
-			
-			if (follower.followSortingMap)
-			{
-				string testOrder = follower.GetOrder ();
 				List<FollowSortingMap> testFollowers = new List<FollowSortingMap>();
-				
-				foreach (FollowSortingMap testFollower in followers)
+				for (int i=0; i<KickStarter.stateHandler.FollowSortingMaps.Count; i++)
 				{
-					if (testFollower != null && testFollower.followSortingMap && !testFollower.lockSorting && testFollower != follower && testFollower.GetOrder () == testOrder)
+					if (KickStarter.stateHandler.FollowSortingMaps[i].GetSortingMap () == this)
 					{
-						// Found a follower with the same order/layer
-						testFollowers.Add (testFollower);
+						if ((mapType == SortingMapType.OrderInLayer && KickStarter.stateHandler.FollowSortingMaps[i].SortingOrder == sortingArea.order) ||
+							(mapType == SortingMapType.SortingLayer && KickStarter.stateHandler.FollowSortingMaps[i].SortingLayer == sortingArea.layer))
+						{
+							// Found a follower with the same order/layer
+							testFollowers.Add (KickStarter.stateHandler.FollowSortingMaps[i]);
+						}
 					}
 				}
-				
-				if (testFollowers.Count > 0)
+
+				switch (testFollowers.Count)
 				{
-					testFollowers.Add (follower);
-					if (testFollowers.Count > 1)
-					{
+					case 0:
+						break;
+
+					case 1:
+						testFollowers[0].SetDepth (0f);
+						break;
+
+					default:
 						testFollowers.Sort (SortByScreenPosition);
-					}
-					// Now in order from bottom up
-					
-					for (int i=0; i<testFollowers.Count; i++)
-					{
-						testFollowers [i].SetDepth (i * 0.001f);
-					}
-				}
-				else
-				{
-					follower.SetDepth (0f);
+						for (int i=0; i<testFollowers.Count; i++)
+						{
+							testFollowers [i].SetDepth (i * KickStarter.sceneSettings.sharedLayerSeparationDistance);
+						}
+						break;
 				}
 			}
 		}

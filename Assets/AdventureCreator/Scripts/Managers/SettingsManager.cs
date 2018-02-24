@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2016
+ *	by Chris Burton, 2013-2018
  *	
  *	"SettingsManager.cs"
  * 
@@ -10,8 +10,12 @@
  * 
  */
 
+#if !(UNITY_WEBPLAYER || UNITY_ANDROID || UNITY_WINRT || UNITY_WII || UNITY_WEBGL || UNITY_PS4)
+#define ADVANCED_SAVING
+#endif
+
 using UnityEngine;
-#if UNITY_5
+#if UNITY_5 || UNITY_2017_1_OR_NEWER
 using UnityEngine.Audio;
 #endif
 using System.IO;
@@ -51,7 +55,7 @@ namespace AC
 		private bool showHotspot = true;
 		private bool showRaycast = true;
 		private bool showRequiredInputs = true;
-		#if UNITY_5
+		#if UNITY_5 || UNITY_2017_1_OR_NEWER
 		private bool showSound = true;
 		#endif
 		private bool showOptions = true;
@@ -62,8 +66,10 @@ namespace AC
 
 		/** The name to give save game files */
 		public string saveFileName = "";			
-		/** How the time of a save file should be displayed (None, DateOnly, TimeAndDate) */
+		/** How the time of a save file should be displayed (None, DateOnly, TimeAndDate, CustomFormat) */
 		public SaveTimeDisplay saveTimeDisplay = SaveTimeDisplay.DateOnly;
+		/** The format of time display for save game labels, if saveTimeDisplay = SaveTimeDisplay.CustomFormat */
+		public string customSaveFormat = "MMMM dd, yyyy";
 		/** If True, then a screenshot of the game will be taken whenever the game is saved */
 		public bool takeSaveScreenshots;
 		/** If True, then multiple save profiles - each with its own save files and options data - can be created */
@@ -111,6 +117,8 @@ namespace AC
 		public AC_InteractionMethod interactionMethod = AC_InteractionMethod.ContextSensitive;
 		/** How Interactions are triggered, if interactionMethod = AC_InteractionMethod.ChooseHotspotThenInteraction (ClickingMenu, CyclingCursorAndClickingHotspot, CyclingMenuAndClickingHotspot) */
 		public SelectInteractions selectInteractions = SelectInteractions.ClickingMenu;
+		/** If True, then Interaction icons will be hidden if linked to a Hotspot or InvItem that has no interaction linked to that icon */
+		public bool autoHideInteractionIcons = true;
 		/** The method to close Interaction menus, if interactionMethod = AC_InteractionMethod.ChooseHotspotThenInteraction (ClickOffMenu, CursorLeavesMenu, CursorLeavesMenuOrHotspot) */
 		public CancelInteractions cancelInteractions = CancelInteractions.CursorLeavesMenuOrHotspot;
 		/** How Interaction menus are opened, if interactionMethod = AC_InteractionMethod.ChooseHotspotThenInteraction (ClickOnHotspot, CursorOverHotspot) */
@@ -123,6 +131,12 @@ namespace AC
 		public bool cycleInventoryCursors = true;
 		/** If True, then triggering an Interaction will cycle the cursor mode, if interactionMethod = AC_InteractionMethod.ChooseHotspotThenInteraction */
 		public bool autoCycleWhenInteract = false;
+		/** If True, and interactionMethod = AC_InteractionMethod.ChooseInteractionThenHotspot, then the Hotspot label will show the name of the interaction icon being hovered over */
+		public bool showHoverInteractionInHotspotLabel = false;
+		/** If True, and interactionMethod = AC_InteractionMethod.ChooseInteractionThenHotspot, then invoking the 'DefaultInteractions' input button will run the first-enabled 'Use' interaction of the active Hotspot */
+		public bool allowDefaultinteractions = false;
+		/** What happens to the cursor icon when a hotspot (or inventory item, depending) is reselected and selectInteractions = SelectInteractions.CyclingMenuAndClickingHotspot */
+		public WhenReselectHotspot whenReselectHotspot = WhenReselectHotspot.RestoreHotspotIcon;
 		/** If True, then the cursor will be locked in the centre of the screen when the game begins */
 		public bool lockCursorOnStart = false;
 		/** If True, then the cursor will be hidden whenever it is locked */
@@ -150,8 +164,10 @@ namespace AC
 		public InventoryInteractions inventoryInteractions = InventoryInteractions.Single;
 		/** If True, then left-clicking will de-select an inventory item */
 		public bool inventoryDisableLeft = true;
-		/** If True, then triggering an unhandled Inventory interaction will de-select an inventory item */
+		/** If True, then triggering an unhandled Inventory interaction will de-select the active inventory item */
 		public bool inventoryDisableUnhandled = true;
+		/** If True, then triggering a defined Inventory interaction will-deselect the active inventory item */
+		public bool inventoryDisableDefined = true;
 		/** If True, then an inventory item will show its "active" texture when the mouse hovers over it */
 		public bool activeWhenHover = false;
 		/** The effect to apply to an active inventory item's icon (None, Pulse, Simple) */
@@ -189,8 +205,8 @@ namespace AC
 		public float walkableClickRange = 0.5f;
 		/** How the nearest NavMesh to a cursor click is found, in screen space, if the user doesn't click directly on one */
 		public NavMeshSearchDirection navMeshSearchDirection = NavMeshSearchDirection.RadiallyOutwardsFromCursor;
-		/** If True, and movementMethod = AC_MovementMethod.PointAndClick, then the user will have to double-click to move the player */
-		public bool doubleClickMovement = false;
+		/** If movementMethod = AC_MovementMethod.PointAndClick, what effect double-clicking has on player movement */
+		public DoubleClickMovement doubleClickMovement = DoubleClickMovement.MakesPlayerRun;
 		/** If True, and movementMethod = AC_MovementMethod.Direct, then the magnitude of the input axis will affect the Player's speed */
 		public bool magnitudeAffectsDirect = false;
 		/** If True, and movementMethod = AC_MovementMethod.Direct, then the Player will turn instantly when moving during gameplay */
@@ -212,6 +228,8 @@ namespace AC
 		public float pathfindUpdateFrequency = 0f;
 		/** How much slower vertical movement is compared to horizontal movement, if the game is in 2D */
 		public float verticalReductionFactor = 0.7f;
+		/** If True, then rotations of 2D characters will be affected by the verticalReductionFactor value */
+		public bool rotationsAffectedByVerticalReduction = true;
 		/** The player's jump speed */
 		public float jumpSpeed = 4f;
 		/** If True, then single-clicking also moves the player, if movementMethod = AC_MovementMethod.StraightToCursor */
@@ -284,7 +302,7 @@ namespace AC
 
 		// Hotspot settings
 
-		/** How Hotspots are detected (MouseOver, PlayerVicinity) */
+		/** How Hotspots are detected (MouseOver, PlayerVicinity, CustomScript) */
 		public HotspotDetection hotspotDetection = HotspotDetection.MouseOver;
 		/** If True, and hotspotDetection = HotspotDetection.PlayerVicinity and interactionMethod = InteractionMethod.ChooseHotspotThenInteraction, then Interaction Menus will close if the Player is no longer in the active Hotspot's vicinity */
 		public bool closeInteractionMenusIfPlayerLeavesVicinity = false;
@@ -314,7 +332,9 @@ namespace AC
 		public bool hideIconUnderInteractionMenu = false;
 		/** How to draw Hotspot icons (ScreenSpace, WorldSpace) */
 		public ScreenWorld hotspotDrawing = ScreenWorld.ScreenSpace;
-		
+		/** If True, and interactionMethod = AC_InteractionMethod.ChooseInteractionThenHotspot, then Hotspots that do not have an interaction for the currently-selected icon will not be visible to the cursor */
+		public bool hideUnhandledHotspots = false;
+
 		// Raycast settings
 
 		/** The length of rays cast to find NavMeshes */
@@ -356,9 +376,11 @@ namespace AC
 
 		/** If True, then music can play when the game is paused */
 		public bool playMusicWhilePaused = false;
-		/** A list of all AudioClips that can be played as music using the "Sound: Play Music" Action */
+		/** A list of all AudioClips that can be played as music using the "Sound: Play music" Action */
 		public List<MusicStorage> musicStorages = new List<MusicStorage>();
-		#if UNITY_5
+		/** A list of all AudioClips that can be played as ambience using the "Sound: Play ambience" Action */
+		public List<MusicStorage> ambienceStorages = new List<MusicStorage>();
+		#if UNITY_5 || UNITY_2017_1_OR_NEWER
 		/** How volume is controlled (AudioSources, AudioMixerGroups) (Unity 5 only) */
 		public VolumeControl volumeControl = VolumeControl.AudioSources;
 		/** The AudioMixerGroup for music audio, if volumeControl = VolumeControl.AudioSources */
@@ -497,11 +519,7 @@ namespace AC
 			showSave = CustomGUILayout.ToggleHeader (showSave, "Save game settings");
 			if (showSave)
 			{
-				if (saveFileName == "")
-				{
-					saveFileName = SaveSystem.SetProjectName ();
-				}
-
+				saveFileName = SavePrefix;
 				maxSaves = CustomGUILayout.IntField ("Max. number of saves:", maxSaves, "AC.KickStarter.settingsManager.maxSaves");
 
 				saveFileName = CustomGUILayout.TextField ("Save filename:", saveFileName, "AC.KickStarter.settingsManager.saveFileName");
@@ -524,18 +542,26 @@ namespace AC
 				}
 
 				useProfiles = CustomGUILayout.ToggleLeft ("Enable save game profiles?", useProfiles, "AC.KickStarter.settingsManager.useProfiles");
-				#if !UNITY_WEBPLAYER && !UNITY_ANDROID && !UNITY_WINRT && !UNITY_WII
+				#if ADVANCED_SAVING
 				saveTimeDisplay = (SaveTimeDisplay) CustomGUILayout.EnumPopup ("Time display:", saveTimeDisplay, "AC.KickStarter.settingsManager.saveTimeDisplay");
+				if (saveTimeDisplay == SaveTimeDisplay.CustomFormat)
+				{
+					customSaveFormat = CustomGUILayout.TextField ("Time display format:", customSaveFormat, "AC.KickStarter.settingsManager.customSaveFormat");
+				}
 				takeSaveScreenshots = CustomGUILayout.ToggleLeft ("Take screenshot when saving?", takeSaveScreenshots, "AC.KickStarter.settingsManager.takeSaveScreenshots");
 				orderSavesByUpdateTime = CustomGUILayout.ToggleLeft ("Order save lists by update time?", orderSavesByUpdateTime, "AC.KickStarter.settingsManager.orderSavesByUpdateTime");
 				#else
-				EditorGUILayout.HelpBox ("Save-game screenshots are disabled for WebPlayer, Windows Store and Android platforms.", MessageType.Info);
+				EditorGUILayout.HelpBox ("Save-game screenshots are disabled for the current platform.", MessageType.Info);
 				takeSaveScreenshots = false;
 				#endif
 
 				if (UnityVersionHandler.CanUseJson ())
 				{
 					useJsonSerialization = CustomGUILayout.ToggleLeft ("Save in Json format? (Experiemental)", useJsonSerialization, "AC.KickStarter.settingsManager.useJsonSerialization");
+					if (useJsonSerialization)
+					{
+						EditorGUILayout.HelpBox ("Note: A limitation of this format is that GameObjects cannot have multiple 'Remember' scripts if one of those is a custom one.", MessageType.Info);
+					}
 				}
 
 				if (GUILayout.Button ("Auto-add save components to GameObjects"))
@@ -625,6 +651,11 @@ namespace AC
 				}
 				interactionMethod = (AC_InteractionMethod) CustomGUILayout.EnumPopup ("Interaction method:", interactionMethod, "AC.KickStarter.settingsManager.interactionMethod");
 
+				if (interactionMethod == AC_InteractionMethod.CustomScript)
+				{
+					EditorGUILayout.HelpBox ("See the Manual's 'Custom interaction systems' section for information on how to trigger Hotspots and inventory items.", MessageType.Info);
+				}
+
 				if (CanUseCursor ())
 				{
 					if (interactionMethod == AC_InteractionMethod.ChooseHotspotThenInteraction)
@@ -633,6 +664,7 @@ namespace AC
 						if (selectInteractions != SelectInteractions.CyclingCursorAndClickingHotspot)
 						{
 							seeInteractions = (SeeInteractions) CustomGUILayout.EnumPopup ("See Interactions with:", seeInteractions, "AC.KickStarter.settingsManager.seeInteractions");
+							autoHideInteractionIcons = CustomGUILayout.ToggleLeft ("Auto-hide Interaction icons based on Hotspot?", autoHideInteractionIcons, "AC.KickStarter.settingsManager.autoHideInteractionIcons");
 							if (seeInteractions == SeeInteractions.ClickOnHotspot)
 							{
 								stopPlayerOnClickHotspot = CustomGUILayout.ToggleLeft ("Stop player moving when click Hotspot?", stopPlayerOnClickHotspot, "AC.KickStarter.settingsManager.stopPlayerOnClickHotspot");
@@ -646,6 +678,7 @@ namespace AC
 						if (selectInteractions == SelectInteractions.CyclingCursorAndClickingHotspot)
 						{
 							autoCycleWhenInteract = CustomGUILayout.ToggleLeft ("Auto-cycle after an Interaction?", autoCycleWhenInteract, "AC.KickStarter.settingsManager.autoCycleWhenInteract");
+							whenReselectHotspot = (WhenReselectHotspot) CustomGUILayout.EnumPopup ("When re-select Hotspot?", whenReselectHotspot, "AC.KickStarter.settingsManager.whenReselectHotspot");
 						}
 					
 						if (SelectInteractionMethod () == SelectInteractions.ClickingMenu)
@@ -684,6 +717,8 @@ namespace AC
 				if (interactionMethod == AC_InteractionMethod.ChooseInteractionThenHotspot)
 				{
 					autoCycleWhenInteract = CustomGUILayout.ToggleLeft ("Reset cursor after an Interaction?", autoCycleWhenInteract, "AC.KickStarter.settingsManager.autoCycleWhenInteract");
+					showHoverInteractionInHotspotLabel = CustomGUILayout.ToggleLeft ("Show hover Interaction icons in Hotspot label?", showHoverInteractionInHotspotLabel, "AC.KickStarter.settingsManager.showHoverInteractionInHotspotLabel");
+					allowDefaultinteractions = CustomGUILayout.ToggleLeft ("Set first 'Use' interaction as default?", allowDefaultinteractions, "AC.KickStarter.settingsManager.allowDefaultinteractions");
 				}
 
 				if (movementMethod == MovementMethod.FirstPerson && inputMethod == InputMethod.TouchScreen)
@@ -770,7 +805,7 @@ namespace AC
 					}
 				}
 
-				if (interactionMethod == AC_InteractionMethod.ChooseHotspotThenInteraction /*&& selectInteractions != SelectInteractions.ClickingMenu*/ && inventoryInteractions == InventoryInteractions.Multiple)
+				if (KickStarter.settingsManager.SelectInteractionMethod () == SelectInteractions.CyclingCursorAndClickingHotspot && KickStarter.settingsManager.inventoryInteractions == InventoryInteractions.Multiple)
 				{}
 				else
 				{
@@ -807,6 +842,7 @@ namespace AC
 
 				if (CanSelectItems (false) && !inventoryDragDrop)
 				{
+					inventoryDisableDefined = CustomGUILayout.ToggleLeft ("Defined interactions deselect active item?", inventoryDisableDefined, "AC.KickStarter.settingsManager.inventoryDisableDefined");
 					inventoryDisableUnhandled = CustomGUILayout.ToggleLeft ("Unhandled interactions deselect active item?", inventoryDisableUnhandled, "AC.KickStarter.settingsManager.inventoryDisableUnhandled");
 					inventoryDisableLeft = CustomGUILayout.ToggleLeft ("Left-click deselects active item?", inventoryDisableLeft, "AC.KickStarter.settingsManager.inventoryDisableLeft");
 
@@ -867,6 +903,10 @@ namespace AC
 						dragLineWidth = CustomGUILayout.FloatField ("Drag line width:", dragLineWidth, "AC.KickStarter.settingsManager.dragLineWidth");
 						dragLineColor = CustomGUILayout.ColorField ("Drag line colour:", dragLineColor, "AC.KickStarter.settingsManager.dragLineColor");
 					}
+					else
+					{
+						EditorGUILayout.HelpBox ("The 'OnUpdateDragLine' event can be used to display custom drag lines / joystick on-screen.", MessageType.Info);
+					}
 				}
 				else if (movementMethod == MovementMethod.Direct)
 				{
@@ -894,7 +934,7 @@ namespace AC
 					}
 					if (movementMethod == MovementMethod.PointAndClick)
 					{
-						doubleClickMovement = CustomGUILayout.ToggleLeft ("Require double-click to move?", doubleClickMovement, "AC.KickStarter.settingsManager.doubleClickMovement");
+						doubleClickMovement = (DoubleClickMovement) CustomGUILayout.EnumPopup ("Double-click movement:", doubleClickMovement, "AC.KickStarter.settingsManager.doubleClickMovement");
 					}
 				}
 				else if (movementMethod == MovementMethod.FirstPerson)
@@ -906,7 +946,7 @@ namespace AC
 					interactionMethod == AC_InteractionMethod.ChooseHotspotThenInteraction &&
 					selectInteractions != SelectInteractions.CyclingCursorAndClickingHotspot)
 				{
-					disableMovementWhenInterationMenusAreOpen = CustomGUILayout.Toggle ("Disable movement when Interaction menus are on?", disableMovementWhenInterationMenusAreOpen, "AC.KickStarter.settingsManager.disableMovementWhenInterationMenusAreOpen");
+					disableMovementWhenInterationMenusAreOpen = CustomGUILayout.ToggleLeft ("Disable movement when Interaction menus are on?", disableMovementWhenInterationMenusAreOpen, "AC.KickStarter.settingsManager.disableMovementWhenInterationMenusAreOpen");
 				}
 				if (movementMethod == MovementMethod.Direct || movementMethod == MovementMethod.FirstPerson)
 				{
@@ -923,6 +963,15 @@ namespace AC
 				if (movementMethod == MovementMethod.StraightToCursor)
 				{
 					EditorGUILayout.HelpBox ("If the 'Pathfinding update time' is non-zero, the Player will pathfind to the cursor when moving.", MessageType.Info);
+				}
+
+				if (cameraPerspective == CameraPerspective.TwoD)
+				{
+					if (movingTurning == MovingTurning.TopDown || movingTurning == MovingTurning.Unity2D)
+					{
+						verticalReductionFactor = CustomGUILayout.Slider ("Vertical movement factor:", verticalReductionFactor, 0.1f, 1f, "AC.KickStarter.settingsManager.verticalReductionFactor");
+						rotationsAffectedByVerticalReduction = CustomGUILayout.ToggleLeft ("Character rotations affected by 'Vertical movement factor'?", rotationsAffectedByVerticalReduction);
+					}
 				}
 			}
 		}
@@ -941,7 +990,11 @@ namespace AC
 					}
 					else
 					{
-						firstPersonTouchScreen = (FirstPersonTouchScreen) CustomGUILayout.EnumPopup ("First person movement:", firstPersonTouchScreen, "AC.KickStarter.settingsManager.firstPersonTouchScreen");
+						firstPersonTouchScreen = (FirstPersonTouchScreen) CustomGUILayout.EnumPopup ("First-person movement:", firstPersonTouchScreen, "AC.KickStarter.settingsManager.firstPersonTouchScreen");
+						if (firstPersonTouchScreen == FirstPersonTouchScreen.CustomInput)
+						{
+							EditorGUILayout.HelpBox ("Movement can be controlled by overriding the 'Horizontal' and 'Vertical' axes, and Free-aiming can be controlled by overriding the FreeAimDelegate - see 'Remapping inputs' in the Manual.", MessageType.Info);
+						}
 					}
 					doubleTapHotspots = CustomGUILayout.ToggleLeft ("Activate Hotspots with double-tap?", doubleTapHotspots, "AC.KickStarter.settingsManager.doubleTapHotspots");
 					touchUpWhenPaused = CustomGUILayout.ToggleLeft ("Release touch to interact with pause Menus?", touchUpWhenPaused, "AC.KickStarter.settingsManager.touchUpWhenPaused");
@@ -960,6 +1013,11 @@ namespace AC
 			showCamera = CustomGUILayout.ToggleHeader (showCamera, "Camera settings");
 			if (showCamera)
 			{
+				if (KickStarter.sceneSettings != null && KickStarter.sceneSettings.OverridesCameraPerspective ())
+				{
+					EditorGUILayout.HelpBox ("The current scene overrides the camera perspective - some fields only apply to the global perspective, below.", MessageType.Info);
+				}
+
 				cameraPerspective_int = (int) cameraPerspective;
 				cameraPerspective_int = CustomGUILayout.Popup ("Camera perspective:", cameraPerspective_int, cameraPerspective_list, "AC.KickStarter.settingsManager.cameraPerspective");
 				cameraPerspective = (CameraPerspective) cameraPerspective_int;
@@ -970,9 +1028,9 @@ namespace AC
 				if (cameraPerspective == CameraPerspective.TwoD)
 				{
 					movingTurning = (MovingTurning) CustomGUILayout.EnumPopup ("Moving and turning:", movingTurning, "AC.KickStarter.settingsManager.movingTurning");
-					if (movingTurning == MovingTurning.TopDown || movingTurning == MovingTurning.Unity2D)
+					if (movingTurning == MovingTurning.TopDown)
 					{
-						verticalReductionFactor = CustomGUILayout.Slider ("Vertical movement factor:", verticalReductionFactor, 0.1f, 1f, "AC.KickStarter.settingsManager.verticalReductionFactor");
+						EditorGUILayout.HelpBox ("This mode is now deprecated - use Unity 2D mode instead.", MessageType.Warning);
 					}
 				}
 				
@@ -998,6 +1056,11 @@ namespace AC
 				{
 					placeDistantHotspotsOnSeparateLayer = CustomGUILayout.ToggleLeft ("Place distant Hotspots on separate layer?", placeDistantHotspotsOnSeparateLayer, "AC.KickStarter.settingsManager.placeDistantHotspotsOnSeparateLayer");
 				}
+				else if (hotspotDetection == HotspotDetection.CustomScript)
+				{
+					EditorGUILayout.HelpBox ("Hotspots must be assigned by calling 'AC.KickStarter.playerInteraction.SetActiveHotspot ()'", MessageType.Info);
+				}
+
 				if (hotspotDetection == HotspotDetection.PlayerVicinity && (movementMethod == MovementMethod.Direct || IsInFirstPerson ()))
 				{
 					hotspotsInVicinity = (HotspotsInVicinity) CustomGUILayout.EnumPopup ("Hotspots in vicinity:", hotspotsInVicinity, "AC.KickStarter.settingsManager.hotspotsInVicinity");
@@ -1011,18 +1074,27 @@ namespace AC
 					}
 				}
 				
-				if (cameraPerspective != CameraPerspective.TwoD)
+				playerFacesHotspots = CustomGUILayout.ToggleLeft ("Player turns head to active Hotspot?", playerFacesHotspots, "AC.KickStarter.settingsManager.playerFacesHotspots");
+				if (playerFacesHotspots)
 				{
-					playerFacesHotspots = CustomGUILayout.ToggleLeft ("Player turns head to active Hotspot?", playerFacesHotspots, "AC.KickStarter.settingsManager.playerFacesHotspots");
-					if (interactionMethod == AC_InteractionMethod.ChooseHotspotThenInteraction && playerFacesHotspots)
+					if (interactionMethod == AC_InteractionMethod.ChooseHotspotThenInteraction)
 					{
 						onlyFaceHotspotOnSelect = CustomGUILayout.ToggleLeft ("Only turn head when select Hotspot?", onlyFaceHotspotOnSelect, "AC.KickStarter.settingsManager.onlyFaceHotspotOnSelect");
 					}
+					if (cameraPerspective == CameraPerspective.TwoD)
+					{
+						EditorGUILayout.HelpBox ("2D head-turning can be achieved with Sprites Unity Complex animation, or with Sprites Unity animation's 'Head on separate layer?' option.", MessageType.Info);
+					}
 				}
-				
+
 				hotspotIconDisplay = (HotspotIconDisplay) CustomGUILayout.EnumPopup ("Display Hotspot icons:", hotspotIconDisplay, "AC.KickStarter.settingsManager.hotspotIconDisplay");
 				if (hotspotIconDisplay != HotspotIconDisplay.Never)
 				{
+					if (hotspotIconDisplay == HotspotIconDisplay.ViaScriptOnly)
+					{
+						EditorGUILayout.HelpBox ("Call a Hotspot's 'SetIconVisibility' method to show or hide its icon.", MessageType.Info);
+					}
+
 					hotspotDrawing = (ScreenWorld) CustomGUILayout.EnumPopup ("Draw icons in:", hotspotDrawing, "AC.KickStarter.settingsManager.hotspotDrawing");
 					if (cameraPerspective != CameraPerspective.TwoD)
 					{
@@ -1041,13 +1113,18 @@ namespace AC
 						hideIconUnderInteractionMenu = CustomGUILayout.ToggleLeft ("Hide when Interaction Menus are visible?", hideIconUnderInteractionMenu, "AC.KickStarter.settingsManager.hideIconUnderInteractionMenu");
 					}
 				}
+
+				if (interactionMethod == AC_InteractionMethod.ChooseInteractionThenHotspot)
+				{
+					hideUnhandledHotspots = CustomGUILayout.ToggleLeft ("Hide Hotspots with no suitable interaction?", hideUnhandledHotspots, "AC.KickStarter.settingsManager.hideUnhandledHotspots");
+				}
 			}
 		}
 
 
 		private void ShowAudioSettings ()
 		{
-			#if UNITY_5
+			#if UNITY_5 || UNITY_2017_1_OR_NEWER
 			EditorGUILayout.Space ();
 			EditorGUILayout.Space ();
 
@@ -1175,6 +1252,23 @@ namespace AC
 		#endif
 
 
+		/**
+		 * The prefix of the project's save-game filesnames, before the save / profile ID
+		 */
+		public string SavePrefix
+		{
+			get
+			{
+				if (string.IsNullOrEmpty (saveFileName))
+				{
+					string[] s = Application.dataPath.Split ('/');
+					saveFileName = s[s.Length - 2];
+				}
+				return saveFileName;
+			}
+		}
+
+
 		private string SmartAddInput (string existingResult, string newInput)
 		{
 			if (!existingResult.Contains (newInput))
@@ -1247,11 +1341,36 @@ namespace AC
 			else if (interactionMethod == AC_InteractionMethod.ChooseInteractionThenHotspot)
 			{
 				result = SmartAddInput (result, "CycleCursors (Button)");
+
+				if (allowDefaultinteractions)
+				{
+					result = SmartAddInput (result, "DefaultInteraction (Button)");
+				}
+
+				if (KickStarter.cursorManager != null)
+				{
+					if (KickStarter.cursorManager.allowMainCursor && KickStarter.cursorManager.allowWalkCursor)
+					{
+						result = SmartAddInput (result, "Icon_Walk (Button)");
+					}
+							
+					if (KickStarter.cursorManager.cursorIcons != null)
+					{
+						foreach (CursorIcon cursorIcon in KickStarter.cursorManager.cursorIcons)
+						{
+							string buttonName = cursorIcon.GetButtonName ();
+							if (!string.IsNullOrEmpty (buttonName))
+							{
+								result = SmartAddInput (result, buttonName + " (Button)");
+							}
+						}
+					}
+				}
 			}
 
 			result = SmartAddInput (result, "FlashHotspots (Button)");
 			if (AdvGame.GetReferences ().speechManager != null &&
-			   (AdvGame.GetReferences ().speechManager.allowSpeechSkipping || AdvGame.GetReferences ().speechManager.displayForever))
+			   (AdvGame.GetReferences ().speechManager.allowSpeechSkipping || AdvGame.GetReferences ().speechManager.displayForever || AdvGame.GetReferences ().speechManager.displayNarrationForever))
 			{
 				result = SmartAddInput (result, "SkipSpeech (Button)");
 			}
@@ -1290,48 +1409,6 @@ namespace AC
 			}
 
 			return result;
-		}
-		
-
-		/**
-		 * <summary>Checks if the game is in 2D, and plays in screen-space (i.e. characters do not move towards or away from the camera).</summary>
-		 * <returns>True if the game is in 2D, and plays in screen-space</returns>
-		 */
-		public bool ActInScreenSpace ()
-		{
-			if ((movingTurning == MovingTurning.ScreenSpace || movingTurning == MovingTurning.Unity2D) && cameraPerspective == CameraPerspective.TwoD)
-			{
-				return true;
-			}
-			return false;
-		}
-		
-
-		/**
-		 * <summary>Checks if the game uses Unity 2D for its camera perspective.<summary>
-		 * <returns>True if the game uses Unity 2D for its camera perspective</returns>
-		 */
-		public bool IsUnity2D ()
-		{
-			if (movingTurning == MovingTurning.Unity2D && cameraPerspective == CameraPerspective.TwoD)
-			{
-				return true;
-			}
-			return false;
-		}
-		
-
-		/**
-		 * <summary>Checks if the game uses Top Down for its camera perspective.<summary>
-		 * <returns>True if the game uses Top Down for its camera perspective</returns>
-		 */
-		public bool IsTopDown ()
-		{
-			if (movingTurning == MovingTurning.TopDown && cameraPerspective == CameraPerspective.TwoD)
-			{
-				return true;
-			}
-			return false;
 		}
 		
 
@@ -1479,9 +1556,10 @@ namespace AC
 
 		/**
 		 * <summary>Gets the default Player prefab.</summary>
+		 * <param name = "showError">If True, and no default Player is found, a warning message will be printed in the Console</param>
 		 * <returns>The default player Player prefab</returns>
 		 */
-		public Player GetDefaultPlayer ()
+		public Player GetDefaultPlayer (bool showError = true)
 		{
 			if (playerSwitching == PlayerSwitching.DoNotAllow)
 			{
@@ -1496,13 +1574,19 @@ namespace AC
 					{
 						return _player.playerOb;
 					}
-					
-					ACDebug.LogWarning ("Default Player has no prefab!");
+
+					if (showError)
+					{
+						ACDebug.LogWarning ("Default Player has no prefab!");
+					}
 					return null;
 				}
 			}
-			
-			ACDebug.LogWarning ("Cannot find default player!");
+
+			if (showError)
+			{
+				ACDebug.LogWarning ("Cannot find default player!");
+			}
 			return null;
 		}
 		
@@ -1622,6 +1706,20 @@ namespace AC
 			}
 			return SelectInteractions.ClickingMenu;
 		}
+
+
+		/**
+		 * <summary>Checks if the interaction method is ChooseInteractionThenHotspot, and if the Hotspot label should change when hovering over an Interaction icon.</summary>
+		 * <returns>True if the interaction method is ChooseInteractionThenHotspot, and if the Hotspot label should change when hovering over an Interaction icon.</returns>
+		 */
+		public bool ShowHoverInteractionInHotspotLabel ()
+		{
+			if (interactionMethod == AC_InteractionMethod.ChooseInteractionThenHotspot && showHoverInteractionInHotspotLabel)
+			{
+				return true;
+			}
+			return false;
+		}
 		
 
 		/**
@@ -1661,7 +1759,6 @@ namespace AC
 			{
 				return true;
 			}
-			//if (KickStarter.player != null && KickStarter.player.FirstPersonCamera != null)// && KickStarter.mainCamera != null && KickStarter.mainCamera.attachedCamera != null && KickStarter.mainCamera.attachedCamera.transform == KickStarter.player.FirstPersonCamera)
 			if (KickStarter.player != null && KickStarter.player.FirstPersonCamera != null && KickStarter.mainCamera != null && KickStarter.mainCamera.attachedCamera == KickStarter.player.FirstPersonCamera)
 			{
 				return true;
@@ -1785,7 +1882,7 @@ namespace AC
 
 		private void AssignSaveScripts ()
 		{
-			bool canProceed = EditorUtility.DisplayDialog ("Add save scripts", "AC will now go through your game, and attempt to add 'Remember' components where appropriate.\n\nThese components are required for saving to function, and are covered in Section 9.2 of the Manual.\n\nAs this process cannot be undone without manually removing each script, it is recommended to back up your project beforehand.", "OK", "Cancel");
+			bool canProceed = EditorUtility.DisplayDialog ("Add save scripts", "AC will now go through your game, and attempt to add 'Remember' components where appropriate.\n\nThese components are required for saving to function, and are covered in Section 9.1.1 of the Manual.\n\nAs this process cannot be undone without manually removing each script, it is recommended to back up your project beforehand.", "OK", "Cancel");
 			if (!canProceed) return;
 
 			string originalScene = UnityVersionHandler.GetCurrentSceneName ();
@@ -1835,7 +1932,20 @@ namespace AC
 					SaveActionList (list);
 				}
 			}
-			
+
+			// Cameras
+			PlayerStart[] playerStarts = GameObject.FindObjectsOfType (typeof (PlayerStart)) as PlayerStart[];
+			foreach (PlayerStart playerStart in playerStarts)
+			{
+				if (playerStart.cameraOnStart != null && playerStart.cameraOnStart.GetComponent <ConstantID>() == null)
+				{
+					ConstantID newConstantID = playerStart.cameraOnStart.gameObject.AddComponent <ConstantID>();
+					newConstantID.AssignInitialValue ();
+
+					ACDebug.Log ("Added '" + newConstantID.GetType ().ToString () + "' component to " + playerStart.cameraOnStart.gameObject.name);
+				}
+			}
+				
 			// Hotspots
 			Hotspot[] hotspots = GameObject.FindObjectsOfType (typeof (Hotspot)) as Hotspot[];
 			foreach (Hotspot hotspot in hotspots)
@@ -1993,7 +2103,6 @@ namespace AC
 			{
 				SaveActions (actionList.actions);
 			}
-			
 		}
 		
 		
@@ -2058,34 +2167,6 @@ namespace AC
 
 
 	/**
-	 * A data container for active inputs, which map ActionListAssets to input buttons.
-	 */
-	[System.Serializable]
-	public class ActiveInput
-	{
-
-		/** The name of the Input button, as defined in the Input Manager */
-		public string inputName;
-		/** What state the game must be in for the actionListAsset to run (Normal, Cutscene, Paused, DialogOptions) */
-		public GameState gameState;
-		/** The ActionListAsset to run when the input button is pressed */
-		public ActionListAsset actionListAsset;
-
-
-		/**
-		 * The default Constructor.
-		 */
-		public ActiveInput ()
-		{
-			inputName = "";
-			gameState = GameState.Normal;
-			actionListAsset = null;
-		}
-
-	}
-
-
-	/**
 	 * \mainpage Adventure Creator: Scripting guide
 	 *
 	 * Welcome to Adventure Creator's scripting guide. You can use this guide to get detailed descriptions on all of ACs public functions and variables.<br><b>Please read this page before delving in!</b>
@@ -2113,14 +2194,15 @@ namespace AC
 	 * The KickStarter class also has functions that can be used to turn AC off or on completely:
 	 * 
 	 * \code
-	 * AC.KickStarter.TurnOff ();
-	 * AC.KickStarter.TurnOn ();
+	 * AC.KickStarter.TurnOffAC ();
+	 * AC.KickStarter.TurnOnAC ();
 	 * \endcode
 	 * 
-	 * The variable that determines AC's main state is the gameState, inside StateHandler. Reading this variable can determine if the game is currently in a cutscene or not.
-	 * 
+	 * You can detect the game's current state (cutscene or gameplay) from the StateHandler:
+	 *
 	 * \code
-	 * AC.KickStarter.stateHandler.gameState;
+	 * AC.KickStarter.stateHandler.IsInCutscene ();
+	 * AC.KickStarter.stateHandler.IsInGameplay ();
 	 * \endcode
 	 * 
 	 * If you want to place the game in a scripted cutscene, the StateHandler has functions for that, too:
@@ -2128,12 +2210,6 @@ namespace AC
 	 * \code
 	 * AC.KickStarter.stateHandler.StartCutscene ();
 	 * AC.KickStarter.stateHandler.EndCutscene ();
-	 * \endcode
-	 * 
-	 * The StateHandler is important because it updates all of AC's scene objects. It does this by taking a record of all the objects in the scene. Therefore, if you add or remove objects from a scene mid-game through script, you will need to update the StateHandler's internal list of objects to update.  You can do this by calling:
-	 * 
-	 * \code
-	 * AC.KickStarter.stateHandler.GatherObjects ();
 	 * \endcode
 	 * 
 	 * All-scene based ActionLists, inculding Cutscenes and Triggers, derive from the ActionList class.  Action List assets rely on the ActionListAsset class.  Both classes have an Interact function, which will cause their Actions to run.

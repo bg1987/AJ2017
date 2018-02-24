@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2016
+ *	by Chris Burton, 2013-2018
  *	
  *	"RememberHotspot.cs"
  * 
@@ -58,7 +58,7 @@ namespace AC
 		{
 			HotspotData hotspotData = new HotspotData ();
 			hotspotData.objectID = constantID;
-
+			hotspotData.savePrevented = savePrevented;
 
 			if (GetComponent <Hotspot>())
 			{
@@ -86,6 +86,7 @@ namespace AC
 				loadedData = false;
 				return;
 			}
+			SavePrevented = data.savePrevented; if (savePrevented) return;
 
 			if (data.isOn)
 			{
@@ -124,7 +125,7 @@ namespace AC
 
 		private void StringToButtonStates (Hotspot hotspot, string stateString)
 		{
-			if (stateString.Length == 0)
+			if (string.IsNullOrEmpty (stateString))
 			{
 				return;
 			}

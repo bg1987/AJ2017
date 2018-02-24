@@ -52,8 +52,6 @@ namespace AC
 		public int numSockets = 1;
 		/** If True, the ActionList will wait until the Action has finished running before continuing */
 		public bool willWait;
-		/** The default time, in seconds, to wait in between Run() calls */
-		public float defaultPauseTime = 0.1f;
 
 		/** If True, then the Action is running */
 		public bool isRunning;
@@ -112,6 +110,15 @@ namespace AC
 		{
 			Run ();
 		}
+
+
+		public float defaultPauseTime
+		{
+			get
+			{
+				return -1f;
+			}
+		}
 		
 
 		/**
@@ -127,14 +134,15 @@ namespace AC
 
 		/**
 		 * <summary>Prints the Action's comment, if applicable, to the Console.</summary>
-		 * <param name = "_gameObject">The associated GameObject that contains the ActionList of which this Action is a part of</param>
+		 * <param name = "actionList">The associated ActionList of which this Action is a part of</param>
 		 */
-		public void PrintComment (GameObject _gameObject)
+		public void PrintComment (ActionList actionList)
 		{
 			if (showComment && comment != "")
 			{
-				string log = comment + "\n" + "(From " + _gameObject.name + " , " + category.ToString () + ": " + title + ")";
-				ACDebug.Log (log, _gameObject);
+				string log = AdvGame.ConvertTokens (comment, 0, null, actionList.parameters);
+				log += "\n" + "(From " + actionList.gameObject.name + " , " + category.ToString () + ": " + title + ")";
+				ACDebug.Log (log, actionList);
 			}
 		}
 		
@@ -303,37 +311,43 @@ namespace AC
 			}
 			
 			int chosenNumber = 0;
-			List<string> labelList = new List<string>();
-			labelList.Add ("(No parameter)");
-			foreach (ActionParameter _parameter in _parameters)
+			List<PopupSelectData> popupSelectDataList = new List<PopupSelectData>();
+			for (int i=0; i<_parameters.Count; i++)
 			{
-				labelList.Add ("(" + _parameter.ID + ") " + _parameter.label);
-				if (_parameter.ID == _parameterID)
+				if (_parameters[i].parameterType == _expectedType)
 				{
-					chosenNumber = _parameters.IndexOf (_parameter)+1;
-					
-					if (_parameter.parameterType != _expectedType)
+					PopupSelectData popupSelectData = new PopupSelectData (_parameters[i].ID, _parameters[i].label + " (" + _parameters[i].ID + ")", i);
+					popupSelectDataList.Add (popupSelectData);
+
+					if (popupSelectData.ID == _parameterID)
 					{
-						EditorGUILayout.HelpBox ("This parameter type is invalid: expecting " + _expectedType, MessageType.Warning);
+						chosenNumber = popupSelectDataList.Count;
 					}
 				}
 			}
 
+			List<string> labelList = new List<string>();
+			labelList.Add ("(No parameter)");
+			foreach (PopupSelectData popupSelectData in popupSelectDataList)
+			{
+				labelList.Add (popupSelectData.label);
+			}
+
 			if (label != "")
 			{
-				chosenNumber = EditorGUILayout.Popup ("-> " + label, chosenNumber, labelList.ToArray()) - 1;
+				chosenNumber = EditorGUILayout.Popup ("-> " + label, chosenNumber, labelList.ToArray ()) - 1;
 			}
 			else
 			{
-				chosenNumber = EditorGUILayout.Popup (chosenNumber, labelList.ToArray()) - 1;
+				chosenNumber = EditorGUILayout.Popup (chosenNumber, labelList.ToArray ()) - 1;
 			}
-			
+
 			if (chosenNumber < 0)
 			{
 				return -1;
 			}
-			
-			return _parameters [chosenNumber].ID;
+			int rootIndex = popupSelectDataList[chosenNumber].rootIndex;
+			return _parameters [rootIndex].ID;
 		}
 
 
@@ -348,7 +362,7 @@ namespace AC
 			List<string> labelList = new List<string>();
 			foreach (ActionParameter _parameter in _parameters)
 			{
-				labelList.Add ("(" + _parameter.ID + ") " + _parameter.label);
+				labelList.Add (_parameter.label + " (" + _parameter.ID + ")");
 				if (_parameter.ID == _parameterID)
 				{
 					chosenNumber = _parameters.IndexOf (_parameter);
@@ -366,6 +380,37 @@ namespace AC
 
 
 		public int FieldToID <T> (T field, int _constantID) where T : Behaviour
+		{
+			if (field != null)
+			{
+				if (isAssetFile || (!isAssetFile && !field.gameObject.activeInHierarchy))
+				{
+					if (field.GetComponent <ConstantID>())
+					{
+						if (!field.gameObject.activeInHierarchy && field.GetComponent <ConstantID>().constantID == 0)
+						{
+							field.GetComponent <ConstantID>().AssignInitialValue (false);
+						}
+						_constantID = field.GetComponent <ConstantID>().constantID;
+					}
+					else if (field.GetComponent <Player>() == null)
+					{
+						field.gameObject.AddComponent <ConstantID>();
+						_constantID = field.GetComponent <ConstantID>().AssignInitialValue (false);
+						AssetDatabase.SaveAssets ();
+					}
+					return _constantID;
+				}
+				if (!Application.isPlaying)
+				{
+					return 0;
+				}
+			}
+			return _constantID;
+		}
+
+
+		public int FieldToID (Collider field, int _constantID)
 		{
 			if (field != null)
 			{
@@ -489,6 +534,19 @@ namespace AC
 		}
 
 
+		public void AssignConstantID (Collider field, int _constantID, int _parameterID)
+		{
+			if (_parameterID >= 0)
+			{
+				_constantID = 0;
+			}
+			else
+			{
+				_constantID = FieldToID (field, _constantID);
+			}
+		}
+
+
 		public void AssignConstantID (Transform field, int _constantID, int _parameterID)
 		{
 			if (_parameterID >= 0)
@@ -523,6 +581,44 @@ namespace AC
 				if (_constantID != 0)
 				{
 					newField = Serializer.returnComponent <T> (_constantID);
+					if (field != null && field.GetComponent <ConstantID>() != null && field.GetComponent <ConstantID>().constantID == _constantID)
+					{}
+					else if (newField != null && !Application.isPlaying)
+					{
+						field = newField;
+					}
+
+					EditorGUILayout.BeginVertical ("Button");
+					EditorGUILayout.BeginHorizontal ();
+					EditorGUILayout.LabelField ("Recorded ConstantID: " + _constantID.ToString (), EditorStyles.miniLabel);
+					if (field == null)
+					{
+						if (GUILayout.Button ("Search scenes", EditorStyles.miniButton))
+						{
+							AdvGame.FindObjectWithConstantID (_constantID);
+						}
+					}
+					EditorGUILayout.EndHorizontal ();
+					
+					if (field == null && moreInfo)
+					{
+						EditorGUILayout.HelpBox ("Further controls cannot display because the referenced object cannot be found.", MessageType.Warning);
+					}
+					EditorGUILayout.EndVertical ();
+				}
+			}
+			return field;
+		}
+
+
+		public Collider IDToField (Collider field, int _constantID, bool moreInfo)
+		{
+			if (isAssetFile || (!isAssetFile && (field == null || !field.gameObject.activeInHierarchy)))
+			{
+				Collider newField = field;
+				if (_constantID != 0)
+				{
+					newField = Serializer.returnComponent <Collider> (_constantID);
 					if (field != null && field.GetComponent <ConstantID>() != null && field.GetComponent <ConstantID>().constantID == _constantID)
 					{}
 					else if (newField != null && !Application.isPlaying)
@@ -688,6 +784,43 @@ namespace AC
 			return field;
 		}
 
+
+		/**
+		 * <summary>Converts the Action's references from a given local variable to a given global variable</summary>
+		 * <param name = "oldLocalID">The ID number of the old local variable</param>
+		 * <param name = "newGlobalID">The ID number of the new global variable</param>
+		 * <returns>True if the Action was amended</returns>
+		 */
+		public virtual bool ConvertLocalVariableToGlobal (int oldLocalID, int newGlobalID)
+		{
+			string newComment = AdvGame.ConvertLocalVariableTokenToGlobal (comment, oldLocalID, newGlobalID);
+			bool wasAmended = (comment != newComment);
+			comment = newComment;
+			return wasAmended;
+		}
+
+
+		/**
+		 * <summary>Converts the Action's references from a given global variable to a given local variable</summary>
+		 * <param name = "oldGlobalID">The ID number of the old global variable</param>
+		 * <param name = "newLocalID">The ID number of the new local variable</param>
+		 * <param name = "isCorrectScene">If True, the local variable is in the same scene as this ActionList.  Otherwise, no change will made, but the return value will be the same</param>
+		 * <returns>True if the Action is affected</returns>
+		 */
+		public virtual bool ConvertGlobalVariableToLocal (int oldGlobalID, int newLocalID, bool isCorrectScene)
+		{
+			string newComment = AdvGame.ConvertGlobalVariableTokenToLocal (comment, oldGlobalID, newLocalID);
+			if (comment != newComment)
+			{
+				if (isCorrectScene)
+				{
+					comment = newComment;
+				}
+				return true;
+			}
+			return false;
+		}
+
 		#endif
 
 
@@ -780,6 +913,17 @@ namespace AC
 		}
 
 
+		protected Vector3 AssignVector3 (List<ActionParameter> parameters, int _parameterID, Vector3 field)
+		{
+			ActionParameter parameter = GetParameterWithID (parameters, _parameterID);
+			if (parameter != null && parameter.parameterType == ParameterType.Vector3)
+			{
+				return (parameter.vector3Value);
+			}
+			return field;
+		}
+
+
 		protected int AssignVariableID (List<ActionParameter> parameters, int _parameterID, int field)
 		{
 			ActionParameter parameter = GetParameterWithID (parameters, _parameterID);
@@ -852,6 +996,51 @@ namespace AC
 				}
 			}
 			
+			return file;
+		}
+
+
+		/**
+		 * <summary>Replaces a Collider based on an ActionParameter or ConstantID instance, if appropriate.</summary>
+		 * <param name = "parameters">A List of ActionParameters that may override the Collider</param>
+		 * <param name = "_parameterID">The ID of the ActionParameter to search for within parameters that will replace the Collider</param>
+		 * <param name = "_constantID">If !=0, The ConstantID number of the Collider to replace field with</param>
+		 * <param name = "field">The Collider to replace</param>
+		 * <returns>The replaced Collider, or field if no replacements were found</returns>
+		 */
+		public Collider AssignFile (List<ActionParameter> parameters, int _parameterID, int _constantID, Collider field)
+		{
+			Collider file = field;
+			
+			ActionParameter parameter = GetParameterWithID (parameters, _parameterID);
+			if (parameter != null && parameter.parameterType == ParameterType.GameObject)
+			{
+				file = null;
+				if (parameter.intValue != 0)
+				{
+					file = Serializer.returnComponent <Collider> (parameter.intValue);
+				}
+				if (file == null)
+				{
+					if (parameter.gameObject != null && parameter.gameObject.GetComponent <Collider>())
+					{
+						file = parameter.gameObject.GetComponent <Collider>();
+					}
+					else if (parameter.intValue != 0)
+					{
+						file = Serializer.returnComponent <Collider> (parameter.intValue);
+					}
+				}
+			}
+			else if (_constantID != 0)
+			{
+				Collider newField = Serializer.returnComponent <Collider> (_constantID);
+				if (newField != null)
+				{
+					file = newField;
+				}
+
+			}
 			return file;
 		}
 
@@ -964,13 +1153,17 @@ namespace AC
 				}
 				if (file == null)
 				{
-					if (/*!isAssetFile && */parameter.gameObject != null && parameter.gameObject.GetComponent <T>())
+					if (parameter.gameObject != null && parameter.gameObject.GetComponent <T>())
 					{
 						file = parameter.gameObject.GetComponent <T>();
 					}
 					else if (parameter.intValue != 0)
 					{
 						file = Serializer.returnComponent <T> (parameter.intValue);
+					}
+					else if (parameter.gameObject != null && parameter.gameObject.GetComponent <T>() == null)
+					{
+						ACDebug.LogWarning ("No " + typeof(T) + " component attached to " + parameter.gameObject + "!", parameter.gameObject);
 					}
 				}
 			}

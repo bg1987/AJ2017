@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2016
+ *	by Chris Burton, 2013-2018
  *	
  *	"AlphaNumericSort.cs"
  * 
@@ -17,7 +17,7 @@ using UnityEditor;
 namespace AC
 {
 
-	#if !UNITY_ANDROID && !UNITY_5
+	#if !UNITY_ANDROID && !(UNITY_5 || UNITY_2017_1_OR_NEWER)
 	public class AlphaNumericSort : BaseHierarchySort
 	{
 		public override int Compare(GameObject lhs, GameObject rhs)

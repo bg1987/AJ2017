@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2016
+ *	by Chris Burton, 2013-2018
  *	
  *	"Paths.cs"
  * 
@@ -105,7 +105,7 @@ namespace AC
 					if (i==0)
 					{
 						// If first point, ignore if same as position
-						if (KickStarter.settingsManager.IsUnity2D ())
+						if (SceneSettings.IsUnity2D ())
 						{
 							Vector2 testPoint = new Vector2 (transform.position.x, transform.position.y);
 							Vector2 testPoint2 = new Vector2 (pointData[0].x, pointData[0].y);

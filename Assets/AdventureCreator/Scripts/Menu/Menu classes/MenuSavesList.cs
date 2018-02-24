@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2017
+ *	by Chris Burton, 2013-2018
  *	
  *	"MenuSavesList.cs"
  * 
@@ -64,10 +64,14 @@ namespace AC
 		public string newSaveText = "New save";
 		/** If True, a slot that represents a "new save" space can be displayed if appropriate */
 		public bool showNewSaveOption = true;
+		/** If True, and saveListType = AC_SaveListType.Load and fixedOption = True, then the element will be hidden if the slot ID it represents is not filled with a valid save */
+		public bool hideIfNotValid = false;
 		/** If True, then the save file will be loaded/saved once its slot is clicked on */
 		public bool autoHandle = true;
 		/** The method which this element (or slots within it) are hidden from view when made invisible (DisableObject, ClearContent) */
 		public UIHideStyle uiHideStyle = UIHideStyle.DisableObject;
+		/** What Image component the Element's Graphics should be linked to (ImageComponent, ButtonTargetGraphic) */
+		public LinkUIGraphic linkUIGraphic = LinkUIGraphic.ImageComponent;
 
 		private string[] labels = null;
 		private bool newSaveSlot = false;
@@ -99,6 +103,7 @@ namespace AC
 
 			fixedOption = false;
 			optionToShow = 1;
+			hideIfNotValid = false;
 
 			importProductName = "";
 			importSaveFilename = "";
@@ -110,28 +115,31 @@ namespace AC
 
 			parameterID = -1;
 			uiHideStyle = UIHideStyle.DisableObject;
+			linkUIGraphic = LinkUIGraphic.ImageComponent;
 
 			base.Declare ();
 		}
 
 
-		/**
-		 * <summary>Creates and returns a new MenuSavesList that has the same values as itself.</summary>
-		 * <param name = "fromEditor">If True, the duplication was done within the Menu Manager and not as part of the gameplay initialisation.</param>
-		 * <returns>A new MenuSavesList with the same values as itself</returns>
-		 */
-		public override MenuElement DuplicateSelf (bool fromEditor)
+		public override MenuElement DuplicateSelf (bool fromEditor, bool ignoreUnityUI)
 		{
 			MenuSavesList newElement = CreateInstance <MenuSavesList>();
 			newElement.Declare ();
-			newElement.CopySavesList (this);
+			newElement.CopySavesList (this, ignoreUnityUI);
 			return newElement;
 		}
 		
 		
-		private void CopySavesList (MenuSavesList _element)
+		private void CopySavesList (MenuSavesList _element, bool ignoreUnityUI)
 		{
-			uiSlots = _element.uiSlots;
+			if (ignoreUnityUI)
+			{
+				uiSlots = null;
+			}
+			else
+			{
+				uiSlots = _element.uiSlots;
+			}
 
 			newSaveText = _element.newSaveText;
 			textEffects = _element.textEffects;
@@ -144,6 +152,7 @@ namespace AC
 			blankSlotTexture = _element.blankSlotTexture;
 			fixedOption = _element.fixedOption;
 			optionToShow = _element.optionToShow;
+			hideIfNotValid = _element.hideIfNotValid;
 			importProductName = _element.importProductName;
 			importSaveFilename = _element.importSaveFilename;
 			checkImportBool = _element.checkImportBool;
@@ -152,6 +161,7 @@ namespace AC
 			showNewSaveOption = _element.showNewSaveOption;
 			autoHandle = _element.autoHandle;
 			uiHideStyle = _element.uiHideStyle;
+			linkUIGraphic = _element.linkUIGraphic;
 			
 			base.Copy (_element);
 		}
@@ -161,12 +171,12 @@ namespace AC
 		 * <summary>Initialises the linked Unity UI GameObjects.</summary>
 		 * <param name = "_menu">The element's parent Menu</param>
 		 */
-		public override void LoadUnityUI (AC.Menu _menu)
+		public override void LoadUnityUI (AC.Menu _menu, Canvas canvas)
 		{
 			int i=0;
 			foreach (UISlot uiSlot in uiSlots)
 			{
-				uiSlot.LinkUIElements ();
+				uiSlot.LinkUIElements (canvas, linkUIGraphic);
 				if (uiSlot != null && uiSlot.uiButton != null)
 				{
 					int j=i;
@@ -183,11 +193,11 @@ namespace AC
 		 * <summary>Gets the first linked Unity UI GameObject associated with this element.</summary>
 		 * <param name = "The first Unity UI GameObject associated with the element</returns>
 		 */
-		public override GameObject GetObjectToSelect ()
+		public override GameObject GetObjectToSelect (int slotIndex = 0)
 		{
-			if (uiSlots != null && uiSlots.Length > 0 && uiSlots[0].uiButton != null)
+			if (uiSlots != null && uiSlots.Length > slotIndex && uiSlots[slotIndex].uiButton != null && numSlots > slotIndex)
 			{
-				return uiSlots[0].uiButton.gameObject;
+				return uiSlots[slotIndex].uiButton.gameObject;
 			}
 			return null;
 		}
@@ -223,47 +233,6 @@ namespace AC
 			MenuSource source = menu.menuSource;
 			EditorGUILayout.BeginVertical ("Button");
 
-			fixedOption = CustomGUILayout.ToggleLeft ("Fixed Save ID only?", fixedOption, apiPrefix + ".fixedOption");
-			if (fixedOption)
-			{
-				numSlots = 1;
-				slotSpacing = 0f;
-				optionToShow = CustomGUILayout.IntField ("ID to display:", optionToShow, apiPrefix + ".optionToShow");
-			}
-			else
-			{
-				maxSlots = CustomGUILayout.IntField ("Max no. of slots:", maxSlots, apiPrefix + ".maxSlots");
-
-				if (source == MenuSource.AdventureCreator)
-				{
-					numSlots = CustomGUILayout.IntSlider ("Test slots:", numSlots, 1, maxSlots, apiPrefix + ".numSlots");
-					slotSpacing = CustomGUILayout.Slider ("Slot spacing:", slotSpacing, 0f, 20f, apiPrefix + ".slotSpacing");
-					orientation = (ElementOrientation) CustomGUILayout.EnumPopup ("Slot orientation:", orientation, apiPrefix + ".orientation");
-					if (orientation == ElementOrientation.Grid)
-					{
-						gridWidth = CustomGUILayout.IntSlider ("Grid size:", gridWidth, 1, 10, apiPrefix + ".gridWidth");
-					}
-				}
-			}
-
-			if (source == MenuSource.AdventureCreator)
-			{
-				anchor = (TextAnchor) CustomGUILayout.EnumPopup ("Text alignment:", anchor, apiPrefix + ".anchor");
-				textEffects = (TextEffects) CustomGUILayout.EnumPopup ("Text effect:", textEffects, apiPrefix + ".textEffects");
-				if (textEffects != TextEffects.None)
-				{
-					outlineSize = CustomGUILayout.Slider ("Effect size:", outlineSize, 1f, 5f, apiPrefix + ".outlineSize");
-				}
-			}
-
-			displayType = (SaveDisplayType) CustomGUILayout.EnumPopup ("Display:", displayType, apiPrefix + ".displayType");
-			if (displayType != SaveDisplayType.LabelOnly)
-			{
-				EditorGUILayout.BeginHorizontal ();
-					EditorGUILayout.LabelField ("Empty slot texture:", GUILayout.Width (145f));
-					blankSlotTexture = (Texture2D) EditorGUILayout.ObjectField (blankSlotTexture, typeof (Texture2D), false, GUILayout.Width (70f), GUILayout.Height (30f));
-				EditorGUILayout.EndHorizontal ();
-			}
 			saveListType = (AC_SaveListType) CustomGUILayout.EnumPopup ("List type:", saveListType, apiPrefix + ".savesListType");
 			if (saveListType == AC_SaveListType.Save)
 			{
@@ -298,17 +267,55 @@ namespace AC
 			{
 				autoHandle = true;
 				#if UNITY_STANDALONE
-				importProductName = CustomGUILayout.TextField ("Import project name:", importProductName, apiPrefix + ".importProductName");
+				importProductName = CustomGUILayout.TextField ("Import product name:", importProductName, apiPrefix + ".importProductName");
 				importSaveFilename = CustomGUILayout.TextField ("Import save filename:", importSaveFilename, apiPrefix + ".importSaveFilename");
 				ActionListGUI ("ActionList after import:", menu.title, "After_Import");
 				checkImportBool = CustomGUILayout.Toggle ("Require Bool to be true?", checkImportBool, apiPrefix + ".checkImportBool");
 				if (checkImportBool)
 				{
-					checkImportVar = CustomGUILayout.IntField ("Global Variable ID:", checkImportVar, apiPrefix + "checkImportVar");
+					if (KickStarter.variablesManager != null)
+					{
+						ShowVarGUI (KickStarter.variablesManager.vars);
+					}
+					else
+					{
+						EditorGUILayout.HelpBox ("A Variables Manager is required.", MessageType.Warning);
+					}
+					//checkImportVar = CustomGUILayout.IntField ("Global Variable ID:", checkImportVar, apiPrefix + "checkImportVar");
 				}
 				#else
 				EditorGUILayout.HelpBox ("This feature is only available for standalone platforms (PC, Mac, Linux)", MessageType.Warning);
 				#endif
+			}
+
+			displayType = (SaveDisplayType) CustomGUILayout.EnumPopup ("Display type:", displayType, apiPrefix + ".displayType");
+
+			fixedOption = CustomGUILayout.Toggle ("Fixed Save ID only?", fixedOption, apiPrefix + ".fixedOption");
+			if (fixedOption)
+			{
+				numSlots = 1;
+				slotSpacing = 0f;
+				optionToShow = CustomGUILayout.IntField ("ID to display:", optionToShow, apiPrefix + ".optionToShow");
+
+				if (saveListType == AC_SaveListType.Load)
+				{
+					hideIfNotValid = CustomGUILayout.Toggle ("Hide if no save file found?", hideIfNotValid, apiPrefix + ".hideIfNotValid");
+				}
+			}
+			else
+			{
+				maxSlots = CustomGUILayout.IntField ("Maximum number of slots:", maxSlots, apiPrefix + ".maxSlots");
+
+				if (source == MenuSource.AdventureCreator)
+				{
+					numSlots = CustomGUILayout.IntSlider ("Test slots:", numSlots, 1, maxSlots, apiPrefix + ".numSlots");
+					slotSpacing = CustomGUILayout.Slider ("Slot spacing:", slotSpacing, 0f, 20f, apiPrefix + ".slotSpacing");
+					orientation = (ElementOrientation) CustomGUILayout.EnumPopup ("Slot orientation:", orientation, apiPrefix + ".orientation");
+					if (orientation == ElementOrientation.Grid)
+					{
+						gridWidth = CustomGUILayout.IntSlider ("Grid size:", gridWidth, 1, 10, apiPrefix + ".gridWidth");
+					}
+				}
 			}
 
 			if (source != MenuSource.AdventureCreator)
@@ -331,11 +338,73 @@ namespace AC
 				{
 					uiSlots[i].LinkedUiGUI (i, source);
 				}
+
+				linkUIGraphic = (LinkUIGraphic) EditorGUILayout.EnumPopup ("Link graphics to:", linkUIGraphic);
 			}
 				
 			EditorGUILayout.EndVertical ();
 			
 			base.ShowGUI (menu);
+		}
+
+
+		protected override void ShowTextGUI (string apiPrefix)
+		{
+			anchor = (TextAnchor) CustomGUILayout.EnumPopup ("Text alignment:", anchor, apiPrefix + ".anchor");
+			textEffects = (TextEffects) CustomGUILayout.EnumPopup ("Text effect:", textEffects, apiPrefix + ".textEffects");
+			if (textEffects != TextEffects.None)
+			{
+				outlineSize = CustomGUILayout.Slider ("Effect size:", outlineSize, 1f, 5f, apiPrefix + ".outlineSize");
+			}
+		}
+
+
+		protected override void ShowTextureGUI (string apiPrefix)
+		{
+			if (displayType != SaveDisplayType.LabelOnly)
+			{
+				EditorGUILayout.BeginHorizontal ();
+				EditorGUILayout.LabelField ("Empty slot texture:", GUILayout.Width (145f));
+				blankSlotTexture = (Texture2D) EditorGUILayout.ObjectField (blankSlotTexture, typeof (Texture2D), false, GUILayout.Width (70f), GUILayout.Height (30f));
+				EditorGUILayout.EndHorizontal ();
+			}
+		}
+
+
+		private void ShowVarGUI (List<GVar> vars)
+		{
+			// Create a string List of the field's names (for the PopUp box)
+			List<string> labelList = new List<string>();
+			
+			int i = 0;
+			int variableNumber = -1;
+
+			if (vars != null && vars.Count > 0)
+			{
+				foreach (GVar _var in vars)
+				{
+					labelList.Add (_var.label);
+					
+					// If a GlobalVar variable has been removed, make sure selected variable is still valid
+					if (_var.id == checkImportVar)
+					{
+						variableNumber = i;
+					}
+					
+					i ++;
+				}
+				
+				if (variableNumber == -1)
+				{
+					// Wasn't found (variable was deleted?), so revert to zero
+					ACDebug.LogWarning ("Previously chosen variable no longer exists!");
+					variableNumber = 0;
+					checkImportVar = 0;
+				}
+
+				variableNumber = EditorGUILayout.Popup ("Global Variable:", variableNumber, labelList.ToArray());
+				checkImportVar = vars [variableNumber].id;
+			}
 		}
 
 
@@ -348,7 +417,16 @@ namespace AC
 				EditorGUILayout.BeginVertical ("Button");
 				EditorGUILayout.BeginHorizontal ();
 				parameterID = Action.ChooseParameterGUI ("", actionListOnSave.parameters, parameterID, ParameterType.Integer);
-				if (parameterID >= 0)
+
+				bool found = false;
+				foreach (ActionParameter _parameter in actionListOnSave.parameters)
+				{
+					if (_parameter.parameterType == ParameterType.Integer)
+					{
+						found = true;
+					}
+				}
+				if (found)
 				{
 					if (fixedOption)
 					{
@@ -377,9 +455,19 @@ namespace AC
 		{
 			if (newSaveSlot && saveListType == AC_SaveListType.Save)
 			{
-				if (!fixedOption && (slot + offset) == (numSlots-1))
+				if (fixedOption)
 				{
-					return TranslateLabel (newSaveText, languageNumber);
+					if (SaveSystem.DoesSaveExist (optionToShow))
+					{
+						return TranslateLabel (newSaveText, languageNumber);
+					}
+				}
+				else
+				{
+					if ((slot + offset) == (numSlots - 1))
+					{
+						return TranslateLabel (newSaveText, languageNumber);
+					}
 				}
 			}
 			return SaveSystem.GetSaveSlotLabel (slot + offset, optionToShow, fixedOption);
@@ -426,6 +514,7 @@ namespace AC
 					else if (fixedOption)
 					{
 						fullText = TranslateLabel (newSaveText, languageNumber);
+
 					}
 					else
 					{
@@ -459,6 +548,18 @@ namespace AC
 			{
 				if (uiSlots != null && uiSlots.Length > _slot)
 				{
+					if (saveListType == AC_SaveListType.Load && fixedOption && hideIfNotValid)
+					{
+						if (!SaveSystem.DoesSaveExist (optionToShow))
+						{
+							LimitUISlotVisibility (uiSlots, 0, uiHideStyle);
+						}
+						else
+						{
+							LimitUISlotVisibility (uiSlots, numSlots, uiHideStyle);
+						}
+					}
+
 					LimitUISlotVisibility (uiSlots, numSlots, uiHideStyle);
 					
 					if (displayType != SaveDisplayType.LabelOnly)
@@ -555,56 +656,137 @@ namespace AC
 
 			base.ProcessClick (_menu, _slot, _mouseState);
 
-			bool isSuccess = true;
-			if (saveListType == AC_SaveListType.Save && autoHandle)
-			{
-				if (newSaveSlot && _slot == (numSlots - 1))
-				{
-					isSuccess = SaveSystem.SaveNewGame ();
+			eventMenu = _menu;
+			eventSlot = _slot;
+			ClearAllEvents ();
 
-					if (KickStarter.settingsManager.orderSavesByUpdateTime)
+			if (saveListType == AC_SaveListType.Save)
+			{
+				if (autoHandle)
+				{
+					EventManager.OnFinishSaving += OnCompleteSave;
+					EventManager.OnFailSaving += OnFailSave;
+
+					if (newSaveSlot && _slot == (numSlots - 1))
 					{
-						offset = 0;
+						SaveSystem.SaveNewGame ();
+
+						if (KickStarter.settingsManager.orderSavesByUpdateTime)
+						{
+							offset = 0;
+						}
+						else
+						{
+							Shift (AC_ShiftInventory.ShiftNext, 1);
+						}
 					}
 					else
 					{
-						Shift (AC_ShiftInventory.ShiftRight, 1);
+						SaveSystem.SaveGame (_slot + offset, optionToShow, fixedOption);
 					}
 				}
 				else
 				{
-					isSuccess = SaveSystem.SaveGame (_slot + offset, optionToShow, fixedOption);
+					RunActionList (_slot);
 				}
 			}
-			else if (saveListType == AC_SaveListType.Load && autoHandle)
-			{
-				isSuccess = SaveSystem.LoadGame (_slot + offset, optionToShow, fixedOption);
-			}
-			else if (saveListType == AC_SaveListType.Import)
-			{
-				isSuccess = SaveSystem.ImportGame (_slot + offset, optionToShow, fixedOption);
-			}
-
-			if (isSuccess)
+			else if (saveListType == AC_SaveListType.Load)
 			{
 				if (autoHandle)
 				{
-					if (saveListType == AC_SaveListType.Save)
-					{
-						_menu.TurnOff (true);
-					}
-					else if (saveListType == AC_SaveListType.Load)
-					{
-						_menu.TurnOff (false);
-					}
-				}
+					EventManager.OnFinishLoading += OnCompleteLoad;
+					EventManager.OnFailLoading += OnFailLoad;
 
-				RunActionList (_slot);
+					SaveSystem.LoadGame (_slot + offset, optionToShow, fixedOption);
+				}
+				else
+				{
+					RunActionList (_slot);
+				}
 			}
-			else if (!autoHandle && saveListType != AC_SaveListType.Import)
+			else if (saveListType == AC_SaveListType.Import)
 			{
-				RunActionList (_slot);
+				EventManager.OnFinishImporting += OnCompleteImport;
+				EventManager.OnFailImporting += OnFailImport;
+
+				SaveSystem.ImportGame (_slot + offset, optionToShow, fixedOption);
 			}
+		}
+
+		private Menu eventMenu;
+		private int eventSlot;
+
+		private void OnCompleteSave ()
+		{
+			ClearAllEvents ();
+
+			if (autoHandle)
+			{
+				eventMenu.TurnOff (true);
+			}
+
+			RunActionList (eventSlot);
+		}
+
+
+		private void OnCompleteLoad ()
+		{
+			ClearAllEvents ();
+			if (autoHandle)
+			{
+				eventMenu.TurnOff (false);
+			}
+
+			RunActionList (eventSlot);
+		}
+
+
+		private void OnCompleteImport ()
+		{
+			ClearAllEvents ();
+
+			RunActionList (eventSlot);
+		}
+
+
+		private void OnFailSave ()
+		{
+			ClearAllEvents ();
+
+			if (!autoHandle)
+			{
+				RunActionList (eventSlot);
+			}
+		}
+
+
+		private void OnFailLoad ()
+		{
+			ClearAllEvents ();
+
+			if (!autoHandle)
+			{
+				RunActionList (eventSlot);
+			}
+		}
+
+
+		private void OnFailImport ()
+		{
+			ClearAllEvents ();
+		}
+
+
+		private void ClearAllEvents ()
+		{
+			EventManager.OnFinishSaving -= OnCompleteSave;
+			EventManager.OnFailSaving -= OnFailSave;
+
+			EventManager.OnFinishLoading -= OnCompleteLoad;
+			EventManager.OnFailLoading -= OnFailLoad;
+
+			EventManager.OnFinishImporting -= OnCompleteImport;
+			EventManager.OnFailImporting -= OnFailImport;
 		}
 
 
@@ -629,7 +811,6 @@ namespace AC
 		public override void RecalculateSize (MenuSource source)
 		{
 			newSaveSlot = false;
-
 			if (Application.isPlaying)
 			{
 				if (saveListType == AC_SaveListType.Import)
@@ -647,6 +828,11 @@ namespace AC
 				if (fixedOption)
 				{
 					numSlots = 1;
+
+					if (saveListType == AC_SaveListType.Save)
+					{
+						newSaveSlot = !SaveSystem.DoesSaveExist (optionToShow);
+					}
 				}
 				else
 				{
@@ -732,7 +918,7 @@ namespace AC
 			{
 				return false;
 			}
-			if (shiftType == AC_ShiftInventory.ShiftLeft)
+			if (shiftType == AC_ShiftInventory.ShiftPrevious)
 			{
 				if (offset == 0)
 				{

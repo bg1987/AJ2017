@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2017
+ *	by Chris Burton, 2013-2018
  *	
  *	"MenuCycle.cs"
  * 
@@ -95,24 +95,27 @@ namespace AC
 		}
 
 
-		/**
-		 * <summary>Creates and returns a new MenuCycle that has the same values as itself.</summary>
-		 * <param name = "fromEditor">If True, the duplication was done within the Menu Manager and not as part of the gameplay initialisation.</param>
-		 * <returns>A new MenuCycle with the same values as itself</returns>
-		 */
-		public override MenuElement DuplicateSelf (bool fromEditor)
+		public override MenuElement DuplicateSelf (bool fromEditor, bool ignoreUnityUI)
 		{
 			MenuCycle newElement = CreateInstance <MenuCycle>();
 			newElement.Declare ();
-			newElement.CopyCycle (this);
+			newElement.CopyCycle (this, ignoreUnityUI);
 			return newElement;
 		}
 		
 		
-		private void CopyCycle (MenuCycle _element)
+		private void CopyCycle (MenuCycle _element, bool ignoreUnityUI)
 		{
-			uiButton = _element.uiButton;
+			if (ignoreUnityUI)
+			{
+				uiButton = null;
+			}
+			else
+			{
+				uiButton = _element.uiButton;
+			}
 			uiText = null;
+
 			label = _element.label;
 			textEffects = _element.textEffects;
 			outlineSize = _element.outlineSize;
@@ -138,13 +141,13 @@ namespace AC
 		 * <summary>Initialises the linked Unity UI GameObject.</summary>
 		 * <param name = "_menu">The element's parent Menu</param>
 		 */
-		public override void LoadUnityUI (AC.Menu _menu)
+		public override void LoadUnityUI (AC.Menu _menu, Canvas canvas)
 		{
 			if (_menu.menuSource != MenuSource.AdventureCreator)
 			{
 				if (cycleUIBasis == CycleUIBasis.Button)
 				{
-					uiButton = LinkUIElement <UnityEngine.UI.Button>();
+					uiButton = LinkUIElement <UnityEngine.UI.Button> (canvas);
 					if (uiButton)
 					{
 						if (uiButton.GetComponentInChildren <Text>())
@@ -162,7 +165,7 @@ namespace AC
 					if (uiDropdown != null)
 					{
 						parentMenu = _menu;
-						uiDropdown = LinkUIElement <Dropdown>();
+						uiDropdown = LinkUIElement <Dropdown> (canvas);
 						uiDropdown.value = selected;
 						uiDropdown.onValueChanged.AddListener (delegate {
 	         				uiDropdownValueChangedHandler (uiDropdown);
@@ -235,22 +238,13 @@ namespace AC
 				EditorGUILayout.BeginVertical ("Button");
 			}
 
+			cycleType = (AC_CycleType) CustomGUILayout.EnumPopup ("Cycle type:", cycleType, apiPrefix + ".cycleType");
+
 			if (source == MenuSource.AdventureCreator || cycleUIBasis == CycleUIBasis.Button)
 			{
 				label = CustomGUILayout.TextField ("Label text:", label, apiPrefix + ".label");
 			}
 
-			if (source == MenuSource.AdventureCreator)
-			{
-				anchor = (TextAnchor) CustomGUILayout.EnumPopup ("Text alignment:", anchor, apiPrefix + ".anchor");
-				textEffects = (TextEffects) CustomGUILayout.EnumPopup ("Text effect:", textEffects, apiPrefix + ".textEffects");
-				if (textEffects != TextEffects.None)
-				{
-					outlineSize = CustomGUILayout.Slider ("Effect size:", outlineSize, 1f, 5f, apiPrefix + ".outlineSize");
-				}
-			}
-
-			cycleType = (AC_CycleType) CustomGUILayout.EnumPopup ("Cycle type:", cycleType, apiPrefix + ".cycleType");
 			if (cycleType == AC_CycleType.CustomScript || cycleType == AC_CycleType.Variable)
 			{
 				int numOptions = optionsArray.Count;
@@ -291,7 +285,7 @@ namespace AC
 				}
 				else if (cycleType == AC_CycleType.Variable)
 				{
-					varID = CustomGUILayout.IntField ("Global Variable ID:", varID, apiPrefix + ".varID");
+					varID = AdvGame.GlobalVariableGUI ("Global integer var:", varID, VariableType.Integer);
 				}
 
 				actionListOnClick = (ActionListAsset) CustomGUILayout.ObjectField <ActionListAsset> ("ActionList on click:", actionListOnClick, false, apiPrefix + ".actionListOnClick");
@@ -300,6 +294,27 @@ namespace AC
 			EditorGUILayout.EndVertical ();
 			
 			base.ShowGUI (menu);
+		}
+
+
+		protected override void ShowTextGUI (string apiPrefix)
+		{
+			anchor = (TextAnchor) CustomGUILayout.EnumPopup ("Text alignment:", anchor, apiPrefix + ".anchor");
+			textEffects = (TextEffects) CustomGUILayout.EnumPopup ("Text effect:", textEffects, apiPrefix + ".textEffects");
+			if (textEffects != TextEffects.None)
+			{
+				outlineSize = CustomGUILayout.Slider ("Effect size:", outlineSize, 1f, 5f, apiPrefix + ".outlineSize");
+			}
+		}
+
+
+		public override bool CheckConvertGlobalVariableToLocal (int oldGlobalID, int newLocalID)
+		{
+			if (cycleType == AC_CycleType.Variable && varID == oldGlobalID)
+			{
+				return true;
+			}
+			return false;
 		}
 		
 		#endif

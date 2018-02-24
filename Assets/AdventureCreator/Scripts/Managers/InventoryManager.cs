@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2017
+ *	by Chris Burton, 2013-2018
  *	
  *	"InventoryManager.cs"
  * 
@@ -161,20 +161,23 @@ namespace AC
 		private void ItemsGUI ()
 		{
 			EditorGUILayout.BeginVertical (CustomStyles.thinBox);
-			showUnhandledEvents = CustomGUILayout.ToggleHeader (showUnhandledEvents, "Unhandled events");
+			showUnhandledEvents = CustomGUILayout.ToggleHeader (showUnhandledEvents, "Global unhandled events");
 			if (showUnhandledEvents)
 			{
-				unhandledCombine = ActionListAssetMenu.AssetGUI ("Combine:", unhandledCombine, "AC.KickStarter.runtimeInventory.unhandledCombine");
-				unhandledHotspot = ActionListAssetMenu.AssetGUI ("Use on hotspot:", unhandledHotspot, "AC.KickStarter.runtimeInventory.unhandledHotspot");
+				unhandledCombine = ActionListAssetMenu.AssetGUI ("Combine:", unhandledCombine, "AC.KickStarter.runtimeInventory.unhandledCombine", "Inventory_Unhandled_Combine");
+				unhandledHotspot = ActionListAssetMenu.AssetGUI ("Use on hotspot:", unhandledHotspot, "AC.KickStarter.runtimeInventory.unhandledHotspot", "Inventory_Unhandled_Hotspot");
 				if (settingsManager != null && settingsManager.CanGiveItems ())
 				{
-					unhandledGive = ActionListAssetMenu.AssetGUI ("Give to NPC:", unhandledGive, "AC.KickStarter.runtimeInventory.unhandledGive");
+					unhandledGive = ActionListAssetMenu.AssetGUI ("Give to NPC:", unhandledGive, "AC.KickStarter.runtimeInventory.unhandledGive", "Inventory_Unhandled_Give");
 				}
-				
-				passUnhandledHotspotAsParameter = CustomGUILayout.ToggleLeft ("Pass Hotspot as GameObject parameter?", passUnhandledHotspotAsParameter, "AC.KickStarter.inventoryManager.passUnhandledHotspotAsParameter");
-				if (passUnhandledHotspotAsParameter && unhandledHotspot != null)
+
+				if (unhandledHotspot != null)
 				{
-					EditorGUILayout.HelpBox ("The Hotspot will be set as " + unhandledHotspot.name + "'s first parameter, which must be set to type 'GameObject'.", MessageType.Info);
+					passUnhandledHotspotAsParameter = CustomGUILayout.ToggleLeft ("Pass Hotspot as GameObject parameter?", passUnhandledHotspotAsParameter, "AC.KickStarter.inventoryManager.passUnhandledHotspotAsParameter");
+					if (passUnhandledHotspotAsParameter)
+					{
+						EditorGUILayout.HelpBox ("The Hotspot will be set as " + unhandledHotspot.name + "'s first parameter, which must be set to type 'GameObject'.", MessageType.Info);
+					}
 				}
 			}
 			EditorGUILayout.EndVertical ();
@@ -261,18 +264,18 @@ namespace AC
 
 					EditorGUILayout.BeginHorizontal ();
 					EditorGUILayout.LabelField ("Main graphic:", GUILayout.Width (145));
-					selectedItem.tex = (Texture2D) CustomGUILayout.ObjectField <Texture2D> (selectedItem.tex, false, GUILayout.Width (70), GUILayout.Height (70), apiPrefix + ".tex");
+					selectedItem.tex = (Texture) CustomGUILayout.ObjectField <Texture> (selectedItem.tex, false, GUILayout.Width (70), GUILayout.Height (70), apiPrefix + ".tex");
 					EditorGUILayout.EndHorizontal ();
 
 					EditorGUILayout.BeginHorizontal ();
 					EditorGUILayout.LabelField ("Active graphic:", GUILayout.Width (145));
-					selectedItem.activeTex = (Texture2D) CustomGUILayout.ObjectField <Texture2D> (selectedItem.activeTex, false, GUILayout.Width (70), GUILayout.Height (70), apiPrefix + ".activeTex");
+					selectedItem.activeTex = (Texture) CustomGUILayout.ObjectField <Texture> (selectedItem.activeTex, false, GUILayout.Width (70), GUILayout.Height (70), apiPrefix + ".activeTex");
 					EditorGUILayout.EndHorizontal ();
 
 
 					if (AdvGame.GetReferences ().settingsManager != null && AdvGame.GetReferences ().settingsManager.selectInventoryDisplay == SelectInventoryDisplay.ShowSelectedGraphic)
 					{
-						selectedItem.selectedTex = (Texture2D) CustomGUILayout.ObjectField <Texture2D> ("Selected graphic:", selectedItem.selectedTex, false, apiPrefix + ".selectedTex");
+						selectedItem.selectedTex = (Texture) CustomGUILayout.ObjectField <Texture> ("Selected graphic:", selectedItem.selectedTex, false, apiPrefix + ".selectedTex");
 					}
 					if (AdvGame.GetReferences ().cursorManager != null)
 					{
@@ -356,7 +359,7 @@ namespace AC
 						selectedItem.lookActionList = ActionListAssetMenu.AssetGUI ("Examine:", selectedItem.lookActionList, apiPrefix + ".lookActionList", autoName);
 					}
 					
-					if (settingsManager.CanSelectItems (false))
+					if (settingsManager != null && settingsManager.CanSelectItems (false))
 					{
 						EditorGUILayout.Space ();
 						EditorGUILayout.LabelField ("Unhandled interactions",  CustomStyles.subHeader);
@@ -426,7 +429,7 @@ namespace AC
 							foreach (InvVar invVar in selectedItem.vars)
 							{
 								string label = invVar.label + ":";
-								if (invVar.label.Length == 0)
+								if (string.IsNullOrEmpty (invVar.label))
 								{
 									label = "Property " + invVar.id.ToString () + ":";
 								}
@@ -478,6 +481,7 @@ namespace AC
 				{
 					EditorGUILayout.BeginHorizontal ();
 
+					EditorGUILayout.LabelField (bin.id.ToString () + ":", GUILayout.Width (20f));
 					bin.label = CustomGUILayout.TextField ("", bin.label, "AC.KickStarter.inventoryManager.GetCategory (" + bin.id + ").label");
 					
 					if (GUILayout.Button (deleteContent, EditorStyles.miniButton, GUILayout.MaxWidth(20f)))
@@ -526,6 +530,12 @@ namespace AC
 				{
 					selectedInvVar.label = CustomGUILayout.TextField ("Name:", selectedInvVar.label, apiPrefix + ".label");
 					selectedInvVar.type = (VariableType) CustomGUILayout.EnumPopup ("Type:", selectedInvVar.type, apiPrefix + ".type");
+
+					EditorGUILayout.BeginHorizontal ();
+					EditorGUILayout.LabelField ("Internal description:", GUILayout.MaxWidth (146f));
+					selectedInvVar.description = EditorGUILayout.TextArea (selectedInvVar.description);
+					EditorGUILayout.EndHorizontal ();
+
 					if (selectedInvVar.type == VariableType.PopUp)
 					{
 						selectedInvVar.popUps = VariablesManager.PopupsGUI (selectedInvVar.popUps);
@@ -697,19 +707,74 @@ namespace AC
 					}
 				}
 				EditorGUILayout.EndScrollView ();
-				
+
+				EditorGUILayout.Space ();
+				EditorGUILayout.BeginHorizontal ();
 				if (GUILayout.Button ("Create new item"))
 				{
 					Undo.RecordObject (this, "Create inventory item");
 					
 					ResetFilter ();
-					InvItem newItem = new InvItem (GetIDArray ());
-					items.Add (newItem);
+					InvItem newItem = CreateNewItem ();
 					DeactivateAllItems ();
 					ActivateItem (newItem);
 				}
+
+				if (GUILayout.Button (Resource.CogIcon, GUILayout.Width (20f), GUILayout.Height (15f)))
+				{
+					ExportSideMenu ();
+				}
+				EditorGUILayout.EndHorizontal ();
 			}
 			EditorGUILayout.EndVertical ();
+		}
+
+
+		private void ImportItems ()
+		{
+			bool canProceed = EditorUtility.DisplayDialog ("Import inventory items", "AC will now prompt you for a CSV file to import. It is recommended to back up your project beforehand.", "OK", "Cancel");
+			if (!canProceed) return;
+
+			string fileName = EditorUtility.OpenFilePanel ("Import inventory item data", "Assets", "csv");
+			if (fileName.Length == 0)
+			{
+				return;
+			}
+			
+			if (System.IO.File.Exists (fileName))
+			{
+				string csvText = Serializer.LoadFile (fileName);
+				string [,] csvOutput = CSVReader.SplitCsvGrid (csvText);
+
+				InvItemImportWizardWindow.Init (this, csvOutput);
+			}
+		}
+
+
+		/**
+		 * <summary>Creates a new inventory item</summary>
+		 * <param name = "newID">If >= 0, the ID number of the item, if available.  If it is already taken, the item will not be created</param>
+		 * <returns>The newly-created item</returns>
+		 */
+		public InvItem CreateNewItem (int newID = -1)
+		{
+			List<int> idList = GetIDList ();
+			if (newID >= 0)
+			{
+				if (idList.Contains (newID))
+				{
+					return null;
+				}
+				InvItem newItem = new InvItem (newID);
+				items.Add (newItem);
+				return newItem;
+			}
+			else
+			{
+				InvItem newItem = new InvItem (idList.ToArray ());
+				items.Add (newItem);
+				return newItem;
+			}
 		}
 		
 		
@@ -814,6 +879,30 @@ namespace AC
 			}
 			selectedRecipe = null;
 		}
+
+
+		private void ExportSideMenu ()
+		{
+			GenericMenu menu = new GenericMenu ();
+			menu.AddItem (new GUIContent ("Import items..."), false, ExportCallback, "Import");
+			menu.AddItem (new GUIContent ("Export items..."), false, ExportCallback, "Export");
+			menu.ShowAsContext ();
+		}
+
+
+		private void ExportCallback (object obj)
+		{
+			switch (obj.ToString ())
+			{
+				case "Import":
+					ImportItems ();
+					break;
+
+				case "Export":
+					InvItemExportWizardWindow.Init (this);
+					break;
+			}
+		}
 		
 		
 		private void SideMenu (InvItem item)
@@ -832,11 +921,13 @@ namespace AC
 			}
 			if (sideItem > 0)
 			{
+				menu.AddItem (new GUIContent ("Move to top"), false, Callback, "Move to top");
 				menu.AddItem (new GUIContent ("Move up"), false, Callback, "Move up");
 			}
 			if (sideItem < items.Count-1)
 			{
 				menu.AddItem (new GUIContent ("Move down"), false, Callback, "Move down");
+				menu.AddItem (new GUIContent ("Move to bottom"), false, Callback, "Move to bottom");
 			}
 			
 			menu.ShowAsContext ();
@@ -859,11 +950,13 @@ namespace AC
 			}
 			if (sideItem > 0)
 			{
+				menu.AddItem (new GUIContent ("Move to top"), false, PropertyCallback, "Move to top");
 				menu.AddItem (new GUIContent ("Move up"), false, PropertyCallback, "Move up");
 			}
 			if (sideItem < invVars.Count-1)
 			{
 				menu.AddItem (new GUIContent ("Move down"), false, PropertyCallback, "Move down");
+				menu.AddItem (new GUIContent ("Move to bottom"), false, PropertyCallback, "Move to bottom");
 			}
 			
 			menu.ShowAsContext ();
@@ -881,7 +974,7 @@ namespace AC
 				{
 				case "Insert after":
 					Undo.RecordObject (this, "Insert item");
-					items.Insert (sideItem+1, new InvItem (GetIDArray ()));
+					items.Insert (sideItem+1, new InvItem (GetIDList ().ToArray ()));
 					break;
 					
 				case "Delete":
@@ -900,6 +993,18 @@ namespace AC
 					Undo.RecordObject (this, "Move item down");
 					items.RemoveAt (sideItem);
 					items.Insert (sideItem+1, tempItem);
+					break;
+
+				case "Move to top":
+					Undo.RecordObject (this, "Move item to top");
+					items.RemoveAt (sideItem);
+					items.Insert (0, tempItem);
+					break;
+
+				case "Move to bottom":
+					Undo.RecordObject (this, "Move item to bottom");
+					items.Add (tempItem);
+					items.RemoveAt (sideItem);
 					break;
 				}
 			}
@@ -921,26 +1026,38 @@ namespace AC
 				switch (obj.ToString ())
 				{
 				case "Insert after":
-					Undo.RecordObject (this, "Insert item");
+					Undo.RecordObject (this, "Insert property");
 					invVars.Insert (sideItem+1, new InvVar (GetIDArrayProperty ()));
 					break;
 					
 				case "Delete":
-					Undo.RecordObject (this, "Delete item");
+					Undo.RecordObject (this, "Delete property");
 					DeactivateAllInvVars ();
 					invVars.RemoveAt (sideItem);
 					break;
 					
 				case "Move up":
-					Undo.RecordObject (this, "Move item up");
+					Undo.RecordObject (this, "Move property up");
 					invVars.RemoveAt (sideItem);
 					invVars.Insert (sideItem-1, tempVar);
 					break;
 					
 				case "Move down":
-					Undo.RecordObject (this, "Move item down");
+					Undo.RecordObject (this, "Move property down");
 					invVars.RemoveAt (sideItem);
 					invVars.Insert (sideItem+1, tempVar);
+					break;
+
+				case "Move to top":
+					Undo.RecordObject (this, "Move property to top");
+					invVars.RemoveAt (sideItem);
+					invVars.Insert (0, tempVar);
+					break;
+
+				case "Move to bottom":
+					Undo.RecordObject (this, "Move property to bottom");
+					invVars.Add (tempVar);
+					invVars.RemoveAt (sideItem);
 					break;
 				}
 			}
@@ -984,7 +1101,7 @@ namespace AC
 						}
 					}
 					
-					if (GUILayout.Button ("-", GUILayout.Width (20f), GUILayout.Height (15f)))
+					if (GUILayout.Button (deleteContent, GUILayout.Width (20f), GUILayout.Height (15f)))
 					{
 						Undo.RecordObject (this, "Delete recipe");
 						DeactivateAllRecipes ();
@@ -1028,12 +1145,12 @@ namespace AC
 					
 					selectedRecipe.autoCreate = CustomGUILayout.Toggle ("Result is automatic?", selectedRecipe.autoCreate, apiPrefix + ".autoCreate");
 					selectedRecipe.useSpecificSlots = CustomGUILayout.Toggle ("Requires specific pattern?", selectedRecipe.useSpecificSlots, apiPrefix + ".useSpecificSlots");
-					selectedRecipe.actionListOnCreate = ActionListAssetMenu.AssetGUI ("ActionList when create:", selectedRecipe.actionListOnCreate, apiPrefix + ".actionListOnCreate");
-					
+					selectedRecipe.actionListOnCreate = ActionListAssetMenu.AssetGUI ("ActionList when create:", selectedRecipe.actionListOnCreate, apiPrefix + ".actionListOnCreate", "ActionList_On_Create_" + selectedRecipe.label);
+
 					selectedRecipe.onCreateRecipe = (OnCreateRecipe) CustomGUILayout.EnumPopup ("When click on result:", selectedRecipe.onCreateRecipe, apiPrefix + ".onCreateRecipe");
 					if (selectedRecipe.onCreateRecipe == OnCreateRecipe.RunActionList)
 					{
-						selectedRecipe.invActionList = ActionListAssetMenu.AssetGUI ("ActionList when click:", selectedRecipe.invActionList, apiPrefix + ".invActionList");
+						selectedRecipe.invActionList = ActionListAssetMenu.AssetGUI ("ActionList when click:", selectedRecipe.invActionList, apiPrefix + ".invActionList", "ActionList_On_Click_" + selectedRecipe.label);
 					}
 					
 					EditorGUILayout.Space ();
@@ -1061,7 +1178,7 @@ namespace AC
 							ingredient.slotNumber = EditorGUILayout.IntField (ingredient.slotNumber, GUILayout.Width (30f));
 						}
 						
-						if (GUILayout.Button ("-", GUILayout.Width (20f), GUILayout.Height (15f)))
+						if (GUILayout.Button (deleteContent, GUILayout.Width (20f), GUILayout.Height (15f)))
 						{
 							Undo.RecordObject (this, "Delete ingredient");
 							selectedRecipe.ingredients.Remove (ingredient);
@@ -1085,16 +1202,17 @@ namespace AC
 		}
 		
 		
-		private int[] GetIDArray ()
+		private List<int> GetIDList ()
 		{
-			List<int> idArray = new List<int>();
+			List<int> idList = new List<int>();
 			foreach (InvItem item in items)
 			{
-				idArray.Add (item.id);
+				idList.Add (item.id);
 			}
 			
-			idArray.Sort ();
-			return idArray.ToArray ();
+			idList.Sort ();
+
+			return idList;
 		}
 		
 		
@@ -1296,14 +1414,14 @@ namespace AC
 
 		/**
 		 * <summary>Gets an inventory category.</summary>
-		 * <param name = "_id">The ID number of the inventory category to find</param>
+		 * <param name = "categoryID">The ID number of the inventory category to find</param>
 		 * <returns>The inventory category</returns>
 		 */
-		public InvBin GetCategory (int _id)
+		public InvBin GetCategory (int categoryID)
 		{
 			foreach (InvBin bin in bins)
 			{
-				if (bin.id == _id)
+				if (bin.id == categoryID)
 				{
 					return bin;
 				}
@@ -1314,20 +1432,40 @@ namespace AC
 		
 		/**
 		 * <summary>Checks if multiple instances of an inventory item can exist.</summary>
-		 * <param name = "_id">The ID number of the InvItem to find</param>
+		 * <param name = "itemID">The ID number of the InvItem to find</param>
 		 * <returns>True if multiple instances of the inventory item can exist</returns>
 		 */
-		public bool CanCarryMultiple (int _id)
+		public bool CanCarryMultiple (int itemID)
 		{
 			foreach (InvItem item in items)
 			{
-				if (item.id == _id)
+				if (item.id == itemID)
 				{
 					return item.canCarryMultiple;
 				}
 			}
 			
 			return false;
+		}
+
+
+		/**
+		 * <summary>Gets an array of all inventory items in a given category</summary>
+		 * <param name = "categoryID">The ID number of the category in question</param>
+		 * <returns>An array of all inventory items in the category</returns>
+		 */
+		public InvItem[] GetItemsInCategory (int categoryID)
+		{
+			List<InvItem> itemsList = new List<InvItem>();
+			foreach (InvItem item in items)
+			{
+				if (item.binID == categoryID)
+				{
+					itemsList.Add (item);
+				}
+			}
+
+			return itemsList.ToArray ();
 		}
 		
 	}

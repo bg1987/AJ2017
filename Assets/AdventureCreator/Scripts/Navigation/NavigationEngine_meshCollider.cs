@@ -27,9 +27,20 @@ namespace AC
 		private bool pathFailed = false;
 
 
+		public override void OnReset (NavigationMesh navMesh)
+		{
+			if (!Application.isPlaying) return;
+
+			if (navMesh == null && KickStarter.settingsManager != null && KickStarter.settingsManager.movementMethod == MovementMethod.PointAndClick)
+			{
+				ACDebug.LogWarning ("Could not initialise NavMesh - was one set as the Default in the Settings Manager?");
+			}
+		}
+
+
 		public override void TurnOn (NavigationMesh navMesh)
 		{
-			if (navMesh == null) return;
+			if (navMesh == null || KickStarter.settingsManager == null) return;
 			
 			if (LayerMask.NameToLayer (KickStarter.settingsManager.navMeshLayer) == -1)
 			{
@@ -208,7 +219,7 @@ namespace AC
 		{
 			#if UNITY_EDITOR
 			KickStarter.sceneSettings.navMesh = (NavigationMesh) EditorGUILayout.ObjectField ("Default NavMesh:", KickStarter.sceneSettings.navMesh, typeof (NavigationMesh), true);
-			if (AdvGame.GetReferences ().settingsManager && AdvGame.GetReferences ().settingsManager.IsUnity2D ())
+			if (SceneSettings.IsUnity2D ())
 			{
 				EditorGUILayout.HelpBox ("This method is not compatible with 'Unity 2D' mode.", MessageType.Warning);
 			}

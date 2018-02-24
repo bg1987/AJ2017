@@ -30,7 +30,18 @@ namespace AC
 		public int markerParameterID = -1;
 		public int markerID = 0;
 
+		public GameObject relativeGameObject = null;
+		public int relativeGameObjectID = 0;
+		public int relativeGameObjectParameterID = -1;
+
 		public PositionRelativeTo positionRelativeTo = PositionRelativeTo.Nothing;
+
+		public int relativeVectorParameterID = -1;
+		public Vector3 relativeVector;
+
+		public int vectorVarParameterID = -1;
+		public int vectorVarID;
+		public VariableLocation variableLocation = VariableLocation.Global;
 
 		public bool recalculateActivePathFind = false;
 		public bool isPlayer;
@@ -53,6 +64,9 @@ namespace AC
 		{
 			obToMove = AssignFile (parameters, obToMoveParameterID, obToMoveID, obToMove);
 			teleporter = AssignFile <Marker> (parameters, markerParameterID, markerID, teleporter);
+			relativeGameObject = AssignFile (parameters, relativeGameObjectParameterID, relativeGameObjectID, relativeGameObject);
+			relativeVector = AssignVector3 (parameters, relativeVectorParameterID, relativeVector);
+			vectorVarID = AssignVariableID (parameters, vectorVarParameterID, vectorVarID);
 
 			if (isPlayer && KickStarter.player)
 			{
@@ -91,6 +105,35 @@ namespace AC
 						
 						position = playerTranform.position + (playerTranform.forward * forward) + (playerTranform.right * right) + (playerTranform.up * up);
 						rotation.eulerAngles += playerTranform.rotation.eulerAngles;
+					}
+				}
+				else if (positionRelativeTo == PositionRelativeTo.RelativeToGameObject)
+				{
+					if (relativeGameObject != null)
+					{
+						Transform relativeTransform = relativeGameObject.transform;
+
+						float right = teleporter.transform.position.x;
+						float up = teleporter.transform.position.y;
+						float forward = teleporter.transform.position.z;
+						
+						position = relativeTransform.position + (relativeTransform.forward * forward) + (relativeTransform.right * right) + (relativeTransform.up * up);
+						rotation.eulerAngles += relativeTransform.rotation.eulerAngles;
+					}
+				}
+				else if (positionRelativeTo == PositionRelativeTo.EnteredValue)
+				{
+					position += relativeVector;
+				}
+				else if (positionRelativeTo == PositionRelativeTo.VectorVariable)
+				{
+					if (variableLocation == VariableLocation.Global)
+					{
+						position += GlobalVariables.GetVector3Value (vectorVarID);
+					}
+					else if (variableLocation == VariableLocation.Local && !isAssetFile)
+					{
+						position += LocalVariables.GetVector3Value (vectorVarID);
 					}
 				}
 
@@ -165,6 +208,60 @@ namespace AC
 			}
 			
 			positionRelativeTo = (PositionRelativeTo) EditorGUILayout.EnumPopup ("Position relative to:", positionRelativeTo);
+
+			if (positionRelativeTo == PositionRelativeTo.RelativeToGameObject)
+			{
+				relativeGameObjectParameterID = Action.ChooseParameterGUI ("Relative GameObject:", parameters, relativeGameObjectParameterID, ParameterType.GameObject);
+				if (relativeGameObjectParameterID >= 0)
+				{
+					relativeGameObjectID = 0;
+					relativeGameObject = null;
+				}
+				else
+				{
+					relativeGameObject = (GameObject) EditorGUILayout.ObjectField ("Relative GameObject:", relativeGameObject, typeof (GameObject), true);
+					
+					relativeGameObjectID = FieldToID (relativeGameObject, relativeGameObjectID);
+					relativeGameObject = IDToField (relativeGameObject, relativeGameObjectID, false);
+				}
+			}
+			else if (positionRelativeTo == PositionRelativeTo.EnteredValue)
+			{
+				relativeVectorParameterID = Action.ChooseParameterGUI ("Value:", parameters, relativeVectorParameterID, ParameterType.Vector3);
+				if (relativeVectorParameterID < 0)
+				{
+					relativeVector = EditorGUILayout.Vector3Field ("Value:", relativeVector);
+				}
+			}
+			else if (positionRelativeTo == PositionRelativeTo.VectorVariable)
+			{
+				if (isAssetFile)
+				{
+					variableLocation = VariableLocation.Global;
+				}
+				else
+				{
+					variableLocation = (VariableLocation) EditorGUILayout.EnumPopup ("Source:", variableLocation);
+				}
+
+				if (variableLocation == VariableLocation.Global)
+				{
+					vectorVarParameterID = Action.ChooseParameterGUI ("Vector3 variable:", parameters, vectorVarParameterID, ParameterType.GlobalVariable);
+					if (vectorVarParameterID < 0)
+					{
+						vectorVarID = AdvGame.GlobalVariableGUI ("Vector3 variable:", vectorVarID, VariableType.Vector3);
+					}
+				}
+				else if (variableLocation == VariableLocation.Local)
+				{
+					vectorVarParameterID = Action.ChooseParameterGUI ("Vector3 variable:", parameters, vectorVarParameterID, ParameterType.LocalVariable);
+					if (vectorVarParameterID < 0)
+					{
+						vectorVarID = AdvGame.LocalVariableGUI ("Vector3 variable:", vectorVarID, VariableType.Vector3);
+					}
+				}
+			}
+
 			copyRotation = EditorGUILayout.Toggle ("Copy rotation?", copyRotation);
 
 			if (isPlayer)

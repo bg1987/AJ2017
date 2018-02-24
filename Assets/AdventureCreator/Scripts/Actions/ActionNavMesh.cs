@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2016
+ *	by Chris Burton, 2013-2018
  *	
  *	"ActionNavMesh.cs"
  * 
@@ -143,8 +143,7 @@ namespace AC
 				}
 
 				// Recalculate pathfinding characters
-				Char[] characters = FindObjectsOfType (typeof (Char)) as Char[];
-				foreach (Char _character in characters)
+				foreach (Char _character in KickStarter.stateHandler.Characters)
 				{
 					_character.RecalculateActivePathfind ();
 				}
@@ -188,7 +187,11 @@ namespace AC
 			{
 				sceneSettings.cutsceneOnLoad = cutscene;
 
-				if (cutscene.GetComponent <ConstantID>() == null)
+				if (sceneSettings.actionListSource == ActionListSource.AssetFile)
+				{
+					ACDebug.LogWarning ("Warning: As the Scene Manager relies on asset files for its cutscenes, changes made with the 'Scene: Change setting' Action will not be felt.");
+				}
+				else if (cutscene.GetComponent <ConstantID>() == null)
 				{
 					ACDebug.LogWarning ("Warning: Changing to Cutscene On Load with no ConstantID - change will not be recognised by saved games.");
 				}
@@ -197,7 +200,11 @@ namespace AC
 			{
 				sceneSettings.cutsceneOnStart = cutscene;
 
-				if (cutscene.GetComponent <ConstantID>() == null)
+				if (sceneSettings.actionListSource == ActionListSource.AssetFile)
+				{
+					ACDebug.LogWarning ("Warning: As the Scene Manager relies on asset files for its cutscenes, changes made with the 'Scene: Change setting' Action will not be felt.");
+				}
+				else if (cutscene.GetComponent <ConstantID>() == null)
 				{
 					ACDebug.LogWarning ("Warning: Changing to Cutscene On Start with no ConstantID - change will not be recognised by saved games.");
 				}
@@ -213,6 +220,8 @@ namespace AC
 		{
 			if (sceneSettings == null)
 			{
+				EditorGUILayout.HelpBox ("No 'Scene Settings' component found in the scene. Please add an AC GameEngine object from the Scene Manager.", MessageType.Info);
+				AfterRunningOption ();
 				return;
 			}
 

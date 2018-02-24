@@ -343,7 +343,10 @@ namespace AC
 				}
 				TopToolbarGUI (false);
 
-				UnityVersionHandler.CustomSetDirty (windowData.target);
+				if (GUI.changed)
+				{
+					UnityVersionHandler.CustomSetDirty (windowData.target);
+				}
 			}
 			else
 			{
@@ -487,14 +490,14 @@ namespace AC
 				GUI.enabled = false;
 			}
 
-			if (ToolbarButton (midX - buttonWidth, buttonWidth, showLabel, "Copy", 1))
-			{
-				PerformEmptyCallBack ("Copy selected");
-			}
-
-			if (ToolbarButton (midX, buttonWidth, showLabel, "Cut", 3))
+			if (ToolbarButton (midX - buttonWidth + 10f, buttonWidth, showLabel, "Cut", 3))
 			{
 				PerformEmptyCallBack ("Cut selected");
+			}
+
+			if (ToolbarButton (midX, buttonWidth, showLabel, "Copy", 1))
+			{
+				PerformEmptyCallBack ("Copy selected");
 			}
 
 			if (!noList && AdvGame.copiedActions != null && AdvGame.copiedActions.Count > 0)
@@ -1354,7 +1357,7 @@ namespace AC
 			}
 			else
 			{
-				EditorUtility.SetDirty (windowData.target);
+				UnityVersionHandler.CustomSetDirty (windowData.target, true);
 			}
 		}
 		
@@ -1423,7 +1426,7 @@ namespace AC
 			}
 			else
 			{
-				EditorUtility.SetDirty (windowData.target);
+				UnityVersionHandler.CustomSetDirty (windowData.target, true);
 			}
 		}
 		
@@ -1769,6 +1772,7 @@ namespace AC
 					{
 						string defaultAction = actionsManager.GetDefaultAction ();
 						Action newAction = (Action) CreateInstance (defaultAction);
+						newAction.name = defaultAction;
 						actionList[i] = newAction;
 						
 						if (isAsset)
@@ -1828,6 +1832,7 @@ namespace AC
 				menu.AddSeparator ("");
 				if (!Application.isPlaying)
 				{
+					menu.AddItem (new GUIContent ("Cut selected"), false, EmptyCallback, "Cut selected");
 					menu.AddItem (new GUIContent ("Copy selected"), false, EmptyCallback, "Copy selected");
 				}
 				menu.AddItem (new GUIContent ("Delete selected"), false, EmptyCallback, "Delete selected");
@@ -1865,8 +1870,15 @@ namespace AC
 
 			if (!Application.isPlaying)
 			{
+				menu.AddItem (new GUIContent ("Cut"), false, EmptyCallback, "Cut selected");
 				menu.AddItem (new GUIContent ("Copy"), false, EmptyCallback, "Copy selected");
+				if (AdvGame.copiedActions.Count > 0)
+				{
+					menu.AddItem (new GUIContent ("Paste after"), false, EmptyCallback, "Paste after");
+				}
+				menu.AddSeparator ("");
 			}
+			menu.AddItem (new GUIContent ("Insert after"), false, EmptyCallback, "Insert after");
 			menu.AddItem (new GUIContent ("Delete"), false, EmptyCallback, "Delete selected");
 			
 			if (i>0)
@@ -2085,6 +2097,7 @@ namespace AC
 					if (action.isMarked)
 					{
 						Action copyAction = Object.Instantiate (action) as Action;
+						copyAction.name = copyAction.name.Replace ("(Clone)", "");
 						copyAction.PrepareToCopy (actionList.IndexOf (action), actionList);
 						copyAction.ClearIDs ();
 						copyAction.isMarked = false;
@@ -2307,6 +2320,190 @@ namespace AC
 					{
 						action.showOutputSockets = !action.showOutputSockets;
 						action.isMarked = false;
+					}
+				}
+			}
+			else if (objString == "Insert after")
+			{
+				foreach (Action action in actionList)
+				{
+					if (action.isMarked)
+					{
+						action.isMarked = false;
+
+						int newIndex = actionList.IndexOf (action) + 1;
+
+						if (isAsset)
+						{
+							ActionListAssetEditor.ModifyAction (windowData.targetAsset, action, "Insert after");
+						}
+						else
+						{
+							ActionListEditor.ModifyAction (windowData.target, action, "Insert after");
+						}
+
+						actionList[newIndex].nodeRect.x = action.nodeRect.x + 50;
+						actionList[newIndex].nodeRect.y = action.nodeRect.y + 100;
+						actionList[newIndex].isDisplayed = true;
+
+						if (action is ActionParallel)
+						{
+							ActionParallel actionParallel = (ActionParallel) action;
+							if (actionParallel.endings != null && actionParallel.endings.Count > 0)
+							{
+								actionParallel.endings[0].resultAction = ResultAction.Continue;
+							}
+						}
+						else if (action is ActionCheck)
+						{
+							ActionCheck actionCheck = (ActionCheck) action;
+							actionCheck.resultActionTrue = ResultAction.Continue;
+						}
+						else if (action is ActionCheckMultiple)
+						{
+							ActionCheckMultiple actionCheckMultiple = (ActionCheckMultiple) action;
+							if (actionCheckMultiple.endings != null && actionCheckMultiple.endings.Count > 0)
+							{
+								actionCheckMultiple.endings[0].resultAction = ResultAction.Continue;
+							}
+						}
+						else
+						{
+							action.endAction = ResultAction.Continue;
+						}
+
+						if (isAsset)
+						{
+							AssetDatabase.SaveAssets ();
+						}
+
+						break;
+					}
+				}
+			}
+			else if (objString == "Paste after")
+			{
+				foreach (Action action in actionList)
+				{
+					if (action.isMarked)
+					{
+						action.isMarked = false;
+
+						int offset = actionList.IndexOf (action) + 1;
+						Vector2 initialPosition = new Vector2 (action.nodeRect.x + 50, action.nodeRect.y + 100);
+
+						//
+						Vector2 firstPosition = new Vector2 (AdvGame.copiedActions[0].nodeRect.x, AdvGame.copiedActions[0].nodeRect.y);
+						foreach (Action actionToCopy in AdvGame.copiedActions)
+						{
+							if (actionToCopy == null)
+							{
+								ACDebug.LogWarning ("Error when pasting Action - cannot find original. Did you change scene before pasting? If you need to transfer Actions between scenes, copy them to an ActionList asset first.");
+								continue;
+							}
+
+							int ownIndex = AdvGame.copiedActions.IndexOf (actionToCopy);
+
+							AC.Action duplicatedAction = Object.Instantiate (actionToCopy) as AC.Action;
+							duplicatedAction.PrepareToPaste (offset);
+
+							if (ownIndex == 0)
+							{
+								duplicatedAction.nodeRect.x = initialPosition.x;
+								duplicatedAction.nodeRect.y = initialPosition.y;
+							}
+							else
+							{
+								duplicatedAction.nodeRect.x = initialPosition.x + (actionToCopy.nodeRect.x - firstPosition.x);
+								duplicatedAction.nodeRect.y = initialPosition.y + (actionToCopy.nodeRect.y - firstPosition.y);
+							}
+							if (isAsset)
+							{
+								duplicatedAction.hideFlags = HideFlags.HideInHierarchy;
+								AssetDatabase.AddObjectToAsset (duplicatedAction, windowData.targetAsset);
+							}
+
+							duplicatedAction.isMarked = true;
+							actionList.Insert (offset + ownIndex, duplicatedAction);
+						}
+
+						if (action is ActionParallel)
+						{
+							ActionParallel actionParallel = (ActionParallel) action;
+							if (actionParallel.endings != null && actionParallel.endings.Count > 0)
+							{
+								actionParallel.endings[0].resultAction = ResultAction.Continue;
+							}
+						}
+						else if (action is ActionCheck)
+						{
+							ActionCheck actionCheck = (ActionCheck) action;
+							actionCheck.resultActionTrue = ResultAction.Continue;
+						}
+						else if (action is ActionCheckMultiple)
+						{
+							ActionCheckMultiple actionCheckMultiple = (ActionCheckMultiple) action;
+							if (actionCheckMultiple.endings != null && actionCheckMultiple.endings.Count > 0)
+							{
+								actionCheckMultiple.endings[0].resultAction = ResultAction.Continue;
+							}
+						}
+						else
+						{
+							action.endAction = ResultAction.Continue;
+						}
+
+						if (isAsset)
+						{
+							AssetDatabase.SaveAssets ();
+						}
+
+						/*
+						int newIndex = actionList.IndexOf (action) + 1;
+
+						if (isAsset)
+						{
+							ActionListAssetEditor.ModifyAction (windowData.targetAsset, action, "Paste after");
+						}
+						else
+						{
+							ActionListEditor.ModifyAction (windowData.target, action, "Paste after");
+						}
+						
+						//actionList[newIndex].nodeRect.x = action.nodeRect.x + 50;
+						//actionList[newIndex].nodeRect.y = action.nodeRect.y + 100;
+						actionList[newIndex].isDisplayed = true;
+
+						if (action is ActionParallel)
+						{
+							ActionParallel actionParallel = (ActionParallel) action;
+							if (actionParallel.endings != null && actionParallel.endings.Count > 0)
+							{
+								actionParallel.endings[0].resultAction = ResultAction.Continue;
+							}
+						}
+						else if (action is ActionCheck)
+						{
+							ActionCheck actionCheck = (ActionCheck) action;
+							actionCheck.resultActionTrue = ResultAction.Continue;
+						}
+						else if (action is ActionCheckMultiple)
+						{
+							ActionCheckMultiple actionCheckMultiple = (ActionCheckMultiple) action;
+							if (actionCheckMultiple.endings != null && actionCheckMultiple.endings.Count > 0)
+							{
+								actionCheckMultiple.endings[0].resultAction = ResultAction.Continue;
+							}
+						}
+						else
+						{
+							action.endAction = ResultAction.Continue;
+						}
+
+						//*/
+
+						AdvGame.DuplicateActionsBuffer ();
+						break;
 					}
 				}
 			}

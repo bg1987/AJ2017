@@ -33,8 +33,8 @@ namespace AC
 		public int lineID = -1;
 		/** A unique identifier */
 		public int id;
-		
-		
+
+
 		/**
 		 * The default Constructor.
 		 */
@@ -47,6 +47,7 @@ namespace AC
 			isAnimated = false;
 			numFrames = 1;
 			size = 0.04f;
+			frameSpeeds = new float[0];
 			
 			label = "Icon " + (id + 1).ToString ();
 		}
@@ -64,6 +65,7 @@ namespace AC
 			lineID = -1;
 			isAnimated = false;
 			numFrames = 1;
+			frameSpeeds = new float[0];
 			
 			// Update id based on array
 			foreach (int _id in idArray)
@@ -117,7 +119,7 @@ namespace AC
 	{
 		
 		/** The texture to use */
-		public Texture2D texture;
+		public Texture texture;
 		/** If True, then the texture will be considered to consist of multiple animation frames, and they will be displayed sequentially */
 		public bool isAnimated = false;
 		/** The number of frames in the texture, if animated */
@@ -132,8 +134,12 @@ namespace AC
 		public float animSpeed = 4f;
 		/** If True, then animations will end on the final frame, rather than looping */
 		public bool endAnimOnLastFrame = false;
+		/** If True, and isAnimated = True, then the first frame will be skipped when in a looping animation */
+		public bool skipFirstFrameWhenLooping = false;
 		/** The offset of the "click point", when used as a cursor */
 		public Vector2 clickOffset;
+		/** An array of the speeds for each frame when animating, where the index of the array corresponds to the frame of the animation */
+		public float[] frameSpeeds;
 		
 		private string uniqueIdentifier;
 		private float frameIndex = 0f;
@@ -141,8 +147,10 @@ namespace AC
 		private float frameHeight = -1;
 		private UnityEngine.Sprite[] sprites;
 		private Texture2D[] textures;
-		
-		
+		private Texture2D texture2D;
+		private Rect firstFrameRect = new Rect ();
+
+
 		/**
 		 * The default Constructor.
 		 */
@@ -150,12 +158,14 @@ namespace AC
 		{
 			texture = null;
 			isAnimated = false;
+			frameSpeeds = new float[0];
 			numFrames = numRows = numCols = 1;
 			size = 0.015f;
 			frameIndex = 0f;
 			frameWidth = frameHeight = -1f;
 			animSpeed = 4;
 			endAnimOnLastFrame = false;
+			skipFirstFrameWhenLooping = false;
 			clickOffset = Vector2.zero;
 		}
 		
@@ -171,11 +181,22 @@ namespace AC
 			numFrames = _icon.numFrames;
 			animSpeed = _icon.animSpeed;
 			endAnimOnLastFrame = _icon.endAnimOnLastFrame;
+			skipFirstFrameWhenLooping = _icon.skipFirstFrameWhenLooping;
 			clickOffset = _icon.clickOffset;
 			numRows = _icon.numRows;
 			numCols = _icon.numCols;
 			size = _icon.size;
-			
+
+			frameSpeeds = new float[0];
+			if (_icon.frameSpeeds != null)
+			{
+				frameSpeeds = new float[_icon.frameSpeeds.Length];
+				for (int i=0; i<frameSpeeds.Length; i++)
+				{
+					frameSpeeds[i] = _icon.frameSpeeds[i];
+				}
+			}
+
 			Reset ();
 		}
 		
@@ -202,14 +223,14 @@ namespace AC
 					}
 					else
 					{
-						GUI.DrawTextureWithTexCoords (_rect, texture, new Rect (0f, 1f - frameHeight, frameWidth, frameHeight));
+						GUI.DrawTextureWithTexCoords (_rect, texture, firstFrameRect);
 						frameIndex = 0f;
 					}
 				}
 				else
 				{
 					Reset ();
-					GUI.DrawTextureWithTexCoords (_rect, texture, new Rect (0f, 1f - frameHeight, frameWidth, 1f - frameHeight));
+					GUI.DrawTextureWithTexCoords (_rect, texture, firstFrameRect);
 					frameIndex = 0f;
 				}
 			}
@@ -227,7 +248,7 @@ namespace AC
 		 */
 		public UnityEngine.Sprite GetSprite ()
 		{
-			if (texture == null)
+			if (Texture2D == null)
 			{
 				return null;
 			}
@@ -238,7 +259,7 @@ namespace AC
 			}
 			if (sprites != null && sprites.Length > 0 && sprites[0] == null)
 			{
-				sprites[0] = UnityEngine.Sprite.Create (texture, new Rect (0f, 0f, texture.width, texture.height), new Vector2 (0.5f, 0.5f));
+				sprites[0] = UnityEngine.Sprite.Create (texture2D, new Rect (0f, 0f, texture2D.width, texture2D.height), new Vector2 (0.5f, 0.5f));
 			}
 			return sprites[0];
 		}
@@ -252,7 +273,7 @@ namespace AC
 		 */
 		public UnityEngine.Sprite GetAnimatedSprite (int _frameIndex)
 		{
-			if (texture == null)
+			if (Texture2D == null)
 			{
 				return null;
 			}
@@ -278,7 +299,7 @@ namespace AC
 			if (sprites[_frameIndex] == null)
 			{
 				Rect _rect = new Rect (frameWidth * (frameInRow-1) * texture.width, frameHeight * (numRows - currentRow) * texture.height, frameWidth * texture.width, frameHeight * texture.height);
-				sprites[_frameIndex] = UnityEngine.Sprite.Create (texture, _rect, new Vector2 (0.5f, 0.5f));
+				sprites[_frameIndex] = UnityEngine.Sprite.Create (texture2D, _rect, new Vector2 (0.5f, 0.5f));
 			}
 			
 			return sprites[_frameIndex];
@@ -293,7 +314,7 @@ namespace AC
 		 */
 		public UnityEngine.Sprite GetAnimatedSprite (bool isActive)
 		{
-			if (texture == null)
+			if (Texture2D == null)
 			{
 				return null;
 			}
@@ -314,7 +335,7 @@ namespace AC
 						{
 							Rect animatedRect = GetAnimatedRect ();
 							animatedRect = new Rect (animatedRect.x * texture.width, animatedRect.y * texture.height, animatedRect.width * texture.width, animatedRect.height * texture.height);
-							sprites[i] = UnityEngine.Sprite.Create (texture, animatedRect, new Vector2 (0.5f, 0.5f));
+							sprites[i] = UnityEngine.Sprite.Create (texture2D, animatedRect, new Vector2 (0.5f, 0.5f));
 						}
 						return sprites[i];
 					}
@@ -323,7 +344,7 @@ namespace AC
 						frameIndex = 0f;
 						if (sprites[0] == null)
 						{
-							sprites[0] = UnityEngine.Sprite.Create (texture, new Rect (0f, 1f - frameHeight, frameWidth, frameHeight), new Vector2 (0.5f, 0.5f));
+							sprites[0] = UnityEngine.Sprite.Create (texture2D, firstFrameRect, new Vector2 (0.5f, 0.5f));
 						}
 						return sprites[0];
 					}
@@ -337,7 +358,7 @@ namespace AC
 				}
 				if (sprites != null && sprites.Length > 0 && sprites[0] == null)
 				{
-					sprites[0] = UnityEngine.Sprite.Create (texture, new Rect (0, 0, texture.width, texture.height), new Vector2 (0.5f, 0.5f));
+					sprites[0] = UnityEngine.Sprite.Create (texture2D, new Rect (0, 0, texture.width, texture.height), new Vector2 (0.5f, 0.5f));
 				}
 				return sprites[0];
 			}
@@ -360,7 +381,7 @@ namespace AC
 		 */
 		public Texture2D GetAnimatedTexture (bool canAnimate = true)
 		{
-			if (texture == null)
+			if (Texture2D == null)
 			{
 				return null;
 			}
@@ -368,17 +389,17 @@ namespace AC
 			if (isAnimated)
 			{
 				Rect animatedRect = GetAnimatedRect ((canAnimate) ? -1 : 0);
-				int x = Mathf.FloorToInt (animatedRect.x * texture.width);
-				int y = Mathf.FloorToInt (animatedRect.y * texture.height);
-				int width = Mathf.FloorToInt (animatedRect.width * texture.width);
-				int height = Mathf.FloorToInt (animatedRect.height * texture.height);
+				int x = Mathf.FloorToInt (animatedRect.x * Texture2D.width);
+				int y = Mathf.FloorToInt (animatedRect.y * Texture2D.height);
+				int width = Mathf.FloorToInt (animatedRect.width * Texture2D.width);
+				int height = Mathf.FloorToInt (animatedRect.height * Texture2D.height);
 
 				if (animatedRect.width >= 0f && animatedRect.height >= 0f)
 				{
 					try
 					{
-						Color[] pix = texture.GetPixels (x, y, width, height);
-						Texture2D frameTex = new Texture2D ((int) (frameWidth * texture.width), (int) (frameHeight * texture.height));
+						Color[] pix = Texture2D.GetPixels (x, y, width, height);
+						Texture2D frameTex = new Texture2D ((int) (frameWidth * Texture2D.width), (int) (frameHeight * Texture2D.height));
 						frameTex.SetPixels (pix);
 						frameTex.filterMode = texture.filterMode;
 						frameTex.Apply ();
@@ -390,7 +411,7 @@ namespace AC
 					}
 				}
 			}
-			return texture;
+			return texture2D;
 		}
 		
 		
@@ -410,6 +431,7 @@ namespace AC
 		public void ClearCache ()
 		{
 			textures = null;
+			texture2D = null;
 			sprites = null;
 		}
 		
@@ -420,12 +442,12 @@ namespace AC
 		 * <param name = "canAnimate">If True, and isAnimated = True, the texture can be animated. If False, the texture will never animate</param>
 		 * <returns>The texture displayed, which may be only a portion of the whole texture if animated</returns>
 		 */
-		public Texture2D Draw (Vector2 centre, bool canAnimate = true)
+		public Texture Draw (Vector2 centre, bool canAnimate = true)
 		{
-			if (texture == null)
+			/*if (Texture2D == null)
 			{
 				return null;
-			}
+			}*/
 			
 			float _size = size;
 			
@@ -444,6 +466,10 @@ namespace AC
 				{
 					frameIndex = 0f;
 				}
+				else if (skipFirstFrameWhenLooping && frameIndex < 1f)
+				{
+					frameIndex = 1f;
+				}
 
 				GetAnimatedRect ();
 				if (textures == null)
@@ -457,14 +483,17 @@ namespace AC
 				}
 				if (textures[i] == null)
 				{
-					textures[i] = GetAnimatedTexture (canAnimate);
+					if (Texture2D == null)
+					{
+						ACDebug.LogWarning ("Cannot animate texture " + texture + " as it is not a Texture2D.");
+					}
+					else
+					{
+						textures[i] = GetAnimatedTexture (canAnimate);
+					}
 				}
 				GUI.DrawTexture (_rect, textures[i]);
 				return textures[i];
-
-				// OLD
-				//GUI.DrawTextureWithTexCoords (_rect, texture, GetAnimatedRect ());
-				//return GetAnimatedTexture ();
 			}
 			else
 			{
@@ -482,7 +511,7 @@ namespace AC
 		{
 			int currentRow = 1;
 			int frameInRow = 1;
-			
+
 			if (frameIndex < 0f)
 			{
 				frameIndex = 0f;
@@ -491,16 +520,16 @@ namespace AC
 			{
 				if (endAnimOnLastFrame && frameIndex >= (numFrames -1))
 				{}
-				else if (Time.deltaTime == 0f)
-				{
-					frameIndex += 0.02f * animSpeed;
-				}
 				else
 				{
-					frameIndex += Time.deltaTime * animSpeed;
+					int i = Mathf.FloorToInt (frameIndex);
+					float frameSpeed = (frameSpeeds != null && i < frameSpeeds.Length) ? frameSpeeds[i] : 1f;
+
+					float deltaTime = (Time.deltaTime == 0f) ? 0.02f : Time.deltaTime;
+					frameIndex += deltaTime * animSpeed * frameSpeed;
 				}
 			}
-			
+
 			frameInRow = Mathf.FloorToInt (frameIndex)+1;
 			while (frameInRow > numCols)
 			{
@@ -510,16 +539,25 @@ namespace AC
 			
 			if (frameIndex >= numFrames)
 			{
-				if (!endAnimOnLastFrame)
-				{
-					frameIndex = 0f;
-					frameInRow = 1;
-					currentRow = 1;
-				}
-				else
+				if (endAnimOnLastFrame)
 				{
 					frameIndex = numFrames - 1;
 					frameInRow -= 1;
+				}
+				else
+				{
+					if (skipFirstFrameWhenLooping && numFrames > 1f)
+					{
+						frameIndex = 1f;
+						frameInRow = 2;
+					}
+					else
+					{
+						frameIndex = 0f;
+						frameInRow = 1;
+					}
+
+					currentRow = 1;
 				}
 			}
 			
@@ -583,19 +621,25 @@ namespace AC
 				{
 					animSpeed = 0;
 				}
+
+				firstFrameRect = new Rect (0f, 1f - frameHeight, frameWidth, frameHeight);
 			}
 		}
 		
 		
 		#if UNITY_EDITOR
-		
+
+		private bool showExtra;
+
 		public void ShowGUI (bool includeSize, string _label = "Texture:", CursorRendering cursorRendering = CursorRendering.Software, string apiPrefix = "")
 		{
 			EditorGUILayout.BeginHorizontal ();
 			EditorGUILayout.LabelField (_label, GUILayout.Width (145));
-			texture = (Texture2D) CustomGUILayout.ObjectField <Texture2D> (texture, false, GUILayout.Width (70), GUILayout.Height (70), apiPrefix + ".texture");
+			texture = (Texture) CustomGUILayout.ObjectField <Texture> (texture, false, GUILayout.Width (70), GUILayout.Height (70), apiPrefix + ".texture");
 			EditorGUILayout.EndHorizontal ();
-			
+
+			if (texture == null) return;
+
 			if (includeSize)
 			{
 				if (cursorRendering == CursorRendering.Software)
@@ -605,8 +649,8 @@ namespace AC
 
 				EditorGUILayout.BeginHorizontal ();
 				EditorGUILayout.LabelField ("Click offset (from " + ((cursorRendering == CursorRendering.Software) ? "centre):" : "top left):"), GUILayout.Width (150f));
-				clickOffset = CustomGUILayout.Vector2Field ("", clickOffset, GUILayout.Width (130f), apiPrefix + ".clickOffset");
-				EditorGUILayout.EndVertical ();
+				clickOffset = CustomGUILayout.Vector2Field ("", clickOffset, apiPrefix + ".clickOffset");
+				EditorGUILayout.EndHorizontal ();
 			}
 			
 			isAnimated = CustomGUILayout.Toggle ("Animate?", isAnimated, apiPrefix + ".isAnimated");
@@ -622,11 +666,69 @@ namespace AC
 				EditorGUILayout.EndHorizontal ();
 				
 				animSpeed = CustomGUILayout.FloatField ("Animation speed:", animSpeed, apiPrefix + ".animSpeed");
-				endAnimOnLastFrame = CustomGUILayout.Toggle ("End on last frame?", endAnimOnLastFrame, apiPrefix + ".endAnimOnLastFrame");
+
+				showExtra = EditorGUILayout.Foldout (showExtra, "Additional settings:");
+				if (showExtra)
+				{
+					EditorGUILayout.BeginVertical (CustomStyles.thinBox);
+					endAnimOnLastFrame = CustomGUILayout.ToggleLeft ("End on last frame?", endAnimOnLastFrame, apiPrefix + ".endAnimOnLastFrame");
+					skipFirstFrameWhenLooping = CustomGUILayout.ToggleLeft ("Skip first when animating?", skipFirstFrameWhenLooping, apiPrefix + ".skipFirstFrameWhenLooping");
+
+					SyncFrameSpeeds ();
+					for (int i=0; i<numFrames; i++)
+					{
+						if (i == 0 && skipFirstFrameWhenLooping) continue;
+						if (i == (numFrames-1) && endAnimOnLastFrame) continue;
+
+						frameSpeeds[i] = EditorGUILayout.Slider ("Frame #" + (i+1).ToString () + " relative speed:", frameSpeeds[i], 0.01f, 1f);
+					}
+					EditorGUILayout.EndVertical ();
+				}
 			}
 		}
 		
 		#endif
+
+
+		private Texture2D Texture2D
+		{
+			get
+			{
+				if (texture2D == null && texture != null && texture is Texture2D)
+				{
+					texture2D = (Texture2D) texture;
+				}
+				return texture2D;
+			}
+		}
+
+
+		private void SyncFrameSpeeds ()
+		{
+			if (frameSpeeds == null) frameSpeeds = new float[0];
+
+			if (frameSpeeds.Length != numFrames)
+			{
+				float[] backup = new float[frameSpeeds.Length];
+				for (int i=0; i<frameSpeeds.Length; i++)
+				{
+					backup[i] = frameSpeeds[i];
+				}
+
+				frameSpeeds = new float[numFrames];
+				for (int i=0; i<numFrames; i++)
+				{
+					if (i < backup.Length)
+					{
+						frameSpeeds[i] = backup[i];
+					}
+					else
+					{
+						frameSpeeds[i] = 1f;
+					}
+				}
+			}
+		}
 		
 	}
 	

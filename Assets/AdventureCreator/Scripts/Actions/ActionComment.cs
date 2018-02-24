@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2016
+ *	by Chris Burton, 2013-2018
  *	
  *	"ActionComment.cs"
  * 
@@ -25,6 +25,8 @@ namespace AC
 		
 		public string commentText = "";
 		public bool outputToDebugger;
+
+		private string convertedText;
 		
 		
 		public ActionComment ()
@@ -36,11 +38,17 @@ namespace AC
 		}
 
 
+		public override void AssignValues (System.Collections.Generic.List<ActionParameter> parameters)
+		{
+			convertedText = AdvGame.ConvertTokens (commentText, 0, null, parameters);
+		}
+
+
 		public override float Run ()
 		{
-			if (outputToDebugger && commentText.Length > 0)
+			if (outputToDebugger && !string.IsNullOrEmpty (convertedText))
 			{
-				ACDebug.Log (AdvGame.ConvertTokens (commentText));
+				ACDebug.Log (convertedText);
 			}
 			return 0f;
 		}
@@ -61,7 +69,7 @@ namespace AC
 		
 		public override string SetLabel ()
 		{
-			if (commentText.Length > 0)
+			if (!string.IsNullOrEmpty (commentText))
 			{
 				int i = commentText.IndexOf ("\n");
 				if (i > 0)
@@ -72,7 +80,38 @@ namespace AC
 			}
 			return "";
 		}
-		
+
+
+		public override bool ConvertLocalVariableToGlobal (int oldLocalID, int newGlobalID)
+		{
+			bool wasAmended = base.ConvertLocalVariableToGlobal (oldLocalID, newGlobalID);
+
+			string updatedCommentText = AdvGame.ConvertLocalVariableTokenToGlobal (commentText, oldLocalID, newGlobalID);
+			if (commentText != updatedCommentText)
+			{
+				wasAmended = true;
+				commentText = updatedCommentText;
+			}
+			return wasAmended;
+		}
+
+
+		public override bool ConvertGlobalVariableToLocal (int oldGlobalID, int newLocalID, bool isCorrectScene)
+		{
+			bool isAffected = base.ConvertGlobalVariableToLocal (oldGlobalID, newLocalID, isCorrectScene);
+
+			string updatedCommentText = AdvGame.ConvertGlobalVariableTokenToLocal (commentText, oldGlobalID, newLocalID);
+			if (commentText != updatedCommentText)
+			{
+				isAffected = true;
+				if (isCorrectScene)
+				{
+					commentText = updatedCommentText;
+				}
+			}
+			return isAffected;
+		}
+
 		#endif
 		
 	}

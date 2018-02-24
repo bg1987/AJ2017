@@ -18,7 +18,7 @@ namespace AC
 
 	/**
 	 * This component is where inventory items (see InvItem) are stored at runtime.
-	 * When the player aquires an item, it is transferred here (into localItems) from the InventoryManager asset.
+	 * When the player aquires an item, it is transferred here (into _localItems) from the InventoryManager asset.
 	 * It should be placed on the PersistentEngine prefab.
 	 */
 	#if !(UNITY_4_6 || UNITY_4_7 || UNITY_5_0)
@@ -28,7 +28,7 @@ namespace AC
 	{
 
 		/** A List of inventory items (InvItem) carried by the player */
-		[HideInInspector] public List<InvItem> localItems = new List<InvItem>();
+		private List<InvItem> _localItems = new List<InvItem>();
 		/** A List of inventory items (InvItem) being used in the current Recipe being crafted */
 		[HideInInspector] public List<InvItem> craftingItems = new List<InvItem>();
 		/** The default ActionListAsset to run if an inventory combination is unhandled */
@@ -38,8 +38,8 @@ namespace AC
 		/** The default ActionListAsset to run if giving an inventory item to an NPC is unhandled */
 		[HideInInspector] public ActionListAsset unhandledGive;
 
-		/** The inventory item that is currently selected */
-		[HideInInspector] public InvItem selectedItem = null;
+		private InvItem selectedItem = null;
+		private InvItem lastSelectedItem = null;
 		/** The inventory item that is currently being hovered over by the cursor */
 		[HideInInspector] public InvItem hoverItem = null;
 		/** The inventory item that is currently being highlighted within an MenuInventoryBox element */
@@ -71,7 +71,7 @@ namespace AC
 			showHoverLabel = true;
 			
 			craftingItems.Clear ();
-			localItems.Clear ();
+			_localItems.Clear ();
 			GetItemsOnStart ();
 
 			if (KickStarter.inventoryManager)
@@ -100,7 +100,7 @@ namespace AC
 		 */
 		public void SetNull ()
 		{
-			if (selectedItem != null && localItems.Contains (selectedItem))
+			if (selectedItem != null && _localItems.Contains (selectedItem))
 			{
 				KickStarter.eventManager.Call_OnChangeInventory (selectedItem, InventoryEventType.Deselect);
 			}
@@ -125,12 +125,12 @@ namespace AC
 				return;
 			}
 
-			foreach (InvItem item in localItems)
+			foreach (InvItem item in _localItems)
 			{
 				if (item != null && item.id == _id)
 				{
 					SetSelectItemMode (_mode);
-					selectedItem = item;
+					lastSelectedItem = selectedItem = item;
 
 					PlayerMenus.ResetInventoryBoxes ();
 					KickStarter.eventManager.Call_OnChangeInventory (selectedItem, InventoryEventType.Select);
@@ -150,7 +150,11 @@ namespace AC
 		 */
 		public void SelectItem (InvItem item, SelectItemMode _mode = SelectItemMode.Use)
 		{
-			if (selectedItem == item)
+			if (item == null)
+			{
+				SetNull ();
+			}
+			else if (selectedItem == item)
 			{
 				SetNull ();
 				KickStarter.playerCursor.ResetSelectedCursor ();
@@ -158,7 +162,8 @@ namespace AC
 			else
 			{
 				SetSelectItemMode (_mode);
-				selectedItem = item;
+				lastSelectedItem = selectedItem = item;
+
 				KickStarter.eventManager.Call_OnChangeInventory (selectedItem, InventoryEventType.Select);
 				PlayerMenus.ResetInventoryBoxes ();
 			}
@@ -231,7 +236,7 @@ namespace AC
 								}
 								else
 								{
-									localItems.Add (newItem);
+									_localItems.Add (newItem);
 								}
 							}
 						}
@@ -243,7 +248,7 @@ namespace AC
 							}
 							else
 							{
-								localItems.Add (new InvItem (item));
+								_localItems.Add (new InvItem (item));
 							}
 						}
 					}
@@ -265,13 +270,13 @@ namespace AC
 		public void Replace (int _addID, int _removeID, int addAmount = 1)
 		{
 			int _index = -1;
-			foreach (InvItem item in localItems)
+			foreach (InvItem item in _localItems)
 			{
 				if (item == null) continue;
 
 				if (item.id == _removeID && _index == -1)
 				{
-					_index = localItems.IndexOf (item);
+					_index = _localItems.IndexOf (item);
 				}
 
 				if (item.id == _addID)
@@ -298,7 +303,8 @@ namespace AC
 						addAmount = 1;
 					}
 					newItem.count = addAmount;
-					localItems [_index] = newItem;
+					_localItems [_index] = newItem;
+					PlayerMenus.ResetInventoryBoxes ();
 					return;
 				}
 			}
@@ -311,16 +317,17 @@ namespace AC
 		 * <param name = "amount">The amount if the inventory item to add, if the InvItem's canCarryMultiple = True</param>
 		 * <param name = "selectAfter">If True, then the inventory item will be automatically selected</param>
 		 * <param name = "playerID">The ID number of the Player to receive the item, if multiple Player prefabs are supported. If playerID = -1, the current player will receive the item</param>
+		 * <param name = "addToFront">If True, the new item will be added to the front of the inventory</param>
 		 */
-		public void Add (int _id, int amount = 1, bool selectAfter = false, int playerID = -1)
+		public void Add (int _id, int amount = 1, bool selectAfter = false, int playerID = -1, bool addToFront = false)
 		{
 			if (playerID >= 0 && KickStarter.player.ID != playerID)
 			{
-				AddToOtherPlayer (_id, amount, playerID);
+				AddToOtherPlayer (_id, amount, playerID, addToFront);
 			}
 			else
 			{
-				localItems = Add (_id, amount, localItems, selectAfter);
+				_localItems = Add (_id, amount, _localItems, selectAfter, addToFront);
 				KickStarter.eventManager.Call_OnChangeInventory (GetItem (_id), InventoryEventType.Add, amount);
 			}
 		}
@@ -332,9 +339,10 @@ namespace AC
 		 * <param name = "amount">The amount if the inventory item to add, if the InvItem's canCarryMultiple = True</param>
 		 * <param name = "itemList">The list of inventory items to add the new item to</param>
 		 * <param name = "selectAfter">If True, then the inventory item will be automatically selected</param>
+		 * <param name = "addToFront">If True, the new item will be added to the front of the inventory</param>
 		 * <returns>The modified List of inventory items</returns>
 		 */
-		public List<InvItem> Add (int _id, int amount, List<InvItem> itemList, bool selectAfter)
+		public List<InvItem> Add (int _id, int amount, List<InvItem> itemList, bool selectAfter, bool addToFront = false)
 		{
 			itemList = ReorderItems (itemList);
 			
@@ -359,10 +367,12 @@ namespace AC
 					{
 						SelectItem (item, SelectItemMode.Use);
 					}
+
+					PlayerMenus.ResetInventoryBoxes ();
 					return itemList;
 				}
 			}
-			
+
 			// Not already carrying the item
 			foreach (InvItem assetItem in KickStarter.inventoryManager.items)
 			{
@@ -378,6 +388,24 @@ namespace AC
 					
 					if (KickStarter.settingsManager.canReorderItems)
 					{
+						if (addToFront && itemList.Count > 0 && itemList[0] != null)
+						{
+							itemList.Insert (0, newItem);
+
+							if (newItem.canCarryMultiple && newItem.useSeparateSlots)
+							{
+								int count = newItem.count-1;
+								newItem.count = 1;
+								for (int j=0; j<count; j++)
+								{
+									itemList.Insert (0, newItem);
+								}
+							}
+
+							PlayerMenus.ResetInventoryBoxes ();
+							return itemList;	
+						}
+
 						// Insert into first "blank" space
 						for (int i=0; i<itemList.Count; i++)
 						{
@@ -398,6 +426,8 @@ namespace AC
 										itemList.Add (newItem);
 									}
 								}
+
+								PlayerMenus.ResetInventoryBoxes ();
 								return itemList;
 							}
 						}
@@ -409,23 +439,42 @@ namespace AC
 						newItem.count = 1;
 						for (int i=0; i<count; i++)
 						{
-							itemList.Add (newItem);
+							if (addToFront)
+							{
+								itemList.Insert (0, newItem);
+							}
+							else
+							{
+								itemList.Add (newItem);
+							}
 						}
 					}
 					else
 					{
-						itemList.Add (newItem);
+						if (addToFront)
+						{
+							itemList.Insert (0, newItem);
+						}
+						else
+						{
+							itemList.Add (newItem);
+						}
 					}
 					
 					if (selectAfter)
 					{
 						SelectItem (newItem, SelectItemMode.Use);
 					}
+
+					PlayerMenus.ResetInventoryBoxes ();
 					return itemList;
 				}
 			}
+
+			ACDebug.LogWarning ("Cannot add inventory with ID=" + _id + ", because it cannot be found in the Inventory Manager.");
 			
 			itemList = RemoveEmptySlots (itemList);
+			PlayerMenus.ResetInventoryBoxes ();
 			return itemList;
 		}
 		
@@ -437,7 +486,7 @@ namespace AC
 		 * <param name = "setAmount">If False, then all instances of the inventory item will be removed, even if the InvItem's canCarryMultiple = True</param>
 		 * <param name = "playerID">The ID number of the Player to lose the item, if multiple Player prefabs are supported. If playerID = -1, the current player will lose the item</param>
 		 */
-		public void Remove (int _id, int amount, bool setAmount, int playerID = -1)
+		public void Remove (int _id, int amount = 1, bool setAmount = false, int playerID = -1)
 		{
 			if (playerID >= 0 && KickStarter.player.ID != playerID)
 			{
@@ -445,18 +494,18 @@ namespace AC
 			}
 			else
 			{
-				localItems = Remove (_id, amount, setAmount, localItems);
+				_localItems = Remove (_id, amount, setAmount, _localItems);
 				KickStarter.eventManager.Call_OnChangeInventory (GetItem (_id), InventoryEventType.Remove, amount);
 			}
 		}
 		
 		
-		private void AddToOtherPlayer (int invID, int amount, int playerID)
+		private void AddToOtherPlayer (int invID, int amount, int playerID, bool addToFront)
 		{
 			SaveSystem saveSystem = GetComponent <SaveSystem>();
 			
 			List<InvItem> otherPlayerItems = saveSystem.GetItemsFromPlayer (playerID);
-			otherPlayerItems = Add (invID, amount, otherPlayerItems, false);
+			otherPlayerItems = Add (invID, amount, otherPlayerItems, false, addToFront);
 			saveSystem.AssignItemsToPlayer (otherPlayerItems, playerID);
 		}
 		
@@ -477,19 +526,20 @@ namespace AC
 		 */
 		public void Remove (InvItem _item)
 		{
-			if (_item != null && localItems.Contains (_item))
+			if (_item != null && _localItems.Contains (_item))
 			{
 				if (_item == selectedItem)
 				{
 					SetNull ();
 				}
 				
-				localItems [localItems.IndexOf (_item)] = null;
+				_localItems [_localItems.IndexOf (_item)] = null;
 				
-				localItems = ReorderItems (localItems);
-				localItems = RemoveEmptySlots (localItems);
+				_localItems = ReorderItems (_localItems);
+				_localItems = RemoveEmptySlots (_localItems);
 
 				KickStarter.eventManager.Call_OnChangeInventory (_item, InventoryEventType.Remove);
+				PlayerMenus.ResetInventoryBoxes ();
 			}
 		}
 		
@@ -544,11 +594,13 @@ namespace AC
 
 					if (itemList.Count == 0)
 					{
+						PlayerMenus.ResetInventoryBoxes ();
 						return itemList;
 					}
 					
 					if (amount <= 0)
 					{
+						PlayerMenus.ResetInventoryBoxes ();
 						return itemList;
 					}
 				}
@@ -556,8 +608,38 @@ namespace AC
 			
 			itemList = ReorderItems (itemList);
 			itemList = RemoveEmptySlots (itemList);
-			
+
+			PlayerMenus.ResetInventoryBoxes ();
 			return itemList;
+		}
+
+
+		/**
+		 * <summary>Removes all items from the player's inventory</summary>
+		 */
+		public void RemoveAll ()
+		{
+			foreach (InvItem invItem in _localItems)
+			{
+				Remove (invItem);
+			}
+		}
+
+
+		/**
+		 * <summary>Removes all items in a given category from the player's inventory</summary>
+		 * <param name = "categoryID">The ID number of the category</param>
+		 */
+		public void RemoveAllInCategory (int categoryID)
+		{
+			for (int i=0; i<_localItems.Count; i++)
+			{
+				if (_localItems[i].binID == categoryID)
+				{
+					Remove (_localItems[i]);
+					i = -1;
+				}
+			}
 		}
 
 
@@ -595,17 +677,25 @@ namespace AC
 
 			if (prefix1 == "" && prefix2 != "")
 			{
-				return (prefix2 + " ");
+				return prefix2;
 			}
 			if (prefix1 != "" && prefix2 == "")
 			{
-				return (prefix1 + " " + itemName + " ");
+				return AdvGame.CombineLanguageString (prefix1, itemName, languageNumber);
 			}
 			if (prefix1 == " " && prefix2 != "")
 			{
-				return (itemName + " " + prefix2 + " ");
+				return AdvGame.CombineLanguageString (itemName, prefix2, languageNumber);
 			}
-			return (prefix1 + " " + itemName + " " + prefix2 + " ");
+
+			if (KickStarter.runtimeLanguages.LanguageReadsRightToLeft (languageNumber))
+			{
+				return (prefix2 + " " + itemName + " " + prefix1);
+			}
+			else
+			{
+				return (prefix1 + " " + itemName + " " + prefix2);
+			}
 		}
 
 
@@ -631,9 +721,9 @@ namespace AC
 			// Remove empty slots on end
 			for (int i=craftingItems.Count-1; i>=0; i--)
 			{
-				if (localItems[i] == null)
+				if (_localItems[i] == null)
 				{
-					localItems.RemoveAt (i);
+					_localItems.RemoveAt (i);
 				}
 				else
 				{
@@ -643,7 +733,7 @@ namespace AC
 		}
 		
 		
-		private List<InvItem> RemoveEmptySlots (List<InvItem> itemList)
+		public List<InvItem> RemoveEmptySlots (List<InvItem> itemList)
 		{
 			// Remove empty slots on end
 			for (int i=itemList.Count-1; i>=0; i--)
@@ -688,7 +778,7 @@ namespace AC
 		 */
 		public int GetCount (int _invID)
 		{
-			foreach (InvItem item in localItems)
+			foreach (InvItem item in _localItems)
 			{
 				if (item != null && item.id == _invID)
 				{
@@ -730,15 +820,7 @@ namespace AC
 		 */
 		public int GetNumberOfItemsCarried ()
 		{
-			int numCarried = 0;
-			for (int i=0; i<localItems.Count; i++)
-			{
-				if (localItems[i] != null)
-				{
-					numCarried ++;
-				}
-			}
-			return numCarried;
+			return GetNumberOfItemsCarriedInCategory (-1);
 		}
 
 
@@ -748,6 +830,40 @@ namespace AC
 		 * <returns>The total number of inventory items currently held by the given Player</returns>
 		 */
 		public int GetNumberOfItemsCarried (int _playerID)
+		{
+			return GetNumberOfItemsCarriedInCategory (-1, _playerID);
+		}
+
+
+		/**
+		 * <summary>Gets the total number of inventory items currently held by the active Player.</summary>
+		 * <param name = "categoryID">If >=0, then only items placed in the category with that ID will be counted</param>
+		 * <returns>The total number of inventory items currently held by the active Player</returns>
+		 */
+		public int GetNumberOfItemsCarriedInCategory (int categoryID)
+		{
+			int numCarried = 0;
+			for (int i=0; i<_localItems.Count; i++)
+			{
+				if (_localItems[i] != null)
+				{
+					if (categoryID < 0 || _localItems[i].binID == categoryID)
+					{
+						numCarried ++;
+					}
+				}
+			}
+			return numCarried;
+		}
+
+
+		/**
+		 * <summary>Gets the total number of inventory items currently held by a given Player, if multiple Players are supported.</summary>
+		 * <param name = "categoryID">If >=0, then only items placed in the category with that ID will be counted</param>
+		 * <param name = "playerID">The ID number of the Player to refer to</param>
+		 * <returns>The total number of inventory items currently held by the given Player</returns>
+		 */
+		public int GetNumberOfItemsCarriedInCategory (int categoryID, int _playerID)
 		{
 			int numCarried = 0;
 
@@ -793,7 +909,7 @@ namespace AC
 		 */
 		public InvItem GetItem (int _id)
 		{
-			foreach (InvItem item in localItems)
+			foreach (InvItem item in _localItems)
 			{
 				if (item != null && item.id == _id)
 				{
@@ -811,7 +927,7 @@ namespace AC
 		 */
 		public bool IsCarryingItem (int _id)
 		{
-			foreach (InvItem item in localItems)
+			foreach (InvItem item in _localItems)
 			{
 				if (item != null && item.id == _id)
 				{
@@ -844,10 +960,9 @@ namespace AC
 		public void Use (InvItem item)
 		{
 			if (item == null || item.recipeSlot > -1) return;
-			
+
 			if (item.useActionList)
 			{
-				//selectedItem = null;
 				SetNull ();
 				AdvGame.RunActionListAsset (item.useActionList);
 				KickStarter.eventManager.Call_OnUseInventory (item, 0);
@@ -1007,16 +1122,15 @@ namespace AC
 			{
 				return;
 			}
-			
+
 			if (item2 == item1)
 			{
 				if ((KickStarter.settingsManager.interactionMethod != AC_InteractionMethod.ChooseHotspotThenInteraction || KickStarter.settingsManager.inventoryInteractions == InventoryInteractions.Single) &&  KickStarter.settingsManager.InventoryDragDrop && KickStarter.settingsManager.inventoryDropLook)
 				{
 					Look (item2);
 				}
-
-				//selectedItem = null;
 				SetNull ();
+				KickStarter.eventManager.Call_OnUseInventory (item1, 0, item2);
 			}
 			else
 			{
@@ -1033,7 +1147,10 @@ namespace AC
 				{
 					if (item2.combineID[i] == item1.id && item2.combineActionList[i] != null)
 					{
-						selectedItem = null;
+						if (KickStarter.settingsManager.inventoryDisableDefined)
+						{
+							selectedItem = null;
+						}
 
 						PlayerMenus.ForceOffAllMenus (true);
 						AdvGame.RunActionListAsset (item2.combineActionList [i]);
@@ -1048,7 +1165,10 @@ namespace AC
 					{
 						if (item1.combineID[i] == item2.id && item1.combineActionList[i] != null)
 						{
-							selectedItem = null;
+							if (KickStarter.settingsManager.inventoryDisableDefined)
+							{
+								selectedItem = null;
+							}
 
 							ActionListAsset assetFile = item1.combineActionList[i];
 							PlayerMenus.ForceOffAllMenus (true);
@@ -1078,24 +1198,7 @@ namespace AC
 			
 			KickStarter.playerCursor.ResetSelectedCursor ();
 		}
-		
 
-		/**
-		 * <summary>Gets the currently selected inventory item as a List with a single entry.</summary>
-		 * <returns>The currently selected inventory item as a List with a single entry.</returns>
-		 */
-		public List<InvItem> GetSelected ()
-		{
-			List<InvItem> items = new List<InvItem>();
-			
-			if (selectedItem != null)
-			{
-				items.Add (selectedItem);
-			}
-			
-			return items;
-		}
-		
 
 		/**
 		 * <summary>Checks if a particular inventory item is currently held by the player.</summary>
@@ -1105,7 +1208,7 @@ namespace AC
 		public bool IsItemCarried (InvItem _item)
 		{
 			if (_item == null) return false;
-			foreach (InvItem item in localItems)
+			foreach (InvItem item in _localItems)
 			{
 				if (item == _item)
 				{
@@ -1160,14 +1263,14 @@ namespace AC
 		 */
 		public void TransferLocalToCrafting (InvItem _item, int _slot)
 		{
-			if (_item != null && localItems.Contains (_item))
+			if (_item != null && _localItems.Contains (_item))
 			{
 				_item.recipeSlot = _slot;
 				craftingItems.Add (_item);
 				
-				localItems [localItems.IndexOf (_item)] = null;
-				localItems = ReorderItems (localItems);
-				localItems = RemoveEmptySlots (localItems);
+				_localItems [_localItems.IndexOf (_item)] = null;
+				_localItems = ReorderItems (_localItems);
+				_localItems = RemoveEmptySlots (_localItems);
 				
 				SetNull ();
 			}
@@ -1197,7 +1300,7 @@ namespace AC
 				List<Button> invButtons = KickStarter.playerInteraction.GetActiveHotspot ().invButtons;
 				foreach (Button button in invButtons)
 				{
-					foreach (InvItem item in localItems)
+					foreach (InvItem item in _localItems)
 					{
 						if (item != null && item.id == button.invID && !button.isDisabled)
 						{
@@ -1218,7 +1321,7 @@ namespace AC
 			{
 				foreach (int combineID in _item.combineID)
 				{
-					foreach (InvItem item in localItems)
+					foreach (InvItem item in _localItems)
 					{
 						if (item != null && item.id == combineID)
 						{
@@ -1347,6 +1450,51 @@ namespace AC
 			
 			RemoveEmptyCraftingSlots ();
 			Add (recipe.resultID, 1, selectAfter, -1);
+		}
+
+
+		/**
+		 * <summary>Moves an item already in the current player's inventory to a different slot.</summary>
+		 * <param name = "item">The inventory item to move</param>
+		 * <param name = "index">The index number of the MenuInventoryBox slot to move the item to</param>
+		 */
+		public void MoveItemToIndex (InvItem item, int index)
+		{
+			if (item != null && _localItems.Contains (item))
+			{
+				// Check nothing in place already
+				int oldIndex = _localItems.IndexOf (item);
+				while (_localItems.Count <= Mathf.Max (index, oldIndex))
+				{
+					_localItems.Add (null);
+				}
+				
+				if (_localItems [index] == null)
+				{
+					_localItems [index] = item;
+					_localItems [oldIndex] = null;
+				}
+				else
+				{
+					// Item already in its spot
+
+					_localItems [oldIndex] = null;
+					_localItems.Insert (index, item);
+				}
+				
+				SetNull ();
+				_localItems = RemoveEmptySlots (_localItems);
+			}
+		}
+
+
+		/**
+		 * <summary>Assign's the player's current inventory in bulk</summary>
+		 * <param name = "newInventory">A list of the InvItem classes that make up the new inventory</param>
+		 */
+		public void AssignPlayerInventory (List<InvItem> newInventory)
+		{
+			_localItems = newInventory;
 		}
 		
 
@@ -1617,6 +1765,14 @@ namespace AC
 				else
 				{
 					inventoryBox.HandleDefaultClick (_mouseState, _slot, KickStarter.settingsManager.interactionMethod);
+
+					if (KickStarter.settingsManager.autoCycleWhenInteract && KickStarter.settingsManager.interactionMethod == AC_InteractionMethod.ChooseInteractionThenHotspot && KickStarter.settingsManager.inventoryInteractions == InventoryInteractions.Multiple)
+					{
+						if (selectedItem == null)
+						{
+							KickStarter.playerCursor.ResetSelectedCursor ();
+						}
+					}
 				}
 				
 				_menu.Recalculate ();
@@ -1640,9 +1796,8 @@ namespace AC
 						InvItem _item = inventoryBox.items [_slot + inventoryBox.GetOffset ()];
 						if (_item != null)
 						{
-							//SelectItem (_item, SelectItemMode.Use);
 							_menu.TurnOff (false);
-							KickStarter.playerInteraction.ClickButton (InteractionType.Inventory, -2, _item.id, _menu.GetTargetHotspot ());
+							KickStarter.playerInteraction.UseInventoryOnHotspot (_menu.GetTargetHotspot (), _item.id);
 							KickStarter.playerCursor.ResetSelectedCursor ();
 						}
 					}
@@ -1666,7 +1821,7 @@ namespace AC
 		 */
 		public int GetTotalIntProperty (int ID)
 		{
-			return GetTotalIntProperty (localItems.ToArray (), ID);
+			return GetTotalIntProperty (_localItems.ToArray (), ID);
 		}
 
 
@@ -1701,7 +1856,7 @@ namespace AC
 		 */
 		public float GetTotalFloatProperty (int ID)
 		{
-			return GetTotalFloatProperty (localItems.ToArray (), ID);
+			return GetTotalFloatProperty (_localItems.ToArray (), ID);
 		}
 		
 		
@@ -1754,7 +1909,7 @@ namespace AC
 		{
 			InvVar totalVar = new InvVar ();
 
-			foreach (InvItem item in localItems)
+			foreach (InvItem item in _localItems)
 			{
 				InvVar var = item.GetProperty (ID);
 				if (var != null)
@@ -1765,7 +1920,72 @@ namespace AC
 			}
 			return totalVar;
 		}
-		
+
+
+		/** The inventory item that is currently selected */
+		public InvItem SelectedItem
+		{
+			get
+			{
+				return selectedItem;
+			}
+		}
+
+
+		/** A List of inventory items (InvItem) carried by the player */
+		public List<InvItem> localItems
+		{
+			get
+			{
+				return _localItems;
+			}
+		}
+
+
+		/** The last inventory item to be selected.  This will return the currently-selected item if one exists */ 
+		public InvItem LastSelectedItem
+		{
+			get
+			{
+				return lastSelectedItem;
+			}
+		}
+
+
+		private void OnApplicationQuit ()
+		{
+			if (KickStarter.inventoryManager != null)
+			{
+				foreach (InvItem invItem in KickStarter.inventoryManager.items)
+				{
+					if (invItem.cursorIcon != null)
+					{
+						invItem.cursorIcon.ClearCache ();
+					}
+				}
+			}
+		}
+
+
+		/**
+		 * <summary>Gets an array of all carried inventory items in a given category</summary>
+		 * <param name = "categoryID">The ID number of the category in question</param>
+		 * <returns>An array of all carried inventory items in the category</returns>
+		 */
+		public InvItem[] GetItemsInCategory (int categoryID)
+		{
+			List<InvItem> itemsList = new List<InvItem>();
+			foreach (InvItem item in _localItems)
+			{
+				if (item.binID == categoryID)
+				{
+					itemsList.Add (item);
+				}
+			}
+
+			return itemsList.ToArray ();
+		}
+
 	}
 	
 }

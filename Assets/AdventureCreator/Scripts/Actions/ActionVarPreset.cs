@@ -106,6 +106,10 @@ namespace AC
 				{
 					ShowPresetGUI (localVariables.varPresets);
 				}
+				else
+				{
+					EditorGUILayout.HelpBox ("No 'Local Variables' component found in the scene. Please add an AC GameEngine object from the Scene Manager.", MessageType.Info);
+				}
 			}
 
 			AfterRunningOption ();

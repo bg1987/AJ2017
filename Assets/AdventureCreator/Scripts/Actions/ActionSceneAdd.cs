@@ -34,6 +34,8 @@ namespace AC
 		public string sceneName;
 		public int sceneNameParameterID = -1;
 
+		private bool waitedOneMoreFrame = false;
+
 
 		public ActionSceneAdd ()
 		{
@@ -53,11 +55,17 @@ namespace AC
 		
 		override public float Run ()
 		{
-			SceneInfo sceneInfo = new SceneInfo (chooseSceneBy, sceneName, sceneNumber);
+			SceneInfo sceneInfo = new SceneInfo (chooseSceneBy, AdvGame.ConvertTokens (sceneName), sceneNumber);
 
 			if (!isRunning)
 			{
+				waitedOneMoreFrame = false;
 				isRunning = true;
+
+				if (KickStarter.sceneSettings.OverridesCameraPerspective ())
+				{
+					ACDebug.LogError ("The current scene overrides the default camera perspective - this feature should not be used in conjunction with multiple-open scenes.");
+				}
 
 				if (sceneAddRemove == SceneAddRemove.Add)
 				{
@@ -73,11 +81,15 @@ namespace AC
 			}
 			else
 			{
+				if (!waitedOneMoreFrame)
+				{
+					waitedOneMoreFrame = true;
+					return defaultPauseTime;
+				}
+
 				if (sceneAddRemove == SceneAddRemove.Add)
 				{
 					bool found = false;
-
-
 					foreach (SubScene subScene in KickStarter.sceneChanger.GetSubScenes ())
 					{
 						if (subScene.SceneInfo.Matches (sceneInfo))

@@ -105,7 +105,7 @@ namespace AC
 					if (GUILayout.Button ("Create", autoWidth))
 					{
 						string prefabName = "Marker";
-						if (settingsManager && settingsManager.IsUnity2D ())
+						if (SceneSettings.IsUnity2D ())
 						{
 							prefabName += "2D";
 						}
@@ -120,7 +120,7 @@ namespace AC
 				_target.limitToCamera = (_Camera) EditorGUILayout.ObjectField ("Limit to camera:", _target.limitToCamera, typeof (_Camera), true);
 				_target.drawGizmos = EditorGUILayout.Toggle ("Draw yellow cube?", _target.drawGizmos);
 				
-				if (settingsManager != null && settingsManager.interactionMethod != AC_InteractionMethod.ContextSensitive)
+				if (settingsManager != null && (settingsManager.interactionMethod == AC_InteractionMethod.ChooseHotspotThenInteraction || settingsManager.interactionMethod == AC_InteractionMethod.ChooseInteractionThenHotspot))
 				{
 					_target.oneClick = EditorGUILayout.Toggle ("Single 'Use' Interaction?", _target.oneClick);
 				}
@@ -137,7 +137,7 @@ namespace AC
 				
 				UseInteractionGUI ();
 				
-				if (settingsManager == null || settingsManager.interactionMethod == AC_InteractionMethod.ContextSensitive)
+				if (settingsManager == null || settingsManager.interactionMethod == AC_InteractionMethod.ContextSensitive || settingsManager.interactionMethod == AC_InteractionMethod.CustomScript)
 				{
 					EditorGUILayout.Space ();
 					LookInteractionGUI ();
@@ -249,7 +249,7 @@ namespace AC
 							EditorGUILayout.Space ();
 							EditorGUILayout.BeginHorizontal ();
 							
-							iconNumber = EditorGUILayout.Popup ("Cursor:", iconNumber, labelList.ToArray());
+							iconNumber = EditorGUILayout.Popup ("Cursor / icon:", iconNumber, labelList.ToArray());
 							
 							// Re-assign variableID based on PopUp selection
 							useButton.iconID = cursorManager.cursorIcons[iconNumber].id;
@@ -351,9 +351,12 @@ namespace AC
 							// Re-assign variableID based on PopUp selection
 							invButton.invID = inventoryManager.items[invNumber].id;
 
-							if (_target.GetComponent <Char>() && settingsManager != null && settingsManager.CanGiveItems ())
+							if (settingsManager != null && settingsManager.CanGiveItems ())
 							{
-								invButton.selectItemMode = (SelectItemMode) EditorGUILayout.EnumPopup (invButton.selectItemMode, GUILayout.Width (70f));
+								if (_target.GetComponent <Char>() != null || _target.GetComponentInParent <Char>() != null)
+								{
+									invButton.selectItemMode = (SelectItemMode) EditorGUILayout.EnumPopup (invButton.selectItemMode, GUILayout.Width (70f));
+								}
 							}
 
 							if (GUILayout.Button (Resource.CogIcon, EditorStyles.miniButtonRight, buttonWidth))
@@ -370,11 +373,11 @@ namespace AC
 								{
 									label = invButton.selectItemMode.ToString () + " " + label;
 								}
-								ButtonGUI (invButton, label, _target.interactionSource);
+								ButtonGUI (invButton, label, _target.interactionSource, true);
 							}
 							else
 							{
-								ButtonGUI (invButton, "Inventory", _target.interactionSource);
+								ButtonGUI (invButton, "Inventory", _target.interactionSource, true);
 							}
 							GUILayout.Box("", GUILayout.ExpandWidth(true), GUILayout.Height(1));
 						}
@@ -428,7 +431,7 @@ namespace AC
 			if (_target.provideUnhandledInvInteraction)
 			{
 				EditorGUILayout.Space ();
-				ButtonGUI (_target.unhandledInvButton, "Unhandled inventory", _target.interactionSource);
+				ButtonGUI (_target.unhandledInvButton, "Unhandled inventory", _target.interactionSource, true);
 				EditorGUILayout.HelpBox ("This interaction will override any 'unhandled' ones defined in the Inventory Manager.", MessageType.Info);
 			}
 			
@@ -436,7 +439,7 @@ namespace AC
 		}
 		
 		
-		private void ButtonGUI (Button button, string suffix, InteractionSource source)
+		private void ButtonGUI (Button button, string suffix, InteractionSource source, bool isForInventory = false)
 		{
 			bool isEnabled = !button.isDisabled;
 			isEnabled = EditorGUILayout.Toggle ("Enabled:", isEnabled);
@@ -444,7 +447,13 @@ namespace AC
 			
 			if (source == InteractionSource.AssetFile)
 			{
+				EditorGUILayout.BeginHorizontal ();
 				button.assetFile = (ActionListAsset) EditorGUILayout.ObjectField ("Interaction:", button.assetFile, typeof (ActionListAsset), false);
+				if (button.assetFile != null && GUILayout.Button ("", Resource.NodeSkin.customStyles[13], GUILayout.Width (20f)))
+				{
+					ActionListEditorWindow.Init (button.assetFile);
+				}
+				EditorGUILayout.EndHorizontal ();
 
 				if (button.assetFile != null && button.assetFile.useParameters && button.assetFile.parameters.Count > 0)
 				{
@@ -462,6 +471,11 @@ namespace AC
 			{
 				button.customScriptObject = (GameObject) EditorGUILayout.ObjectField ("Object with script:", button.customScriptObject, typeof (GameObject), true);
 				button.customScriptFunction = EditorGUILayout.TextField ("Message to send:", button.customScriptFunction);
+
+				if (isForInventory)
+				{
+					EditorGUILayout.HelpBox ("If the receiving function has an integer parameter, the Inventory item's ID will be passed to it.", MessageType.Info);
+				}
 			}
 			else if (source == InteractionSource.InScene)
 			{
@@ -483,6 +497,13 @@ namespace AC
 						
 						newInteraction.gameObject.name = AdvGame.UniqueName (hotspotName + ": " + suffix);
 						button.interaction = newInteraction;
+					}
+				}
+				else
+				{
+					if (GUILayout.Button ("", Resource.NodeSkin.customStyles[13], GUILayout.Width (20f)))
+					{
+						ActionListEditorWindow.Init (button.interaction);
 					}
 				}
 				EditorGUILayout.EndHorizontal ();

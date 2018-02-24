@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2017
+ *	by Chris Burton, 2013-2018
  *	
  *	"MenuProfilesList.cs"
  * 
@@ -41,14 +41,16 @@ namespace AC
 		public bool showActive = true;
 		/** The method which this element (or slots within it) are hidden from view when made invisible (DisableObject, ClearContent) */
 		public UIHideStyle uiHideStyle = UIHideStyle.DisableObject;
-		/** If True, then the save file will be loaded/saved once its slot is clicked on */
+		/** If True, then the profile will be switched to once its slot is clicked on */
 		public bool autoHandle = true;
+		/** What Image component the Element's Graphics should be linked to (ImageComponent, ButtonTargetGraphic) */
+		public LinkUIGraphic linkUIGraphic = LinkUIGraphic.ImageComponent;
 
-		/** If True, then only one save slot will be shown */
+		/** If True, then only one profile slot will be shown */
 		public bool fixedOption;
-		/** The index number of the save slot to show, if fixedOption = true */
+		/** The index number of the profile to show, if fixedOption = true */
 		public int optionToShow = 0;
-		/** If >=0, The ID number of the integer ActionParameter in actionListOnSave to set to the index number of the slot clicked */
+		/** If >=0, The ID number of the integer ActionParameter in actionListOnClick to set to the index number of the slot clicked */
 		public int parameterID = -1;
 
 		private string[] labels = null;
@@ -79,28 +81,31 @@ namespace AC
 			optionToShow = 0;
 			autoHandle = true;
 			parameterID = -1;
+			linkUIGraphic = LinkUIGraphic.ImageComponent;
 
 			base.Declare ();
 		}
 		
 
-		/**
-		 * <summary>Creates and returns a new MenuProfilesList that has the same values as itself.</summary>
-		 * <param name = "fromEditor">If True, the duplication was done within the Menu Manager and not as part of the gameplay initialisation.</param>
-		 * <returns>A new MenuProfilesList with the same values as itself</returns>
-		 */
-		public override MenuElement DuplicateSelf (bool fromEditor)
+		public override MenuElement DuplicateSelf (bool fromEditor, bool ignoreUnityUI)
 		{
 			MenuProfilesList newElement = CreateInstance <MenuProfilesList>();
 			newElement.Declare ();
-			newElement.CopyProfilesList (this);
+			newElement.CopyProfilesList (this, ignoreUnityUI);
 			return newElement;
 		}
 		
 		
-		private void CopyProfilesList (MenuProfilesList _element)
+		private void CopyProfilesList (MenuProfilesList _element, bool ignoreUnityUI)
 		{
-			uiSlots = _element.uiSlots;
+			if (ignoreUnityUI)
+			{
+				uiSlots = null;
+			}
+			else
+			{
+				uiSlots = _element.uiSlots;
+			}
 			
 			textEffects = _element.textEffects;
 			outlineSize = _element.outlineSize;
@@ -113,6 +118,7 @@ namespace AC
 			parameterID = _element.parameterID;
 			fixedOption = _element.fixedOption;
 			optionToShow = _element.optionToShow;
+			linkUIGraphic = _element.linkUIGraphic;
 
 			base.Copy (_element);
 		}
@@ -122,12 +128,12 @@ namespace AC
 		 * <summary>Initialises the linked Unity UI GameObjects.</summary>
 		 * <param name = "_menu">The element's parent Menu</param>
 		 */
-		public override void LoadUnityUI (AC.Menu _menu)
+		public override void LoadUnityUI (AC.Menu _menu, Canvas canvas)
 		{
 			int i=0;
 			foreach (UISlot uiSlot in uiSlots)
 			{
-				uiSlot.LinkUIElements ();
+				uiSlot.LinkUIElements (canvas, linkUIGraphic);
 				if (uiSlot != null && uiSlot.uiButton != null)
 				{
 					int j=i;
@@ -140,13 +146,9 @@ namespace AC
 		}
 		
 
-		/**
-		 * <summary>Gets the first linked Unity UI GameObject associated with this element.</summary>
-		 * <param name = "The first Unity UI GameObject associated with the element</param>
-		 */
-		public override GameObject GetObjectToSelect ()
+		public override GameObject GetObjectToSelect (int slotIndex = 0)
 		{
-			if (uiSlots != null && uiSlots.Length > 0 && uiSlots[0].uiButton != null)
+			if (uiSlots != null && uiSlots.Length > slotIndex && uiSlots[slotIndex].uiButton != null)
 			{
 				return uiSlots[0].uiButton.gameObject;
 			}
@@ -193,7 +195,7 @@ namespace AC
 			MenuSource source = menu.menuSource;
 			EditorGUILayout.BeginVertical ("Button");
 
-			fixedOption = CustomGUILayout.ToggleLeft ("Fixed Profile ID only?", fixedOption, apiPrefix + ".fixedOption");
+			fixedOption = CustomGUILayout.Toggle ("Fixed Profile ID only?", fixedOption, apiPrefix + ".fixedOption");
 			if (fixedOption)
 			{
 				numSlots = 1;
@@ -203,7 +205,7 @@ namespace AC
 			else
 			{
 				showActive = CustomGUILayout.Toggle ("Include active?", showActive, apiPrefix + ".showActive");
-				maxSlots = CustomGUILayout.IntField ("Max no. of slots:", maxSlots, apiPrefix + ".maxSlots");
+				maxSlots = CustomGUILayout.IntField ("Maximum number of slots:", maxSlots, apiPrefix + ".maxSlots");
 
 				if (source == MenuSource.AdventureCreator)
 				{
@@ -216,18 +218,8 @@ namespace AC
 					}
 				}
 			}
-			
-			if (source == MenuSource.AdventureCreator)
-			{
-				anchor = (TextAnchor) CustomGUILayout.EnumPopup ("Text alignment:", anchor, apiPrefix + ".anchor");
-				textEffects = (TextEffects) CustomGUILayout.EnumPopup ("Text effect:", textEffects, apiPrefix + ".anchor");
-				if (textEffects != TextEffects.None)
-				{
-					outlineSize = CustomGUILayout.Slider ("Effect size:", outlineSize, 1f, 5f, apiPrefix + ".outlineSize");
-				}
-			}
 
-			autoHandle = CustomGUILayout.ToggleLeft ("Switch profile when click on?", autoHandle, apiPrefix + ".autoHandle");
+			autoHandle = CustomGUILayout.Toggle ("Switch profile when click?", autoHandle, apiPrefix + ".autoHandle");
 
 			if (autoHandle)
 			{
@@ -250,11 +242,24 @@ namespace AC
 				{
 					uiSlots[i].LinkedUiGUI (i, source);
 				}
+
+				linkUIGraphic = (LinkUIGraphic) EditorGUILayout.EnumPopup ("Link graphics to:", linkUIGraphic);
 			}
 			
 			EditorGUILayout.EndVertical ();
 			
 			base.ShowGUI (menu);
+		}
+
+
+		protected override void ShowTextGUI (string apiPrefix)
+		{
+			anchor = (TextAnchor) CustomGUILayout.EnumPopup ("Text alignment:", anchor, apiPrefix + ".anchor");
+			textEffects = (TextEffects) CustomGUILayout.EnumPopup ("Text effect:", textEffects, apiPrefix + ".anchor");
+			if (textEffects != TextEffects.None)
+			{
+				outlineSize = CustomGUILayout.Slider ("Effect size:", outlineSize, 1f, 5f, apiPrefix + ".outlineSize");
+			}
 		}
 
 
@@ -271,7 +276,7 @@ namespace AC
 				{
 					if (fixedOption)
 					{
-						EditorGUILayout.LabelField ("(= Save ID #)");
+						EditorGUILayout.LabelField ("(= Profile ID #)");
 					}
 					else
 					{
@@ -313,7 +318,7 @@ namespace AC
 			{
 				return false;
 			}
-			if (shiftType == AC_ShiftInventory.ShiftLeft)
+			if (shiftType == AC_ShiftInventory.ShiftPrevious)
 			{
 				if (offset == 0)
 				{

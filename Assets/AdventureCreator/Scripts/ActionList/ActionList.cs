@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2016
+ *	by Chris Burton, 2013-2018
  *	
  *	"ActionList.cs"
  * 
@@ -78,8 +78,11 @@ namespace AC
 			}
 			#endif
 
-			LayerHotspot = LayerMask.NameToLayer (KickStarter.settingsManager.hotspotLayer);
-			LayerOff = LayerMask.NameToLayer (KickStarter.settingsManager.deactivatedLayer);
+			if (KickStarter.settingsManager != null)
+			{
+				LayerHotspot = LayerMask.NameToLayer (KickStarter.settingsManager.hotspotLayer);
+				LayerOff = LayerMask.NameToLayer (KickStarter.settingsManager.deactivatedLayer);
+			}
 			
 			// If asset-based, download actions
 			if (source == ActionListSource.AssetFile)
@@ -149,6 +152,16 @@ namespace AC
 		public virtual void Interact ()
 		{
 			Interact (0, true);
+		}
+
+
+		/**
+		 * <summary>Runs the Actions from a set point.</summary>
+		 * <param name = "index">The index number of actions to start from</param>
+		 */
+		public void RunFromIndex (int index)
+		{
+			Interact (index, true);
 		}
 		
 
@@ -330,7 +343,7 @@ namespace AC
 
 				if (KickStarter.settingsManager.printActionCommentsInConsole)
 				{
-					action.PrintComment (gameObject);
+					action.PrintComment (this);
 				}
 
 				if (action is ActionParallel)
@@ -339,7 +352,25 @@ namespace AC
 				{
 					while (action.isRunning)
 					{
-						if (this is RuntimeActionList && actionListType == ActionListType.PauseGameplay && !unfreezePauseMenus)
+						bool runInRealtime = (this is RuntimeActionList && actionListType == ActionListType.PauseGameplay && !unfreezePauseMenus && KickStarter.playerMenus.ArePauseMenusOn (null));
+
+						if (waitTime < 0)
+						{
+							//yield return new WaitForEndOfFrame (); // OLD
+
+							if (!runInRealtime && Time.timeScale == 0f)
+							{
+								while (Time.timeScale == 0f)
+								{
+									yield return new WaitForEndOfFrame ();
+								}
+							}
+							else
+							{
+								yield return new WaitForEndOfFrame ();
+							}
+						}
+						else if (runInRealtime)
 						{
 							float endTime = Time.realtimeSinceStartup + waitTime;
 							while (Time.realtimeSinceStartup < endTime)
@@ -358,6 +389,7 @@ namespace AC
 							ResetList ();
 							break;
 						}
+
 						waitTime = action.Run ();
 					}
 				}
@@ -599,7 +631,9 @@ namespace AC
 			if (AdvGame.GetReferences ().actionsManager)
 			{
 				string defaultAction = AdvGame.GetReferences ().actionsManager.GetDefaultAction ();
-				return ((AC.Action) ScriptableObject.CreateInstance (defaultAction));
+				AC.Action newAction = (AC.Action) ScriptableObject.CreateInstance (defaultAction);
+				newAction.name = defaultAction;
+				return newAction;
 			}
 			else
 			{
@@ -735,7 +769,6 @@ namespace AC
 		 */
 		public void Resume (int _startIndex, int[] _resumeIndices, string _parameterData)
 		{
-			int startIndex = _startIndex;
 			resumeIndices.Clear ();
 			foreach (int resumeIndex in _resumeIndices)
 			{
@@ -750,16 +783,14 @@ namespace AC
 				SetParameterData (_parameterData);
 				
 				pauseWhenActionFinishes = false;
-				
-				if (KickStarter.actionListManager)
-				{
-					KickStarter.actionListManager.AddToList (this, true, startIndex);
-				}
-				else
+
+				if (KickStarter.actionListManager == null)
 				{
 					ACDebug.LogWarning ("Cannot run " + this.name + " because no ActionListManager was found.");
 					return;
 				}
+
+				AddResumeToManager (_startIndex);
 
 				foreach (int resumeIndex in resumeIndices)
 				{
@@ -783,6 +814,12 @@ namespace AC
 				Kill ();
 				Interact ();
 			}
+		}
+
+
+		protected virtual void AddResumeToManager (int startIndex)
+		{
+			KickStarter.actionListManager.AddToList (this, true, startIndex);
 		}
 
 
@@ -812,7 +849,7 @@ namespace AC
 
 		private void SetParameterData (string dataString)
 		{
-			if (useParameters && dataString.Length > 0)
+			if (useParameters && !string.IsNullOrEmpty (dataString))
 			{
 				string[] dataArray = dataString.Split (parameterSeparator[0]);
 				for (int i=0; i<parameters.Count; i++)

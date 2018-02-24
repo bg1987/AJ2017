@@ -57,7 +57,7 @@ namespace AC
 		{
 			if (_speechManager == null) return;
 
-			ExportWizardWindow window = (ExportWizardWindow) EditorWindow.GetWindow (typeof (ExportWizardWindow));
+			ExportWizardWindow window = EditorWindow.GetWindowWithRect <ExportWizardWindow> (new Rect (0, 0, 350, 500), true, "Game text exporter", true);
 			UnityVersionHandler.SetWindowTitle (window, "Game text exporter");
 			window.position = new Rect (300, 200, 350, 500);
 			window._Init (_speechManager, forLanguage);
@@ -105,6 +105,7 @@ namespace AC
 			}
 			GUI.enabled = true;
 
+			EditorGUILayout.Space ();
 			GUILayout.EndScrollView ();
 		}
 
@@ -423,9 +424,10 @@ namespace AC
 					sb.AppendLine (string.Join (CSVReader.csvDelimiter, output[j]));
 				}
 				
-				if (Serializer.CreateSaveFile (fileName, sb.ToString ()))
+				if (Serializer.SaveFile (fileName, sb.ToString ()))
 				{
-					ACDebug.Log ((exportLines.Count-1).ToString () + " lines exported.");
+					int numLines = exportLines.Count;
+					ACDebug.Log (numLines.ToString () + " line" + ((numLines != 1) ? "s" : "") + " exported.");
 				}
 			}
 
@@ -437,7 +439,7 @@ namespace AC
 		private class ExportColumn
 		{
 
-			public enum ColumnType { DisplayText, Type, AssociatedObject, Scene, Description, TagID };
+			public enum ColumnType { DisplayText, Type, AssociatedObject, Scene, Description, TagID, TagName, SpeechOrder };
 			private ColumnType columnType;
 			private int language;
 
@@ -542,6 +544,19 @@ namespace AC
 				{
 					cellText = speechLine.tagID.ToString ();
 				}
+				else if (columnType == ColumnType.TagName)
+				{
+					SpeechTag speechTag = KickStarter.speechManager.GetSpeechTag (speechLine.tagID);
+					cellText = (speechTag != null) ? speechTag.label : "";
+				}
+				else if (columnType == ColumnType.SpeechOrder)
+				{
+					cellText = speechLine.OrderIdentifier;
+					if (cellText == "-0001")
+					{
+						cellText = "";
+					}
+				}
 
 				if (cellText == "") cellText = " ";
 				return RemoveLineBreaks (cellText);
@@ -551,7 +566,10 @@ namespace AC
 			private string RemoveLineBreaks (string text)
 			{
 				if (text.Length == 0) return " ";
-	            text = text.Replace("\r\n", "[break]").Replace("\n", "[break]");
+	            //text = text.Replace("\r\n", "[break]").Replace("\n", "[break]");
+				text = text.Replace("\r\n", "[break]");
+				text = text.Replace("\n", "[break]");
+				text = text.Replace("\r", "[break]");
 	            return text;
 	        }
 

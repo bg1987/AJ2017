@@ -65,14 +65,13 @@ namespace AC
 				if (menuElement is MenuInput)
 				{
 					MenuInput menuInput = (MenuInput) menuElement;
-
 					if (setMenuInputBoxSource == SetMenuInputBoxSource.EnteredHere)
 					{
-						menuInput.label = newLabel;
+						menuInput.SetLabel (newLabel);
 					}
 					else if (setMenuInputBoxSource == SetMenuInputBoxSource.FromGlobalVariable)
 					{
-						menuInput.label = GlobalVariables.GetStringValue (varID);
+						menuInput.SetLabel (GlobalVariables.GetStringValue (varID));
 					}
 				}
 			}
@@ -111,15 +110,7 @@ namespace AC
 				varParameterID = Action.ChooseParameterGUI ("String variable:", parameters, varParameterID, ParameterType.String);
 				if (varParameterID == -1)
 				{
-					varID = AdvGame.GlobalVariableGUI ("String variable:", varID);
-					if (varID >= 0 && AdvGame.GetReferences () && AdvGame.GetReferences ().variablesManager)
-					{
-						GVar _var = AdvGame.GetReferences ().variablesManager.GetVariable (varID);
-						if (_var != null && _var.type != VariableType.String)
-						{
-							EditorGUILayout.HelpBox ("The chosen Variable must be a String.", MessageType.Warning);
-						}
-					}
+					varID = AdvGame.GlobalVariableGUI ("String variable:", varID, VariableType.String);
 				}
 			}
 
@@ -145,6 +136,37 @@ namespace AC
 				labelAdd += ")";
 			}
 			return labelAdd;
+		}
+
+
+		public override bool ConvertLocalVariableToGlobal (int oldLocalID, int newGlobalID)
+		{
+			bool wasAmended = base.ConvertLocalVariableToGlobal (oldLocalID, newGlobalID);
+
+			string updatedLabel = AdvGame.ConvertLocalVariableTokenToGlobal (newLabel, oldLocalID, newGlobalID);
+			if (newLabel != updatedLabel)
+			{
+				wasAmended = true;
+				newLabel = updatedLabel;
+			}
+			return wasAmended;
+		}
+
+
+		public override bool ConvertGlobalVariableToLocal (int oldGlobalID, int newLocalID, bool isCorrectScene)
+		{
+			bool isAffected = base.ConvertGlobalVariableToLocal (oldGlobalID, newLocalID, isCorrectScene);
+
+			string updatedLabel = AdvGame.ConvertGlobalVariableTokenToLocal (newLabel, oldGlobalID, newLocalID);
+			if (newLabel != updatedLabel)
+			{
+				isAffected = true;
+				if (isCorrectScene)
+				{
+					newLabel = updatedLabel;
+				}
+			}
+			return isAffected;
 		}
 		
 		#endif

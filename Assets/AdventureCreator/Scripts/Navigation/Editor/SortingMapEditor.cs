@@ -124,9 +124,9 @@ namespace AC
 
 			EditorGUILayout.Space ();
 
-			if (AdvGame.GetReferences () && AdvGame.GetReferences ().settingsManager && AdvGame.GetReferences ().settingsManager.IsTopDown ())
+			if (SceneSettings.IsTopDown ())
 			{}
-			else if (AdvGame.GetReferences () && AdvGame.GetReferences ().settingsManager && AdvGame.GetReferences ().settingsManager.IsUnity2D ())
+			else if (SceneSettings.IsUnity2D ())
 			{}
 			else
 			{
@@ -156,7 +156,11 @@ namespace AC
 		private void OnSceneGUI ()
 		{
 			SortingMap _target = (SortingMap) target;
-			
+
+			GUIStyle style = new GUIStyle ();
+			style.normal.textColor = Color.white;
+			style.normal.background = Resource.GreyTexture;
+
 			for (int i=0; i<_target.sortingAreas.Count; i++)
 			{
 				Vector3 newPosition = _target.GetAreaPosition (i);
@@ -172,14 +176,10 @@ namespace AC
 				{
 					midPoint += _target.transform.forward * (_target.sortingAreas [i].z + _target.sortingAreas [i-1].z) / 2f;
 				}
-				if (_target.mapType == SortingMapType.OrderInLayer)
-				{
-					Handles.Label (midPoint, _target.sortingAreas [i].order.ToString ());
-				}
-				else
-				{
-					Handles.Label (midPoint, _target.sortingAreas [i].layer);
-				}
+
+				string label = (_target.mapType == SortingMapType.OrderInLayer) ? _target.sortingAreas [i].order.ToString () : _target.sortingAreas [i].layer;
+
+				Handles.Label (midPoint, label, style);
 			}
 			
 			UnityVersionHandler.CustomSetDirty (_target);

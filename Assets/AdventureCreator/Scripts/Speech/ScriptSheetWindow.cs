@@ -14,7 +14,10 @@ namespace AC
 	 */
 	public class ScriptSheetWindow : EditorWindow
 	{
-		
+
+		private bool includeDescriptions = false;
+		private bool removeTokens = false;
+
 		private int languageIndex = 0;
 		
 		private bool limitToCharacter = false;
@@ -22,7 +25,10 @@ namespace AC
 		
 		private bool limitToTag = false;
 		private int tagID = 0;
-		
+
+		private bool limitToMissingAudio = false;
+		private Vector2 scroll;
+
 		
 		/**
 		 * <summary>Initialises the window.</summary>
@@ -30,9 +36,10 @@ namespace AC
 		 */
 		public static void Init (int _languageIndex = 0)
 		{
-			ScriptSheetWindow window = (ScriptSheetWindow) EditorWindow.GetWindow (typeof (ScriptSheetWindow));
+			ScriptSheetWindow window = EditorWindow.GetWindowWithRect <ScriptSheetWindow> (new Rect (0, 0, 400, 305), true, "Script sheet exporter", true);
+
 			UnityVersionHandler.SetWindowTitle (window, "Script sheet exporter");
-			window.position = new Rect (300, 200, 350, 185);
+			window.position = new Rect (300, 200, 400, 305);
 			window.languageIndex = _languageIndex;
 		}
 		
@@ -45,6 +52,7 @@ namespace AC
 				return;
 			}
 			
+			scroll = GUILayout.BeginScrollView (scroll);
 			SpeechManager speechManager = AdvGame.GetReferences ().speechManager;
 			
 			EditorGUILayout.HelpBox ("Check the settings below and click 'Create' to save a new script sheet.", MessageType.Info);
@@ -100,11 +108,22 @@ namespace AC
 					EditorGUILayout.HelpBox ("No speech tags!", MessageType.Info);
 				}
 			}
+
+			if (!speechManager.autoNameSpeechFiles)
+			{
+				limitToMissingAudio = EditorGUILayout.Toggle ("Limit to lines with no audio?", limitToMissingAudio);
+			}
+
+			includeDescriptions = EditorGUILayout.Toggle ("Include descriptions?", includeDescriptions);
+			removeTokens = EditorGUILayout.Toggle ("Remove text tokens?", removeTokens);
 			
 			if (GUILayout.Button ("Create"))
 			{
 				CreateScript ();
 			}
+
+			EditorGUILayout.Space ();
+			EditorGUILayout.EndScrollView ();
 		}
 		
 		
@@ -181,31 +200,52 @@ namespace AC
 			// By scene
 			foreach (string sceneFile in speechManager.sceneFiles)
 			{
-				bool foundLinesInScene = false;
+				List<SpeechLine> sceneSpeechLines = new List<SpeechLine>();
+
+				int slashPoint = sceneFile.LastIndexOf ("/") + 1;
+				string sceneName = sceneFile.Substring (slashPoint);
 				
 				foreach (SpeechLine line in speechManager.lines)
 				{
-					int slashPoint = sceneFile.LastIndexOf ("/") + 1;
-					string sceneName = sceneFile.Substring (slashPoint);
-					
 					if (line.textType == AC_TextType.Speech &&
 					    (line.scene == sceneFile || sceneName == (line.scene + ".unity")) &&
 					    (!limitToCharacter || characterName == "" || line.owner == characterName || (line.isPlayer && characterName == "Player")) &&
 					    (!limitToTag || line.tagID == tagID))
 					{
-						if (!foundLinesInScene)
+						if (!speechManager.autoNameSpeechFiles && limitToMissingAudio)
 						{
-							script.Append ("<hr/>\n<h3><b>Scene:</b> " + sceneName + "</h3>\n");
-							foundLinesInScene = true;
+							if (languageIndex == 0 && line.customAudioClip != null)
+							{
+								continue;
+							}
+							if (speechManager.translateAudio && languageIndex > 0 && line.customTranslationAudioClips.Count > (languageIndex - 1) && line.customTranslationAudioClips[languageIndex-1] != null)
+							{
+								continue;
+							}
+							if (!speechManager.translateAudio && line.customAudioClip != null)
+							{
+								continue;
+							}
 						}
-						
-						script.Append (line.Print (languageIndex));
+
+						sceneSpeechLines.Add (line);
+					}
+				}
+
+				if (sceneSpeechLines != null && sceneSpeechLines.Count > 0)
+				{
+					sceneSpeechLines.Sort (delegate (SpeechLine a, SpeechLine b) {return a.OrderIdentifier.CompareTo (b.OrderIdentifier);});
+
+					script.Append ("<hr/>\n<h3><b>Scene:</b> " + sceneName + "</h3>\n");
+					foreach (SpeechLine sceneSpeechLine in sceneSpeechLines)
+					{
+						script.Append (sceneSpeechLine.Print (languageIndex, includeDescriptions, removeTokens));
 					}
 				}
 			}
 			
 			// No scene
-			bool foundLinesInInventory = false;
+			List<SpeechLine> assetSpeechLines = new List<SpeechLine>();
 			
 			foreach (SpeechLine line in speechManager.lines)
 			{
@@ -214,20 +254,25 @@ namespace AC
 				    (!limitToCharacter || characterName == "" || line.owner == characterName || (line.isPlayer && characterName == "Player")) &&
 				    (!limitToTag || line.tagID == tagID))
 				{
-					if (!foundLinesInInventory)
-					{
-						script.Append ("<hr/>\n<h3>Scene-independent lines:</h3>\n");
-						foundLinesInInventory = true;
-					}
-					
-					script.Append (line.Print (languageIndex));
+					assetSpeechLines.Add (line);
+				}
+			}
+
+			if (assetSpeechLines != null && assetSpeechLines.Count > 0)
+			{
+				assetSpeechLines.Sort (delegate (SpeechLine a, SpeechLine b) {return a.OrderIdentifier.CompareTo (b.OrderIdentifier);});
+
+				script.Append ("<hr/>\n<h3>Scene-independent lines:</h3>\n");
+				foreach (SpeechLine assetSpeechLine in assetSpeechLines)
+				{
+					script.Append (assetSpeechLine.Print (languageIndex, includeDescriptions, removeTokens));
 				}
 			}
 			
 			script.Append ("<footer>Generated by <a href='http://adventurecreator.org' target=blank>Adventure Creator</a>, by Chris Burton</footer>\n");
 			script.Append ("</body>\n</html>");
 			
-			Serializer.CreateSaveFile (fileName, script.ToString ());
+			Serializer.SaveFile (fileName, script.ToString ());
 			
 			#endif
 			

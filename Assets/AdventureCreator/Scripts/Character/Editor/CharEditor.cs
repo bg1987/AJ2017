@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using UnityEditorInternal;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -26,11 +27,7 @@ namespace AC
 			EditorGUILayout.BeginVertical ("Button");
 				EditorGUILayout.LabelField ("Animation settings:", EditorStyles.boldLabel);
 				_target.animationEngine = (AnimationEngine) EditorGUILayout.EnumPopup ("Animation engine:", _target.animationEngine);
-				if (_target.animationEngine == AnimationEngine.Sprites2DToolkit && !tk2DIntegration.IsDefinePresent ())
-				{
-					EditorGUILayout.HelpBox ("The 'tk2DIsPresent' preprocessor define must be declared in the\ntk2DIntegration.cs script. Please open it and follow instructions.", MessageType.Warning);
-				}
-				else if (_target.animationEngine == AnimationEngine.Custom)
+				if (_target.animationEngine == AnimationEngine.Custom)
 				{
 					_target.customAnimationClass = EditorGUILayout.TextField ("Script name:", _target.customAnimationClass);
 				}
@@ -53,8 +50,17 @@ namespace AC
 			if (_target.GetMotionControl () != MotionControl.Manual)
 			{
 				_target.turnSpeed = EditorGUILayout.FloatField ("Turn speed:", _target.turnSpeed);
+
+				if (_target.GetAnimEngine ().isSpriteBased)
+				{
+					_target.turn2DCharactersIn3DSpace = EditorGUILayout.Toggle ("Turn root object in 3D space?", _target.turn2DCharactersIn3DSpace);
+				}
 			}
 			_target.turnBeforeWalking = EditorGUILayout.Toggle ("Turn before walking?", _target.turnBeforeWalking);
+			_target.retroPathfinding = EditorGUILayout.Toggle ("Retro-style movement?", _target.retroPathfinding);
+
+			_target.headTurnSpeed = EditorGUILayout.Slider ("Head turn speed:", _target.headTurnSpeed, 0.1f, 20f);
+
 			EditorGUILayout.EndVertical ();
 		}
 
@@ -62,12 +68,60 @@ namespace AC
 		protected void SharedGUITwo (AC.Char _target)
 		{
 			EditorGUILayout.BeginVertical ("Button");
-			EditorGUILayout.LabelField ("Rigidbody settings:", EditorStyles.boldLabel);
+			EditorGUILayout.LabelField ("Physics settings:", EditorStyles.boldLabel);
 			_target.ignoreGravity = EditorGUILayout.Toggle ("Ignore gravity?", _target.ignoreGravity);
-			_target.freezeRigidbodyWhenIdle = EditorGUILayout.Toggle ("Freeze when Idle?", _target.freezeRigidbodyWhenIdle);
-			if (_target.GetComponent <Rigidbody2D>() != null)
+			if (_target.GetComponent <Rigidbody>() != null || _target.GetComponent <Rigidbody2D>() != null)
 			{
-				_target.useRigidbody2DForMovement = EditorGUILayout.Toggle ("Move with Rigidbody2D?", _target.useRigidbody2DForMovement);
+				_target.freezeRigidbodyWhenIdle = EditorGUILayout.Toggle ("Freeze Rigidbody when Idle?", _target.freezeRigidbodyWhenIdle);
+				if (_target.GetComponent <Rigidbody>() != null)
+				{
+					_target.useRigidbodyForMovement = EditorGUILayout.Toggle ("Move with Rigidbody?", _target.useRigidbodyForMovement);
+
+					if (_target.useRigidbodyForMovement)
+					{
+						if (_target.GetAnimator () != null && _target.GetAnimator ().applyRootMotion)
+						{
+							EditorGUILayout.HelpBox ("Rigidbody movement will be disabled as 'Root motion' is enabled in the Animator.", MessageType.Info);
+						}
+						else if (_target.GetComponent <Rigidbody>().interpolation == RigidbodyInterpolation.None)
+						{
+							EditorGUILayout.HelpBox ("For smooth movement, the Rigidbody's 'Interpolation' should be set to either 'Interpolate' or 'Extrapolate'.", MessageType.Warning);
+						}
+					}
+				}
+				else if (_target.GetComponent <Rigidbody2D>() != null)
+				{
+					_target.useRigidbody2DForMovement = EditorGUILayout.Toggle ("Move with Rigidbody 2D?", _target.useRigidbody2DForMovement);
+
+					if (_target.useRigidbody2DForMovement)
+					{
+						if (_target.GetAnimator () != null && _target.GetAnimator ().applyRootMotion)
+						{
+							EditorGUILayout.HelpBox ("Rigidbody movement will be disabled as 'Root motion' is enabled in the Animator.", MessageType.Info);
+						}
+						else if (_target.GetComponent <Rigidbody2D>().interpolation == RigidbodyInterpolation2D.None)
+						{
+							EditorGUILayout.HelpBox ("For smooth movement, the Rigidbody's 'Interpolation' should be set to either 'Interpolate' or 'Extrapolate'.", MessageType.Warning);
+						}
+
+						if (SceneSettings.CameraPerspective != CameraPerspective.TwoD)
+						{
+							EditorGUILayout.HelpBox ("Rigidbody2D-based motion only allows for X and Y movement, not Z, which may not be appropriate for 3D.", MessageType.Warning);
+						}
+
+						#if (UNITY_5_6_OR_NEWER || UNITY_2017_1_OR_NEWER)
+						if (_target.GetAnimEngine ().isSpriteBased && _target.turn2DCharactersIn3DSpace)
+						{
+							EditorGUILayout.HelpBox ("For best results, 'Turn root object in 3D space?' above should be disabled.", MessageType.Warning);
+						}
+						#endif
+					}
+				}
+			}
+
+			if (_target.GetComponent <Collider>() != null && _target.GetComponent <CharacterController>() == null)
+			{
+				_target.groundCheckLayerMask = LayerMaskField ("Ground-check layer(s):", _target.groundCheckLayerMask);
 			}
 			EditorGUILayout.EndVertical ();
 			
@@ -77,7 +131,7 @@ namespace AC
 		
 			_target.walkSound = (AudioClip) EditorGUILayout.ObjectField ("Walk sound:", _target.walkSound, typeof (AudioClip), false);
 			_target.runSound = (AudioClip) EditorGUILayout.ObjectField ("Run sound:", _target.runSound, typeof (AudioClip), false);
-			if (AdvGame.GetReferences ().speechManager != null && AdvGame.GetReferences ().speechManager.scrollSubtitles)
+			if (AdvGame.GetReferences () != null && AdvGame.GetReferences ().speechManager != null && AdvGame.GetReferences ().speechManager.scrollSubtitles)
 			{
 				_target.textScrollClip = (AudioClip) EditorGUILayout.ObjectField ("Text scroll override:", _target.textScrollClip, typeof (AudioClip), false);
 			}
@@ -150,10 +204,8 @@ namespace AC
 			GenericMenu menu = new GenericMenu ();
 			
 			menu.AddItem (new GUIContent ("Insert after"), false, Callback, "Insert after");
-			if (_target.expressions.Count > 1)
-			{
-				menu.AddItem (new GUIContent ("Delete"), false, Callback, "Delete");
-			}
+			menu.AddItem (new GUIContent ("Delete"), false, Callback, "Delete");
+
 			if (i > 0)
 			{
 				menu.AddItem (new GUIContent ("Re-arrange/Move up"), false, Callback, "Move up");
@@ -207,7 +259,41 @@ namespace AC
 				_target.expressions.Insert (i+1, _expression);
 				break;
 			}
+		}
 
+
+ 		private List<int> layerNumbers = new List<int>();
+		private LayerMask LayerMaskField (string label, LayerMask layerMask)
+		{
+			var layers = InternalEditorUtility.layers;
+
+			layerNumbers.Clear ();
+
+			for (int i = 0; i < layers.Length; i++)
+			layerNumbers.Add(LayerMask.NameToLayer(layers[i]));
+
+			int maskWithoutEmpty = 0;
+			for (int i = 0; i < layerNumbers.Count; i++)
+			{
+				if (((1 << layerNumbers[i]) & layerMask.value) > 0)
+				{
+					maskWithoutEmpty |= (1 << i);
+				}
+			}
+
+			maskWithoutEmpty = UnityEditor.EditorGUILayout.MaskField(label, maskWithoutEmpty, layers);
+
+			int mask = 0;
+			for (int i = 0; i < layerNumbers.Count; i++)
+			{
+				if ((maskWithoutEmpty & (1 << i)) != 0)
+				{
+					mask |= (1 << layerNumbers[i]);
+				}
+			}
+			layerMask.value = mask;
+
+			return layerMask;
 		}
 
 	}

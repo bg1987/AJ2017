@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2017
+ *	by Chris Burton, 2013-2018
  *	
  *	"MenuInventoryBox.cs"
  * 
@@ -28,6 +28,9 @@ namespace AC
 
 		/** A List of UISlot classes that reference the linked Unity UI GameObjects (Unity UI Menus only) */
 		public UISlot[] uiSlots;
+		/** What pointer state registers as a 'click' for Unity UI Menus (PointerClick, PointerDown, PointerEnter) */
+		public UIPointerState uiPointerState = UIPointerState.PointerClick;
+
 		/** The special FX applied to the text (None, Outline, Shadow, OutlineAndShadow) */
 		public TextEffects textEffects;
 		/** The outline thickness, if textEffects != TextEffects.None */
@@ -44,6 +47,8 @@ namespace AC
 		public int categoryID;
 		/** The category IDs to limit the display of inventory items by, if limitToCategory = True */
 		public List<int> categoryIDs = new List<int>();
+		/** What Image component the Element's Graphics should be linked to (ImageComponent, ButtonTargetGraphic) */
+		public LinkUIGraphic linkUIGraphic = LinkUIGraphic.ImageComponent;
 
 		/** The List of inventory items that are on display */
 		public List<InvItem> items = new List<InvItem>();
@@ -55,6 +60,7 @@ namespace AC
 		public UIHideStyle uiHideStyle = UIHideStyle.DisableObject;
 
 		private string[] labels = null;
+		private Menu uiMenu;
 
 
 		/**
@@ -63,6 +69,7 @@ namespace AC
 		public override void Declare ()
 		{
 			uiSlots = null;
+			uiPointerState = UIPointerState.PointerClick;
 
 			isVisible = true;
 			isClickable = true;
@@ -80,26 +87,30 @@ namespace AC
 			uiHideStyle = UIHideStyle.DisableObject;
 			items = new List<InvItem>();
 			categoryIDs = new List<int>();
+			linkUIGraphic = LinkUIGraphic.ImageComponent;
 		}
 
 
-		/**
-		 * <summary>Creates and returns a new MenuInventoryBox that has the same values as itself.</summary>
-		 * <param name = "fromEditor">If True, the duplication was done within the Menu Manager and not as part of the gameplay initialisation.</param>
-		 * <returns>A new MenuInventoryBox with the same values as itself</return>
-		 */
-		public override MenuElement DuplicateSelf (bool fromEditor)
+		public override MenuElement DuplicateSelf (bool fromEditor, bool ignoreUnityUI)
 		{
 			MenuInventoryBox newElement = CreateInstance <MenuInventoryBox>();
 			newElement.Declare ();
-			newElement.CopyInventoryBox (this);
+			newElement.CopyInventoryBox (this, ignoreUnityUI);
 			return newElement;
 		}
 		
 		
-		private void CopyInventoryBox (MenuInventoryBox _element)
+		private void CopyInventoryBox (MenuInventoryBox _element, bool ignoreUnityUI)
 		{
-			uiSlots = _element.uiSlots;
+			if (ignoreUnityUI)
+			{
+				uiSlots = null;
+			}
+			else
+			{
+				uiSlots = _element.uiSlots;
+			}
+			uiPointerState = _element.uiPointerState;
 
 			isClickable = _element.isClickable;
 			textEffects = _element.textEffects;
@@ -114,12 +125,21 @@ namespace AC
 			displayType = _element.displayType;
 			uiHideStyle = _element.uiHideStyle;
 			categoryIDs = _element.categoryIDs;
+			linkUIGraphic = _element.linkUIGraphic;
 
 			UpdateLimitCategory ();
 
 			items = GetItemList ();
 
 			base.Copy (_element);
+
+			if (Application.isPlaying)
+			{
+				if (!(inventoryBoxType == AC_InventoryBoxType.HotspotBased && maxSlots == 1))
+				{
+					alternativeInputButton = "";
+				}
+			}
 
 			Upgrade ();
 		}
@@ -163,18 +183,32 @@ namespace AC
 		 * <summary>Initialises the linked Unity UI GameObjects.</summary>
 		 * <param name = "_menu">The element's parent Menu</param>
 		 */
-		public override void LoadUnityUI (AC.Menu _menu)
+		public override void LoadUnityUI (AC.Menu _menu, Canvas canvas)
 		{
+			uiMenu = _menu;
+
 			int i=0;
 			foreach (UISlot uiSlot in uiSlots)
 			{
-				uiSlot.LinkUIElements ();
+				uiSlot.LinkUIElements (canvas, linkUIGraphic);
 				if (uiSlot != null && uiSlot.uiButton != null)
 				{
 					int j=i;
-					uiSlot.uiButton.onClick.AddListener (() => {
-						ProcessClickUI (_menu, j, MouseState.SingleClick);
-					});
+
+					if (inventoryBoxType == AC_InventoryBoxType.Default || inventoryBoxType == AC_InventoryBoxType.CustomScript)
+					{
+						if (KickStarter.settingsManager != null &&
+							KickStarter.settingsManager.interactionMethod != AC_InteractionMethod.ContextSensitive &&
+							KickStarter.settingsManager.inventoryInteractions == InventoryInteractions.Multiple)
+						{}
+						else
+						{
+							uiPointerState = UIPointerState.PointerClick;
+						}
+					}
+
+					CreateUIEvent (uiSlot.uiButton, _menu, uiPointerState, j, false);
+
 					uiSlot.AddClickHandler (_menu, this, j);
 				}
 				i++;
@@ -183,14 +217,36 @@ namespace AC
 
 
 		/**
+		 * <summary>Gets the UI Button associated with an inventory item, provided that the Menus' Source is UnityUiPrefab or UnityUiInScene.</summary>
+		 * <param name = "itemID">The ID number of the inventory item (InvItem) to search for</param>
+		 * <returns>The UI Button associated with an inventory item, or null if a suitable Button cannot be found.</returns>
+		 */
+		public UnityEngine.UI.Button GetUIButtonWithItem (int itemID)
+		{
+			for (int i=0; i<items.Count; i++)
+			{
+				if (items[i] != null && items[i].id == itemID)
+				{
+					if (uiSlots != null && uiSlots.Length > i && uiSlots[i] != null)
+					{
+						return uiSlots[i].uiButton;
+					}
+					return null;
+				}
+			}
+			return null;
+		}
+
+
+		/**
 		 * <summary>Gets the linked Unity UI GameObject associated with this element.</summary>
 		 * <returns>The Unity UI GameObject associated with the element</returns>
 		 */
-		public override GameObject GetObjectToSelect ()
+		public override GameObject GetObjectToSelect (int slotIndex = 0)
 		{
-			if (uiSlots != null && uiSlots.Length > 0 && uiSlots[0].uiButton != null)
+			if (uiSlots != null && uiSlots.Length > slotIndex && uiSlots[slotIndex].uiButton != null)
 			{
-				return uiSlots[0].uiButton.gameObject;
+				return uiSlots[slotIndex].uiButton.gameObject;
 			}
 			return null;
 		}
@@ -219,19 +275,6 @@ namespace AC
 
 			MenuSource source = menu.menuSource;
 			EditorGUILayout.BeginVertical ("Button");
-			if (source == MenuSource.AdventureCreator)
-			{
-				textEffects = (TextEffects) CustomGUILayout.EnumPopup ("Text effect:", textEffects, apiPrefix + ".textEffects");
-				if (textEffects != TextEffects.None)
-				{
-					outlineSize = CustomGUILayout.Slider ("Effect size:", outlineSize, 1f, 5f, apiPrefix + ".outlineSize");
-				}
-			}
-			displayType = (ConversationDisplayType) CustomGUILayout.EnumPopup ("Display:", displayType, apiPrefix + ".displayType");
-			if (displayType == ConversationDisplayType.IconAndText && source == MenuSource.AdventureCreator)
-			{
-				EditorGUILayout.HelpBox ("'Icon And Text' mode is only available for Unity UI-based Menus.", MessageType.Warning);
-			}
 
 			inventoryBoxType = (AC_InventoryBoxType) CustomGUILayout.EnumPopup ("Inventory box type:", inventoryBoxType, apiPrefix + ".inventoryBoxType");
 			if (inventoryBoxType == AC_InventoryBoxType.Default || inventoryBoxType == AC_InventoryBoxType.CustomScript)
@@ -268,6 +311,17 @@ namespace AC
 			if (inventoryBoxType == AC_InventoryBoxType.HotspotBased)
 			{
 				limitToDefinedInteractions = CustomGUILayout.ToggleLeft ("Only show items referenced in Interactions?", limitToDefinedInteractions, apiPrefix + ".limitToDefinedInteractions");
+
+				if (maxSlots == 1)
+				{
+					alternativeInputButton = CustomGUILayout.TextField ("Alternative input button:", alternativeInputButton, apiPrefix + ".alternativeInputButton");
+				}
+			}
+
+			displayType = (ConversationDisplayType) CustomGUILayout.EnumPopup ("Display type:", displayType, apiPrefix + ".displayType");
+			if (displayType == ConversationDisplayType.IconAndText && source == MenuSource.AdventureCreator)
+			{
+				EditorGUILayout.HelpBox ("'Icon And Text' mode is only available for Unity UI-based Menus.", MessageType.Warning);
 			}
 
 			if (inventoryBoxType != AC_InventoryBoxType.DisplaySelected && inventoryBoxType != AC_InventoryBoxType.DisplayLastSelected && source == MenuSource.AdventureCreator)
@@ -299,6 +353,23 @@ namespace AC
 				{
 					uiSlots[i].LinkedUiGUI (i, source);
 				}
+
+				linkUIGraphic = (LinkUIGraphic) EditorGUILayout.EnumPopup ("Link graphics to:", linkUIGraphic);
+
+				// Don't show if Single and Default or Custom Script
+				if (inventoryBoxType == AC_InventoryBoxType.Default || inventoryBoxType == AC_InventoryBoxType.CustomScript)
+				{
+					if (KickStarter.settingsManager != null &&
+						KickStarter.settingsManager.interactionMethod != AC_InteractionMethod.ContextSensitive &&
+						KickStarter.settingsManager.inventoryInteractions == InventoryInteractions.Multiple)
+					{
+						uiPointerState = (UIPointerState) CustomGUILayout.EnumPopup ("Responds to:", uiPointerState, apiPrefix + ".uiPointerState");
+					}
+				}
+				else
+				{
+					uiPointerState = (UIPointerState) CustomGUILayout.EnumPopup ("Responds to:", uiPointerState, apiPrefix + ".uiPointerState");
+				}
 			}
 			EditorGUILayout.EndVertical ();
 
@@ -308,6 +379,16 @@ namespace AC
 			}
 
 			base.ShowGUI (menu);
+		}
+
+
+		protected override void ShowTextGUI(string apiPrefix)
+		{
+			textEffects = (TextEffects) CustomGUILayout.EnumPopup ("Text effect:", textEffects, apiPrefix + ".textEffects");
+			if (textEffects != TextEffects.None)
+			{
+				outlineSize = CustomGUILayout.Slider ("Effect size:", outlineSize, 1f, 5f, apiPrefix + ".outlineSize");
+			}
 		}
 
 
@@ -366,22 +447,6 @@ namespace AC
 			EditorGUILayout.EndVertical ();
 		}
 
-
-		private int GetBinSlot (int _id, List<InvBin> bins)
-		{
-			int i = 0;
-			foreach (InvBin bin in bins)
-			{
-				if (bin.id == _id)
-				{
-					return i;
-				}
-				i++;
-			}
-			
-			return 0;
-		}
-		
 		#endif
 
 
@@ -410,7 +475,10 @@ namespace AC
 		{
 			if (_slot >= 0 && uiSlots != null && uiSlots.Length > _slot && uiSlots[_slot].uiButton != null && KickStarter.playerMenus.IsEventSystemSelectingObject (uiSlots[_slot].uiButton.gameObject))
 			{
-				isActive = true;
+				if (uiMenu != null && uiMenu.CanCurrentlyKeyboardControl ()) // Check added to prevent when using mouse to control
+				{
+					isActive = true;
+				}
 			}
 
 			if (items.Count > 0 && items.Count > (_slot+offset) && items [_slot+offset] != null)
@@ -455,7 +523,7 @@ namespace AC
 					uiSlots[_slot].SetText (labels [_slot]);
 					if (displayType == ConversationDisplayType.IconOnly || displayType == ConversationDisplayType.IconAndText)
 					{
-						Texture2D tex = null;
+						Texture tex = null;
 						if (items.Count > (_slot+offset) && items [_slot+offset] != null)
 						{
 							if (inventoryBoxType != AC_InventoryBoxType.DisplaySelected && inventoryBoxType != AC_InventoryBoxType.DisplayLastSelected)
@@ -494,7 +562,7 @@ namespace AC
 
 		private bool ItemIsSelected (InvItem item)
 		{
-			if (item != null && item == KickStarter.runtimeInventory.selectedItem && (! KickStarter.settingsManager.InventoryDragDrop || KickStarter.playerInput.GetDragState () == DragState.Inventory))
+			if (item != null && item == KickStarter.runtimeInventory.SelectedItem && (! KickStarter.settingsManager.InventoryDragDrop || KickStarter.playerInput.GetDragState () == DragState.Inventory))
 			{
 				return true;
 			}
@@ -578,16 +646,17 @@ namespace AC
 					if (items.Count <= trueIndex || items[trueIndex] == null)
 					{
 						// Black space
-						if (KickStarter.runtimeInventory.selectedItem != null && KickStarter.settingsManager.canReorderItems)
+						if (KickStarter.runtimeInventory.SelectedItem != null && KickStarter.settingsManager.canReorderItems)
 						{
 							if (limitToCategory && categoryIDs != null && categoryIDs.Count > 0)
 							{
 								// Need to change index because we want to affect the actual inventory, not the percieved one shown in the restricted menu
 								List<InvItem> trueItemList = GetItemList (false);
-								trueIndex += LimitByCategory (trueItemList, _slot + offset).Offset;
+								LimitedItemList limitedItemList = LimitByCategory (trueItemList, _slot + offset);
+								trueIndex += limitedItemList.Offset;
 							}
 
-							KickStarter.runtimeInventory.localItems = KickStarter.runtimeInventory.MoveItemToIndex (KickStarter.runtimeInventory.selectedItem, KickStarter.runtimeInventory.localItems, trueIndex);
+							KickStarter.runtimeInventory.MoveItemToIndex (KickStarter.runtimeInventory.SelectedItem, trueIndex);
 						}
 						KickStarter.runtimeInventory.SetNull ();
 						return;
@@ -596,11 +665,11 @@ namespace AC
 
 				if (interactionMethod == AC_InteractionMethod.ChooseHotspotThenInteraction)
 				{
-					if (KickStarter.runtimeInventory.selectedItem != null)
+					if (KickStarter.runtimeInventory.SelectedItem != null)
 					{
 						if (_mouseState == MouseState.SingleClick)
 						{
-							KickStarter.runtimeInventory.Combine (KickStarter.runtimeInventory.selectedItem, items [_slot + offset]);
+							KickStarter.runtimeInventory.Combine (KickStarter.runtimeInventory.SelectedItem, items [_slot + offset]);
 						}
 						else if (_mouseState == MouseState.RightClick)
 						{
@@ -619,15 +688,15 @@ namespace AC
 						int cursorID = KickStarter.playerCursor.GetSelectedCursorID ();
 						int cursor = KickStarter.playerCursor.GetSelectedCursor ();
 
-						if (cursor == -2 && KickStarter.runtimeInventory.selectedItem != null)
+						if (cursor == -2 && KickStarter.runtimeInventory.SelectedItem != null)
 						{
-							if (items [_slot + offset] == KickStarter.runtimeInventory.selectedItem)
+							if (items [_slot + offset] == KickStarter.runtimeInventory.SelectedItem)
 							{
 								KickStarter.runtimeInventory.SelectItem (items [_slot + offset], SelectItemMode.Use);
 							}
 							else
 							{
-								KickStarter.runtimeInventory.Combine (KickStarter.runtimeInventory.selectedItem, items [_slot + offset]);
+								KickStarter.runtimeInventory.Combine (KickStarter.runtimeInventory.SelectedItem, items [_slot + offset]);
 							}
 						}
 						else if (cursor == -1 && !KickStarter.settingsManager.selectInvWithUnhandled)
@@ -644,20 +713,30 @@ namespace AC
 				{
 					if (_mouseState == MouseState.SingleClick)
 					{
-						if (KickStarter.runtimeInventory.selectedItem == null)
+						if (KickStarter.runtimeInventory.SelectedItem == null)
 						{
-							KickStarter.runtimeInventory.Use (items [_slot + offset]);
+							if (KickStarter.cursorManager.lookUseCursorAction == LookUseCursorAction.RightClickCyclesModes && KickStarter.playerCursor.ContextCycleExamine)
+							{
+								KickStarter.runtimeInventory.Look (items [_slot + offset]);
+							}
+							else
+							{
+								KickStarter.runtimeInventory.Use (items [_slot + offset]);
+							}
 						}
 						else
 						{
-							KickStarter.runtimeInventory.Combine (KickStarter.runtimeInventory.selectedItem, items [_slot + offset]);
+							KickStarter.runtimeInventory.Combine (KickStarter.runtimeInventory.SelectedItem, items [_slot + offset]);
 						}
 					}
 					else if (_mouseState == MouseState.RightClick)
 					{
-						if (KickStarter.runtimeInventory.selectedItem == null)
+						if (KickStarter.runtimeInventory.SelectedItem == null)
 						{
-							KickStarter.runtimeInventory.Look (items [_slot + offset]);
+							if (KickStarter.cursorManager.lookUseCursorAction != LookUseCursorAction.RightClickCyclesModes)
+							{
+								KickStarter.runtimeInventory.Look (items [_slot + offset]);
+							}
 						}
 						else
 						{
@@ -716,7 +795,6 @@ namespace AC
 			{
 				LimitUISlotVisibility (uiSlots, 0, uiHideStyle);
 			}
-
 			base.RecalculateSize (source);
 		}
 		
@@ -740,18 +818,16 @@ namespace AC
 				}
 				else if (inventoryBoxType == AC_InventoryBoxType.DisplaySelected)
 				{
-					newItemList = KickStarter.runtimeInventory.GetSelected ();
+					if (KickStarter.runtimeInventory.SelectedItem != null)
+					{
+						newItemList.Add (KickStarter.runtimeInventory.SelectedItem);
+					}
 				}
 				else if (inventoryBoxType == AC_InventoryBoxType.DisplayLastSelected)
 				{
-					if (KickStarter.runtimeInventory.selectedItem != null)
+					if (KickStarter.runtimeInventory.LastSelectedItem != null && KickStarter.runtimeInventory.IsItemCarried (KickStarter.runtimeInventory.LastSelectedItem))
 					{
-						newItemList = new List<InvItem>();
-						newItemList = KickStarter.runtimeInventory.GetSelected ();
-					}
-					else if (newItemList.Count == 1 && !KickStarter.runtimeInventory.IsItemCarried (newItemList[0]))
-					{
-						newItemList.Clear ();
+						newItemList.Add (KickStarter.runtimeInventory.LastSelectedItem);
 					}
 				}
 				else if (inventoryBoxType == AC_InventoryBoxType.Container)
@@ -822,7 +898,10 @@ namespace AC
 
 		private bool CanBeLimitedByCategory ()
 		{
-			if (inventoryBoxType == AC_InventoryBoxType.Default || inventoryBoxType == AC_InventoryBoxType.CustomScript)
+			if (inventoryBoxType == AC_InventoryBoxType.Default ||
+				inventoryBoxType == AC_InventoryBoxType.CustomScript ||
+				inventoryBoxType == AC_InventoryBoxType.DisplaySelected ||
+				inventoryBoxType == AC_InventoryBoxType.DisplayLastSelected)
 			{
 				return true;
 			}
@@ -842,7 +921,7 @@ namespace AC
 				return false;
 			}
 
-			if (shiftType == AC_ShiftInventory.ShiftLeft)
+			if (shiftType == AC_ShiftInventory.ShiftPrevious)
 			{
 				if (offset == 0)
 				{
@@ -883,22 +962,20 @@ namespace AC
 				{
 					if (itemsToLimit[i] != null && !categoryIDs.Contains (itemsToLimit[i].binID))
 					{
-						/*if (KickStarter.settingsManager.canReorderItems && Application.isPlaying)
+						if (i <= reverseItemIndex)
 						{
-							itemsToLimit[i] = null;
+							offset ++;
 						}
-						else
-						{*/
-							if (i <= reverseItemIndex)
-							{
-								offset ++;
-							}
 
-							itemsToLimit.RemoveAt (i);
-						//}
-
+						itemsToLimit.RemoveAt (i);
 						i = -1;
 					}
+				}
+
+				// Bugfix: Remove extra nulls at end in case some where added as a result of re-ordering another menu
+				if (itemsToLimit != null && Application.isPlaying)
+				{
+					itemsToLimit = KickStarter.runtimeInventory.RemoveEmptySlots (itemsToLimit);
 				}
 			}
 
@@ -920,7 +997,7 @@ namespace AC
 		}
 
 
-		private Texture2D GetTexture (InvItem _item, bool isActive)
+		private Texture GetTexture (InvItem _item, bool isActive)
 		{
 			if (ItemIsSelected (_item))
 			{
@@ -948,7 +1025,7 @@ namespace AC
 		{
 			if (_item == null) return;
 
-			Texture2D tex = null;
+			Texture tex = null;
 			if (Application.isPlaying && KickStarter.runtimeInventory != null && inventoryBoxType != AC_InventoryBoxType.DisplaySelected)
 			{
 				if (_item == KickStarter.runtimeInventory.highlightItem && _item.activeTex != null)
@@ -991,7 +1068,6 @@ namespace AC
 			{
 				return null;
 			}
-
 			return items [i+offset].GetLabel (languageNumber);
 		}
 
@@ -1084,7 +1160,7 @@ namespace AC
 
 			if (_mouseState == MouseState.SingleClick)
 			{
-				if (KickStarter.runtimeInventory.selectedItem == null)
+				if (KickStarter.runtimeInventory.SelectedItem == null)
 				{
 					if (container.items.Count > (_slot+offset) && container.items [_slot+offset] != null)
 					{
@@ -1098,10 +1174,10 @@ namespace AC
 				else
 				{
 					// Placing an item inside the container
-					ContainerItem containerItem = container.InsertAt (KickStarter.runtimeInventory.selectedItem, _slot+offset);
+					ContainerItem containerItem = container.InsertAt (KickStarter.runtimeInventory.SelectedItem, _slot+offset);
 					if (containerItem != null)
 					{
-						KickStarter.runtimeInventory.Remove (KickStarter.runtimeInventory.selectedItem);
+						KickStarter.runtimeInventory.Remove (KickStarter.runtimeInventory.SelectedItem);
 						KickStarter.eventManager.Call_OnUseContainer (true, container, containerItem);
 					}
 				}
@@ -1109,7 +1185,7 @@ namespace AC
 
 			else if (_mouseState == MouseState.RightClick)
 			{
-				if (KickStarter.runtimeInventory.selectedItem != null)
+				if (KickStarter.runtimeInventory.SelectedItem != null)
 				{
 					KickStarter.runtimeInventory.SetNull ();
 				}

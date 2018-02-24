@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2016
+ *	by Chris Burton, 2013-2018
  *	
  *	"MusicCrossfade.cs"
  * 
@@ -77,7 +77,7 @@ namespace AC
 			}
 
 			_audioSource.clip = audioSourceToCopy.clip;
-			#if UNITY_5
+			#if UNITY_5 || UNITY_2017_1_OR_NEWER
 			_audioSource.outputAudioMixerGroup = audioSourceToCopy.outputAudioMixerGroup;
 			#endif
 			_audioSource.volume = audioSourceToCopy.volume;

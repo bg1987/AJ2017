@@ -13,7 +13,7 @@ GameObject:
   m_Layer: 2
   m_Name: Path
   m_TagString: Untagged
-  m_Icon: {fileID: -1016138426, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: -1089502233064743932, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -43,7 +43,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodes:
   - {x: 0, y: 0, z: 0}
-  nodeCommands: []
+  nodeCommands:
+  - cutscene: {fileID: 0}
+    actionListAsset: {fileID: 0}
+    parameterID: -1
   commandSource: 0
   pathType: 2
   pathSpeed: 0
