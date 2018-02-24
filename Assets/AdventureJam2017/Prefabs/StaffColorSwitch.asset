@@ -22,6 +22,7 @@ MonoBehaviour:
   actionListType: 0
   unfreezePauseMenus: 1
   useParameters: 0
+  canRunMultipleInstances: 0
   parameters: []
   tagID: 0
 --- !u!114 &114058369114317558
@@ -47,11 +48,10 @@ MonoBehaviour:
   showOutputSockets: 1
   numSockets: 2
   willWait: 0
-  defaultPauseTime: 0.1
   isRunning: 0
   lastResult:
     resultAction: 2
-    skipAction: 2
+    skipAction: 3
     skipActionActual: {fileID: 0}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
@@ -61,7 +61,7 @@ MonoBehaviour:
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
-  isAssetFile: 1
+  isAssetFile: 0
   isMarked: 0
   isBreakPoint: 0
   nodeRect:
@@ -69,7 +69,7 @@ MonoBehaviour:
     x: 14
     y: 148
     width: 300
-    height: 176
+    height: 212
   nodeHeight: 0
   resultActionTrue: 2
   skipActionTrue: 5
@@ -95,6 +95,8 @@ MonoBehaviour:
   boolCondition: 0
   stringValue: 
   checkCase: 1
+  vector3Value: {x: 0, y: 0, z: 0}
+  vectorCondition: 0
   location: 0
 --- !u!114 &114081951248192156
 MonoBehaviour:
@@ -117,11 +119,10 @@ MonoBehaviour:
   showOutputSockets: 1
   numSockets: 1
   willWait: 0
-  defaultPauseTime: 0.1
   isRunning: 0
   lastResult:
     resultAction: 1
-    skipAction: -10
+    skipAction: -1
     skipActionActual: {fileID: 0}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
@@ -131,13 +132,13 @@ MonoBehaviour:
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
-  isAssetFile: 1
+  isAssetFile: 0
   isMarked: 0
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 621
+    y: 657
     width: 300
     height: 122
   nodeHeight: 0
@@ -169,11 +170,10 @@ MonoBehaviour:
   showOutputSockets: 1
   numSockets: 1
   willWait: 0
-  defaultPauseTime: 0.1
   isRunning: 0
   lastResult:
     resultAction: 2
-    skipAction: -10
+    skipAction: 1
     skipActionActual: {fileID: 0}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
@@ -183,13 +183,13 @@ MonoBehaviour:
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
-  isAssetFile: 1
+  isAssetFile: 0
   isMarked: 0
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 354
+    y: 390
     width: 335
     height: 237
   nodeHeight: 0
@@ -226,7 +226,6 @@ MonoBehaviour:
   showOutputSockets: 1
   numSockets: 1
   willWait: 0
-  defaultPauseTime: 0.1
   isRunning: 0
   lastResult:
     resultAction: 2
@@ -240,7 +239,7 @@ MonoBehaviour:
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
-  isAssetFile: 1
+  isAssetFile: 0
   isMarked: 0
   isBreakPoint: 0
   nodeRect:
@@ -275,11 +274,10 @@ MonoBehaviour:
   showOutputSockets: 1
   numSockets: 1
   willWait: 1
-  defaultPauseTime: 0.1
   isRunning: 0
   lastResult:
-    resultAction: 2
-    skipAction: 5
+    resultAction: 1
+    skipAction: -10
     skipActionActual: {fileID: 0}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
@@ -289,13 +287,13 @@ MonoBehaviour:
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
-  isAssetFile: 1
+  isAssetFile: 0
   isMarked: 0
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
     x: 364
-    y: 524
+    y: 560
     width: 300
     height: 230
   nodeHeight: 0
@@ -303,7 +301,7 @@ MonoBehaviour:
   constantID: 0
   editingAnimEngine: {fileID: 0}
   isPlayer: 1
-  animChar: {fileID: 114027176508567914, guid: fc8c417e545d0ae4489fee3355f12179, type: 2}
+  animChar: {fileID: 0}
   clip: {fileID: 0}
   clip2D: no
   clip2DParameterID: -1
@@ -329,6 +327,7 @@ MonoBehaviour:
   parameterName: 
   parameterNameID: -1
   parameterValue: 0
+  hideHead: 0
 --- !u!114 &114679488335294772
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -350,11 +349,10 @@ MonoBehaviour:
   showOutputSockets: 1
   numSockets: 1
   willWait: 0
-  defaultPauseTime: 0.1
   isRunning: 0
   lastResult:
-    resultAction: 1
-    skipAction: -1
+    resultAction: 2
+    skipAction: -10
     skipActionActual: {fileID: 0}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
@@ -364,13 +362,13 @@ MonoBehaviour:
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   isEnabled: 1
-  isAssetFile: 1
+  isAssetFile: 0
   isMarked: 0
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
     x: 364
-    y: 354
+    y: 390
     width: 300
     height: 140
   nodeHeight: 0
