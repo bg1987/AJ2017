@@ -9,18 +9,23 @@ public class Trip1LampSwitch : MonoBehaviour {
     public int currentIndex;
 	// Use this for initialization
 	void Start () {
-        currentIndex = AC.LocalVariables.GetIntegerValue(localVariableId);
-
-        if(isTarget)
-        {
-            currentIndex = (9 - currentIndex) % 5; //mirror the value.
-        }
-
         SetObjectsToIndex();
 	}
 
-    void SetObjectsToIndex()
+    private void SetIndex()
     {
+        currentIndex = AC.LocalVariables.GetIntegerValue(localVariableId);
+
+        if (isTarget)
+        {
+            currentIndex = (9 - currentIndex) % 5; //mirror the value.
+        }
+    }
+
+    public void SetObjectsToIndex()
+    {
+        SetIndex();
+
         for (int i = 0; i < objects.Length; i++)
         {
             objects[i].SetActive(i == currentIndex);
