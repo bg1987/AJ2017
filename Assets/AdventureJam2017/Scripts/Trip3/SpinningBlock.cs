@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SpinningBlock : MonoBehaviour {
     const int CHUNKS = 12;
-    static bool[] Positions = new bool[CHUNKS];
+    static bool[] OccupiedStonePositions = new bool[CHUNKS];
 
 
     public int[] StonePositions;
@@ -54,11 +54,16 @@ public class SpinningBlock : MonoBehaviour {
         }
     }
 
+    public void SetCurrentPosition()
+    {
+        SetCurrentPosition(true);
+    }
+
     private void SetCurrentPosition(bool state = true)
     {
         foreach (int pos in StonePositions)
         {
-            Positions[(pos + offset) % CHUNKS] = state;
+            OccupiedStonePositions[(pos + offset) % CHUNKS] = state;
         }
     }
 
@@ -118,7 +123,7 @@ public class SpinningBlock : MonoBehaviour {
         bool isValidSpot = true;
         foreach (int pos in StonePositions)
         {
-            isValidSpot &= !Positions[(pos + offset) % CHUNKS];
+            isValidSpot &= !OccupiedStonePositions[(pos + offset) % CHUNKS];
         }
 
         return isValidSpot;
