@@ -9,6 +9,7 @@ public class StaffHeadColor : MonoBehaviour {
 
     public static event System.Action OnColorChanged;
     static StaffHeadColor me;
+    public AC.Interaction GemColorSwitch;
     public static Color CurrentColor
     {
         get { return me.StaffColors[me.currentColor]; }
@@ -39,9 +40,9 @@ public class StaffHeadColor : MonoBehaviour {
     }
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Space) && !AC.GlobalVariables.GetBooleanValue(4))
+        if(AC.KickStarter.playerInput.InputGetButtonDown("Gem"))
         {
-            Switch();
+            GemColorSwitch.Interact();
         }
     }
 
