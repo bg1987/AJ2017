@@ -198,10 +198,18 @@ public class StatuesPuzzle : MonoBehaviour {
 	}
 
 	void ActivatePuzzle() {
-
 		Debug.Log("Entered puzzle " + name);
-		if(!puzzleCanvas.enabled)
+
+        /*TODO: Babin, this settings controls whether you need to click exactly inside the navmesh
+         * if you set it to zero while there is a puzzle thats turned on (i.e. visible maze)
+         * and off when there isnt any, this should give the exact behaviour we want regarding walking in this scene.
+         * i though this is the right place but i cant get it to work just right.
+         */
+        //AC.KickStarter.settingsManager.walkableClickRange = 0; 
+
+        if (!puzzleCanvas.enabled)
 		{
+
 			OnStaffColorChange();
 			puzzleCanvas.enabled = true;
 			StaffHeadColor.OnColorChanged += OnStaffColorChange;
@@ -210,8 +218,11 @@ public class StatuesPuzzle : MonoBehaviour {
 
 	void DeactivatePuzzle() {
 		Debug.Log("Out of puzzle " + name);
-		if(puzzleCanvas.enabled)
+        //AC.KickStarter.settingsManager.walkableClickRange = 1f;
+
+        if (puzzleCanvas.enabled)
 		{
+
 			OnStaffColorChange();
 			puzzleCanvas.enabled = false;
 			StaffHeadColor.OnColorChanged -= OnStaffColorChange;

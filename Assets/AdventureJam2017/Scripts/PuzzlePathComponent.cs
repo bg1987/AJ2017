@@ -31,7 +31,7 @@ public class PuzzlePathComponent : MonoBehaviour {
     void OnClick()
     {
 		Debug.Log(string.Format("Clicked on {0}, pos {1},{2}", gameObject.name, xpos, ypos));
-
+        AC.KickStarter.player.Halt();
         if (OnButtonClick != null)
             OnButtonClick(this);
     }
