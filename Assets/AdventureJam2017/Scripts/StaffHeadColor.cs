@@ -37,6 +37,13 @@ public class StaffHeadColor : MonoBehaviour {
         StaffHead.color = CurrentColor;
         StaffHeadAnimator.SetInteger("ColorNumber", CurrentColorIndex);
     }
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.Space) && !AC.GlobalVariables.GetBooleanValue(4))
+        {
+            Switch();
+        }
+    }
 
     public void Switch()
     {
