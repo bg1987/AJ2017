@@ -25,8 +25,6 @@ public class SpinningBlock : MonoBehaviour {
     private float initialZ;
     private int initialOffset;
 
-
-        
     // Use this for initialization
 	void Start ()
     {
@@ -131,6 +129,8 @@ public class SpinningBlock : MonoBehaviour {
 
     private void OnDestroy()
     {
+        Debug.Log("leaving trip, resetting positions");
+        OccupiedStonePositions = new bool[CHUNKS];
         StaffHeadColor.OnColorChanged -= StaffHeadColor_OnColorChanged; //TODO: This needs to be unassigned on solving the riddle.
     }
 }
