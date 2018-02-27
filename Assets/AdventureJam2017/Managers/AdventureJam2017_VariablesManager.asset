@@ -103,7 +103,7 @@ MonoBehaviour:
     link: 0
     pmVar: 
     updateLinkOnStart: 0
-    isEditing: 1
+    isEditing: 0
     canTranslate: 1
     textValLineID: -1
     popUpsLineID: -1
@@ -151,7 +151,7 @@ MonoBehaviour:
     link: 0
     pmVar: 
     updateLinkOnStart: 0
-    isEditing: 0
+    isEditing: 1
     canTranslate: 1
     textValLineID: -1
     popUpsLineID: -1
@@ -223,6 +223,165 @@ MonoBehaviour:
       vector3Val: {x: 0, y: 0, z: 0}
     - id: 9
       val: 0
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+  - label: Normal
+    ID: 0
+    presetValues:
+    - id: 0
+      val: 0
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+    - id: 1
+      val: 0
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+    - id: 2
+      val: 0
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+    - id: 3
+      val: 0
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+    - id: 4
+      val: 0
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+    - id: 5
+      val: 0
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+    - id: 6
+      val: 0
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+    - id: 7
+      val: 0
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+    - id: 8
+      val: 0
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+    - id: 9
+      val: 0
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+  - label: Solved for trip2
+    ID: 2
+    presetValues:
+    - id: 0
+      val: 0
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+    - id: 1
+      val: 1
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+    - id: 2
+      val: 1
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+    - id: 3
+      val: 1
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+    - id: 4
+      val: 0
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+    - id: 5
+      val: 1
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+    - id: 6
+      val: 0
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+    - id: 7
+      val: 0
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+    - id: 8
+      val: 0
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+    - id: 9
+      val: 1
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+  - label: just trip3
+    ID: 3
+    presetValues:
+    - id: 0
+      val: 0
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+    - id: 1
+      val: 1
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+    - id: 2
+      val: 1
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+    - id: 3
+      val: 1
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+    - id: 4
+      val: 0
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+    - id: 5
+      val: 0
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+    - id: 6
+      val: 0
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+    - id: 7
+      val: 0
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+    - id: 8
+      val: 0
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+    - id: 9
+      val: 1
       floatVal: 0
       textVal: 
       vector3Val: {x: 0, y: 0, z: 0}

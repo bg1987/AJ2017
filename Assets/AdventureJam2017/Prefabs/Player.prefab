@@ -838,6 +838,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5923861a7c21c7d44bce55fca1606b88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  GemColorSwitch: {fileID: 114398107324889968}
   StaffColors:
   - {r: 1, g: 1, b: 1, a: 1}
   - {r: 0.21960786, g: 0.97647065, b: 0.09411766, a: 1}

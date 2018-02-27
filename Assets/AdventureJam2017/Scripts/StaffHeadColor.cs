@@ -9,6 +9,7 @@ public class StaffHeadColor : MonoBehaviour {
 
     public static event System.Action OnColorChanged;
     static StaffHeadColor me;
+    public AC.Interaction GemColorSwitch;
     public static Color CurrentColor
     {
         get { return me.StaffColors[me.currentColor]; }
@@ -36,6 +37,13 @@ public class StaffHeadColor : MonoBehaviour {
         currentColor = AC.GlobalVariables.GetIntegerValue(GlobalVarID);
         StaffHead.color = CurrentColor;
         StaffHeadAnimator.SetInteger("ColorNumber", CurrentColorIndex);
+    }
+    private void Update()
+    {
+        if(AC.KickStarter.playerInput.InputGetButtonDown("Gem"))
+        {
+            GemColorSwitch.Interact();
+        }
     }
 
     public void Switch()
