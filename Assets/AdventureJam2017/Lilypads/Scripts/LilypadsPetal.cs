@@ -24,6 +24,7 @@ public class LilypadsPetal : MonoBehaviour {
 
     [Space]
     public Animator LilyEffectAnimator;
+	public SpriteRenderer baseColor;
 
     LilyState currentState;
 
@@ -53,6 +54,7 @@ public class LilypadsPetal : MonoBehaviour {
 
 		foreach (var image in rend) {
 			image.sortingOrder = order;
+			baseColor.sortingOrder = order - 1;
 		}
 	}
 
@@ -140,18 +142,22 @@ public class LilypadsPetal : MonoBehaviour {
 		    case LilyState.Green:
 			    currentState = LilyState.Green;
                 LilyEffectAnimator.Play("LilyOpen3");
+				baseColor.color = new Color32(43,254,97,255);		
                 break;
 		    case LilyState.Purple:
 			    currentState = LilyState.Purple;
 				LilyEffectAnimator.Play("LilyOpen2");
+				baseColor.color = new Color32(237,22,254,255);
                 break;
 		    case LilyState.Yellow:
 			    currentState = LilyState.Yellow;
 				LilyEffectAnimator.Play("LilyOpen1");
+				baseColor.color = new Color32(254,213,39,255);
                 break;
 			case LilyState.Complete:
 				currentState = LilyState.Complete;
                 LilyEffectAnimator.Play("LilyComplete");
+				baseColor.color = Color.white;
                 break;
 		    default:
 			    break;
